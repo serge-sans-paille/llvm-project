@@ -2272,6 +2272,9 @@ public:
   /// true through IsAligned.
   bool isReplaceableGlobalAllocationFunction(bool *IsAligned = nullptr) const;
 
+  /// Determine if this function provides an inline implementation of a builtin.
+  bool isInlineBuiltinDeclaration() const;
+
   /// Determine whether this is a destroying operator delete.
   bool isDestroyingOperatorDelete() const;
 
