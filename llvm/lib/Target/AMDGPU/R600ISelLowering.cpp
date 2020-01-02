@@ -1175,8 +1175,7 @@ SDValue R600TargetLowering::lowerPrivateTruncStore(StoreSDNode *Store,
 
   // Load dword
   // TODO: can we be smarter about machine pointer info?
-  MachinePointerInfo PtrInfo(UndefValue::get(
-      Type::getInt32PtrTy(*DAG.getContext(), AMDGPUAS::PRIVATE_ADDRESS)));
+  MachinePointerInfo PtrInfo(AMDGPUAS::PRIVATE_ADDRESS);
   SDValue Dst = DAG.getLoad(MVT::i32, DL, Chain, Ptr, PtrInfo);
 
   Chain = Dst.getValue(1);
@@ -1406,8 +1405,7 @@ SDValue R600TargetLowering::lowerPrivateExtLoad(SDValue Op,
 
   // Load dword
   // TODO: can we be smarter about machine pointer info?
-  MachinePointerInfo PtrInfo(UndefValue::get(
-      Type::getInt32PtrTy(*DAG.getContext(), AMDGPUAS::PRIVATE_ADDRESS)));
+  MachinePointerInfo PtrInfo(AMDGPUAS::PRIVATE_ADDRESS);
   SDValue Read = DAG.getLoad(MVT::i32, DL, Chain, Ptr, PtrInfo);
 
   // Get offset within the register.
@@ -1458,7 +1456,9 @@ SDValue R600TargetLowering::LowerLOAD(SDValue Op, SelectionDAG &DAG) const {
   if ((LoadNode->getAddressSpace() == AMDGPUAS::LOCAL_ADDRESS ||
       LoadNode->getAddressSpace() == AMDGPUAS::PRIVATE_ADDRESS) &&
       VT.isVector()) {
-      return scalarizeVectorLoad(LoadNode, DAG);
+    SDValue Ops[2];
+    std::tie(Ops[0], Ops[1]) = scalarizeVectorLoad(LoadNode, DAG);
+    return DAG.getMergeValues(Ops, DL);
   }
 
   // This is still used for explicit load from addrspace(8)
@@ -1608,9 +1608,6 @@ SDValue R600TargetLowering::LowerFormalArguments(
       continue;
     }
 
-    PointerType *PtrTy = PointerType::get(VT.getTypeForEVT(*DAG.getContext()),
-                                          AMDGPUAS::PARAM_I_ADDRESS);
-
     // i64 isn't a legal type, so the register type used ends up as i32, which
     // isn't expected here. It attempts to create this sextload, but it ends up
     // being invalid. Somehow this seems to work with i64 arguments, but breaks
@@ -1631,11 +1628,10 @@ SDValue R600TargetLowering::LowerFormalArguments(
     // XXX - I think PartOffset should give you this, but it seems to give the
     // size of the register which isn't useful.
 
-    unsigned ValBase = ArgLocs[In.getOrigArgIndex()].getLocMemOffset();
     unsigned PartOffset = VA.getLocMemOffset();
     unsigned Alignment = MinAlign(VT.getStoreSize(), PartOffset);
 
-    MachinePointerInfo PtrInfo(UndefValue::get(PtrTy), PartOffset - ValBase);
+    MachinePointerInfo PtrInfo(AMDGPUAS::PARAM_I_ADDRESS);
     SDValue Arg = DAG.getLoad(
         ISD::UNINDEXED, Ext, VT, DL, Chain,
         DAG.getConstant(PartOffset, DL, MVT::i32), DAG.getUNDEF(MVT::i32),

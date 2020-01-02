@@ -2356,12 +2356,14 @@ ARMTargetLowering::LowerCall(TargetLowering::CallLoweringInfo &CLI,
       } else if (Subtarget->isTargetCOFF()) {
         assert(Subtarget->isTargetWindows() &&
                "Windows is the only supported COFF target");
-        unsigned TargetFlags = GV->hasDLLImportStorageClass()
-                                   ? ARMII::MO_DLLIMPORT
-                                   : ARMII::MO_NO_FLAG;
+        unsigned TargetFlags = ARMII::MO_NO_FLAG;
+        if (GV->hasDLLImportStorageClass())
+          TargetFlags = ARMII::MO_DLLIMPORT;
+        else if (!TM.shouldAssumeDSOLocal(*GV->getParent(), GV))
+          TargetFlags = ARMII::MO_COFFSTUB;
         Callee = DAG.getTargetGlobalAddress(GV, dl, PtrVt, /*offset=*/0,
                                             TargetFlags);
-        if (GV->hasDLLImportStorageClass())
+        if (TargetFlags & (ARMII::MO_DLLIMPORT | ARMII::MO_COFFSTUB))
           Callee =
               DAG.getLoad(PtrVt, dl, DAG.getEntryNode(),
                           DAG.getNode(ARMISD::Wrapper, dl, PtrVt, Callee),
@@ -14911,6 +14913,7 @@ bool ARMTargetLowering::shouldSinkOperands(Instruction *I,
     switch (I->getOpcode()) {
     case Instruction::Add:
     case Instruction::Mul:
+    case Instruction::ICmp:
       return true;
     case Instruction::Sub:
     case Instruction::Shl:

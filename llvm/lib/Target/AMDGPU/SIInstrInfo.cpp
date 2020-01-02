@@ -2549,9 +2549,9 @@ bool SIInstrInfo::checkInstOffsetsDoNotOverlap(const MachineInstr &MIa,
 
 bool SIInstrInfo::areMemAccessesTriviallyDisjoint(const MachineInstr &MIa,
                                                   const MachineInstr &MIb) const {
-  assert((MIa.mayLoad() || MIa.mayStore()) &&
+  assert(MIa.mayLoadOrStore() &&
          "MIa must load from or modify a memory location");
-  assert((MIb.mayLoad() || MIb.mayStore()) &&
+  assert(MIb.mayLoadOrStore() &&
          "MIb must load from or modify a memory location");
 
   if (MIa.hasUnmodeledSideEffects() || MIb.hasUnmodeledSideEffects())
@@ -6573,14 +6573,14 @@ MachineInstr *SIInstrInfo::createPHIDestinationCopy(
 
 MachineInstr *SIInstrInfo::createPHISourceCopy(
     MachineBasicBlock &MBB, MachineBasicBlock::iterator InsPt,
-    const DebugLoc &DL, Register Src, Register SrcSubReg, Register Dst) const {
+    const DebugLoc &DL, Register Src, unsigned SrcSubReg, Register Dst) const {
   if (InsPt != MBB.end() &&
       (InsPt->getOpcode() == AMDGPU::SI_IF ||
        InsPt->getOpcode() == AMDGPU::SI_ELSE ||
        InsPt->getOpcode() == AMDGPU::SI_IF_BREAK) &&
       InsPt->definesRegister(Src)) {
     InsPt++;
-    return BuildMI(MBB, InsPt, InsPt->getDebugLoc(),
+    return BuildMI(MBB, InsPt, DL,
                    get(ST.isWave32() ? AMDGPU::S_MOV_B32_term
                                      : AMDGPU::S_MOV_B64_term),
                    Dst)

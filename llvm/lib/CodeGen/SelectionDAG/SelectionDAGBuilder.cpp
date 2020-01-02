@@ -3038,7 +3038,7 @@ static bool isVectorReductionOp(const User *I) {
     if (!Visited.insert(User).second)
       continue;
 
-    for (const auto &U : User->users()) {
+    for (const auto *U : User->users()) {
       auto Inst = dyn_cast<Instruction>(U);
       if (!Inst)
         return false;
@@ -3124,6 +3124,13 @@ void SelectionDAGBuilder::visitBinary(const User &I, unsigned Opcode) {
   if (isVectorReductionOp(&I)) {
     Flags.setVectorReduction(true);
     LLVM_DEBUG(dbgs() << "Detected a reduction operation:" << I << "\n");
+
+    // If no flags are set we will propagate the incoming flags, if any flags
+    // are set, we will intersect them with the incoming flag and so we need to
+    // copy the FMF flags here.
+    if (auto *FPOp = dyn_cast<FPMathOperator>(&I)) {
+      Flags.copyFMF(*FPOp);
+    }
   }
 
   SDValue Op1 = getValue(I.getOperand(0));
@@ -4390,8 +4397,8 @@ static bool getUniformBase(const Value *&Ptr, SDValue &Base, SDValue &Index,
     }
     auto *CI = cast<ConstantInt>(C);
     Scale = DAG.getTargetConstant(1, SDB->getCurSDLoc(), TLI.getPointerTy(DL));
-    Index = DAG.getTargetConstant(SL->getElementOffset(CI->getZExtValue()),
-                                  SDB->getCurSDLoc(), TLI.getPointerTy(DL));
+    Index = DAG.getConstant(SL->getElementOffset(CI->getZExtValue()),
+                            SDB->getCurSDLoc(), TLI.getPointerTy(DL));
   } else {
     Scale = DAG.getTargetConstant(
                 DL.getTypeAllocSize(GEP->getResultElementType()),
@@ -5571,8 +5578,26 @@ bool SelectionDAGBuilder::EmitFuncArgumentDbgValue(
       = [&](ArrayRef<std::pair<unsigned, unsigned>> SplitRegs) {
       unsigned Offset = 0;
       for (auto RegAndSize : SplitRegs) {
+        // If the expression is already a fragment, the current register
+        // offset+size might extend beyond the fragment. In this case, only
+        // the register bits that are inside the fragment are relevant.
+        int RegFragmentSizeInBits = RegAndSize.second;
+        if (auto ExprFragmentInfo = Expr->getFragmentInfo()) {
+          uint64_t ExprFragmentSizeInBits = ExprFragmentInfo->SizeInBits;
+          // The register is entirely outside the expression fragment,
+          // so is irrelevant for debug info.
+          if (Offset >= ExprFragmentSizeInBits)
+            break;
+          // The register is partially outside the expression fragment, only
+          // the low bits within the fragment are relevant for debug info.
+          if (Offset + RegFragmentSizeInBits > ExprFragmentSizeInBits) {
+            RegFragmentSizeInBits = ExprFragmentSizeInBits - Offset;
+          }
+        }
+
         auto FragmentExpr = DIExpression::createFragmentExpression(
-          Expr, Offset, RegAndSize.second);
+            Expr, Offset, RegFragmentSizeInBits);
+        Offset += RegAndSize.second;
         // If a valid fragment expression cannot be created, the variable's
         // correct value cannot be determined and so it is set as Undef.
         if (!FragmentExpr) {
@@ -5585,7 +5610,6 @@ bool SelectionDAGBuilder::EmitFuncArgumentDbgValue(
         FuncInfo.ArgDbgValues.push_back(
           BuildMI(MF, DL, TII->get(TargetOpcode::DBG_VALUE), false,
                   RegAndSize.first, Variable, *FragmentExpr));
-        Offset += RegAndSize.second;
       }
     };
 
@@ -5666,14 +5690,6 @@ SDDbgValue *SelectionDAGBuilder::getDbgValue(SDValue N,
                          /*IsIndirect*/ false, dl, DbgSDNodeOrder);
 }
 
-// VisualStudio defines setjmp as _setjmp
-#if defined(_MSC_VER) && defined(setjmp) && \
-                         !defined(setjmp_undefined_for_msvc)
-#  pragma push_macro("setjmp")
-#  undef setjmp
-#  define setjmp_undefined_for_msvc
-#endif
-
 static unsigned FixedPointIntrinsicToOpcode(unsigned Intrinsic) {
   switch (Intrinsic) {
   case Intrinsic::smul_fix:
@@ -5750,12 +5766,6 @@ void SelectionDAGBuilder::visitIntrinsicCall(const CallInst &I,
                             RegName, getValue(RegValue)));
     return;
   }
-  case Intrinsic::setjmp:
-    lowerCallToExternalSymbol(I, &"_setjmp"[!TLI.usesUnderscoreSetJmp()]);
-    return;
-  case Intrinsic::longjmp:
-    lowerCallToExternalSymbol(I, &"_longjmp"[!TLI.usesUnderscoreLongJmp()]);
-    return;
   case Intrinsic::memcpy: {
     const auto &MCI = cast<MemCpyInst>(I);
     SDValue Op1 = getValue(I.getArgOperand(0));
@@ -8156,10 +8166,7 @@ void SelectionDAGBuilder::visitInlineAsm(ImmutableCallSite CS) {
 
     switch (OpInfo.Type) {
     case InlineAsm::isOutput:
-      if (OpInfo.ConstraintType == TargetLowering::C_Memory ||
-          ((OpInfo.ConstraintType == TargetLowering::C_Immediate ||
-            OpInfo.ConstraintType == TargetLowering::C_Other) &&
-           OpInfo.isIndirect)) {
+      if (OpInfo.ConstraintType == TargetLowering::C_Memory) {
         unsigned ConstraintID =
             TLI.getInlineAsmMemConstraint(OpInfo.ConstraintCode);
         assert(ConstraintID != InlineAsm::Constraint_Unknown &&
@@ -8172,11 +8179,7 @@ void SelectionDAGBuilder::visitInlineAsm(ImmutableCallSite CS) {
                                                         MVT::i32));
         AsmNodeOperands.push_back(OpInfo.CallOperand);
         break;
-      } else if (((OpInfo.ConstraintType == TargetLowering::C_Immediate ||
-                   OpInfo.ConstraintType == TargetLowering::C_Other) &&
-                  !OpInfo.isIndirect) ||
-                 OpInfo.ConstraintType == TargetLowering::C_Register ||
-                 OpInfo.ConstraintType == TargetLowering::C_RegisterClass) {
+      } else {
         // Otherwise, this outputs to a register (directly for C_Register /
         // C_RegisterClass, and a target-defined fashion for
         // C_Immediate/C_Other). Find a register that we can use.
@@ -8259,8 +8262,7 @@ void SelectionDAGBuilder::visitInlineAsm(ImmutableCallSite CS) {
       }
 
       // Treat indirect 'X' constraint as memory.
-      if ((OpInfo.ConstraintType == TargetLowering::C_Immediate ||
-           OpInfo.ConstraintType == TargetLowering::C_Other) &&
+      if (OpInfo.ConstraintType == TargetLowering::C_Other &&
           OpInfo.isIndirect)
         OpInfo.ConstraintType = TargetLowering::C_Memory;
 
@@ -9466,7 +9468,7 @@ findArgumentCopyElisionCandidates(const DataLayout &DL,
 /// Try to elide argument copies from memory into a local alloca. Succeeds if
 /// ArgVal is a load from a suitable fixed stack object.
 static void tryToElideArgumentCopy(
-    FunctionLoweringInfo *FuncInfo, SmallVectorImpl<SDValue> &Chains,
+    FunctionLoweringInfo &FuncInfo, SmallVectorImpl<SDValue> &Chains,
     DenseMap<int, int> &ArgCopyElisionFrameIndexMap,
     SmallPtrSetImpl<const Instruction *> &ElidedArgCopyInstrs,
     ArgCopyElisionMapTy &ArgCopyElisionCandidates, const Argument &Arg,
@@ -9486,9 +9488,9 @@ static void tryToElideArgumentCopy(
   assert(ArgCopyIter != ArgCopyElisionCandidates.end());
   const AllocaInst *AI = ArgCopyIter->second.first;
   int FixedIndex = FINode->getIndex();
-  int &AllocaIndex = FuncInfo->StaticAllocaMap[AI];
+  int &AllocaIndex = FuncInfo.StaticAllocaMap[AI];
   int OldIndex = AllocaIndex;
-  MachineFrameInfo &MFI = FuncInfo->MF->getFrameInfo();
+  MachineFrameInfo &MFI = FuncInfo.MF->getFrameInfo();
   if (MFI.getObjectSize(FixedIndex) != MFI.getObjectSize(OldIndex)) {
     LLVM_DEBUG(
         dbgs() << "  argument copy elision failed due to bad fixed stack "
@@ -9497,7 +9499,7 @@ static void tryToElideArgumentCopy(
   }
   unsigned RequiredAlignment = AI->getAlignment();
   if (!RequiredAlignment) {
-    RequiredAlignment = FuncInfo->MF->getDataLayout().getABITypeAlignment(
+    RequiredAlignment = FuncInfo.MF->getDataLayout().getABITypeAlignment(
         AI->getAllocatedType());
   }
   if (MFI.getObjectAlignment(FixedIndex) < RequiredAlignment) {
@@ -9563,7 +9565,8 @@ void SelectionDAGISel::LowerArguments(const Function &F) {
   // flag to ask the target to give us the memory location of that argument if
   // available.
   ArgCopyElisionMapTy ArgCopyElisionCandidates;
-  findArgumentCopyElisionCandidates(DL, FuncInfo, ArgCopyElisionCandidates);
+  findArgumentCopyElisionCandidates(DL, FuncInfo.get(),
+                                    ArgCopyElisionCandidates);
 
   // Set up the incoming argument description vector.
   for (const Argument &Arg : F.args()) {
@@ -9751,7 +9754,7 @@ void SelectionDAGISel::LowerArguments(const Function &F) {
     // Elide the copying store if the target loaded this argument from a
     // suitable fixed stack object.
     if (Ins[i].Flags.isCopyElisionCandidate()) {
-      tryToElideArgumentCopy(FuncInfo, Chains, ArgCopyElisionFrameIndexMap,
+      tryToElideArgumentCopy(*FuncInfo, Chains, ArgCopyElisionFrameIndexMap,
                              ElidedArgCopyInstrs, ArgCopyElisionCandidates, Arg,
                              InVals[i], ArgHasUses);
     }

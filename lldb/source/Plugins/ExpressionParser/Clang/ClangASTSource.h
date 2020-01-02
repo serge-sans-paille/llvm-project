@@ -12,9 +12,9 @@
 #include <set>
 
 #include "lldb/Symbol/ClangASTImporter.h"
-#include "lldb/Symbol/ClangExternalASTSourceCommon.h"
 #include "lldb/Symbol/CompilerType.h"
 #include "lldb/Target/Target.h"
+#include "clang/AST/ExternalASTSource.h"
 #include "clang/Basic/IdentifierTable.h"
 
 #include "llvm/ADT/SmallSet.h"
@@ -29,7 +29,7 @@ namespace lldb_private {
 /// knows the name it is looking for, but nothing else. The ExternalSemaSource
 /// class provides Decls (VarDecl, FunDecl, TypeDecl) to Clang for these
 /// names, consulting the ClangExpressionDeclMap to do the actual lookups.
-class ClangASTSource : public ClangExternalASTSourceCommon,
+class ClangASTSource : public clang::ExternalASTSource,
                        public ClangASTImporter::MapCompleter {
 public:
   /// Constructor
@@ -60,9 +60,7 @@ public:
   }
   void MaterializeVisibleDecls(const clang::DeclContext *DC) { return; }
 
-  void InstallASTContext(ClangASTContext &ast_context,
-                         clang::FileManager &file_manager,
-                         bool is_shared_context = false);
+  void InstallASTContext(ClangASTContext &ast_context);
 
   //
   // APIs for ExternalASTSource
@@ -213,7 +211,7 @@ public:
   ///
   /// Clang AST contexts like to own their AST sources, so this is a state-
   /// free proxy object.
-  class ClangASTSourceProxy : public ClangExternalASTSourceCommon {
+  class ClangASTSourceProxy : public clang::ExternalASTSource {
   public:
     ClangASTSourceProxy(ClangASTSource &original) : m_original(original) {}
 
