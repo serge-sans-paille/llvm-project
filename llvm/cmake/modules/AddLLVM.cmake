@@ -881,6 +881,7 @@ endfunction(add_llvm_pass_plugin)
 # Also correctly set lib dependencies between plugins and tools.
 function(process_llvm_pass_plugins)
   get_property(LLVM_EXTENSIONS GLOBAL PROPERTY LLVM_COMPILE_EXTENSIONS)
+  message(STATUS ">>>> ${LLVM_EXTENSIONS}")
   file(WRITE "${CMAKE_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "//extension handlers\n")
   foreach(llvm_extension ${LLVM_EXTENSIONS})
     string(TOLOWER ${llvm_extension} llvm_extension_lower)
@@ -890,6 +891,7 @@ function(process_llvm_pass_plugins)
     string(SUBSTRING ${llvm_extension_lower} 1 -1 llvm_extension_lower_tail)
     string(CONCAT llvm_extension_project ${llvm_extension_upper_first} ${llvm_extension_lower_tail})
 
+    message(STATUS ">>>> ${llvm_extension_upper}: ${LLVM_${llvm_extension_upper}_LINK_INTO_TOOLS}")
     if(LLVM_${llvm_extension_upper}_LINK_INTO_TOOLS)
       file(APPEND "${CMAKE_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "HANDLE_EXTENSION(${llvm_extension_project})\n")
 
