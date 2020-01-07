@@ -870,9 +870,7 @@ function(add_llvm_pass_plugin name)
   endif()
 
   message(STATUS "Registering ${name} as a pass plugin (static build: ${LLVM_${name_upper}_LINK_INTO_TOOLS})")
-  if(LLVM_${name_upper}_LINK_INTO_TOOLS)
-    set_property(GLOBAL APPEND PROPERTY LLVM_COMPILE_EXTENSIONS ${name})
-  endif()
+  set_property(GLOBAL APPEND PROPERTY LLVM_COMPILE_EXTENSIONS ${name})
 endfunction(add_llvm_pass_plugin)
 
 # Generate X Macro file for extension handling. It provides a
@@ -893,15 +891,15 @@ function(process_llvm_pass_plugins)
     string(CONCAT llvm_extension_project ${llvm_extension_upper_first} ${llvm_extension_lower_tail})
 
     if(LLVM_${llvm_extension_upper}_LINK_INTO_TOOLS)
-        file(APPEND "${CMAKE_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "HANDLE_EXTENSION(${llvm_extension_project})\n")
+      file(APPEND "${CMAKE_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "HANDLE_EXTENSION(${llvm_extension_project})\n")
 
-        get_property(llvm_plugin_targets GLOBAL PROPERTY LLVM_PLUGIN_TARGETS)
-        foreach(llvm_plugin_target ${llvm_plugin_targets})
-          set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY LINK_LIBRARIES ${llvm_extension})
-          set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${llvm_extension})
-        endforeach()
+      get_property(llvm_plugin_targets GLOBAL PROPERTY LLVM_PLUGIN_TARGETS)
+      foreach(llvm_plugin_target ${llvm_plugin_targets})
+        set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY LINK_LIBRARIES ${llvm_extension})
+        set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${llvm_extension})
+      endforeach()
     else()
-      add_llvm_library(${llvm_extension_lower} MODULE obj.${llvm_extension_lower})
+      add_llvm_library(${llvm_extension_lower} MODULE $<TARGET_OBJECTS:obj.${llvm_extension}>)
     endif()
 
   endforeach()
