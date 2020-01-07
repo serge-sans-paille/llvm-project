@@ -123,6 +123,10 @@ namespace sys {
     /// Add searchable symbol/value pair.
     static void AddSymbol(StringRef symbolName, void *symbolValue);
 
+    /// Ensure the underlying library registry is properly constructed.
+    /// This is only useful to force ManagedStatic registration ordering.
+    static void ensureConstructed();
+
     class HandleSet;
   };
 
