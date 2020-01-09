@@ -145,6 +145,11 @@ void DynamicLibrary::AddSymbol(StringRef SymbolName, void *SymbolValue) {
   (*ExplicitSymbols)[SymbolName] = SymbolValue;
 }
 
+void DynamicLibrary::ensureConstructed() {
+  (void)*OpenedHandles;
+}
+
+
 DynamicLibrary DynamicLibrary::getPermanentLibrary(const char *FileName,
                                                    std::string *Err) {
   // Force OpenedHandles to be added into the ManagedStatic list before any

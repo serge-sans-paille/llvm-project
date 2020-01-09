@@ -27,6 +27,7 @@
 #include "llvm/IR/LegacyPassManager.h"
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/Support/DynamicLibrary.h"
 #include "llvm/Support/ManagedStatic.h"
 #include "llvm/Transforms/AggressiveInstCombine/AggressiveInstCombine.h"
 #include "llvm/Transforms/IPO.h"
@@ -194,12 +195,20 @@ static ManagedStatic<SmallVector<std::pair<PassManagerBuilder::ExtensionPointTy,
 /// Since GlobalExtensions is a managed static, calling 'empty()' will trigger
 /// the construction of the object.
 static bool GlobalExtensionsNotEmpty() {
+  // Dynamic library static registry **must** be initialized before global
+  // extension registry, because global extension may reference functions from
+  // dynamically opened libraries. Failing to ensure that order (randomly)
+  // triggers a segfault upon destruction, if the dynamically loaded library is
+  // closed before the global extensions are destroyed.
+  sys::DynamicLibrary::ensureConstructed();
   return GlobalExtensions.isConstructed() && !GlobalExtensions->empty();
 }
 
 void PassManagerBuilder::addGlobalExtension(
     PassManagerBuilder::ExtensionPointTy Ty,
     PassManagerBuilder::ExtensionFn Fn) {
+  // See comment in GlobalExtensionsNotEmpty
+  sys::DynamicLibrary::ensureConstructed();
   GlobalExtensions->push_back(std::make_pair(Ty, std::move(Fn)));
 }
 

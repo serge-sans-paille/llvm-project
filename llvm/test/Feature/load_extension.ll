@@ -1,8 +1,5 @@
-; This is currently failing on multiple platforms. Disable while investigation occurs.
-; XFAIL: *
-
 ; RUN: opt %s %loadbye -goodbye -wave-goodbye -disable-output 2>&1 | FileCheck %s
-; REQUIRES: plugins, examples
+; REQUIRES: plugins
 ; CHECK: Bye
 
 @junk = global i32 0
