@@ -902,6 +902,10 @@ Strip (or keep only, if negative) a given number of path components when emittin
 
 .. option:: -fsanitize=<check>,<arg2>..., -fno-sanitize=<arg1>,<arg2>...
 
+Enable semantic interposition.
+
+.. option:: -fsemantic-interposition, -fno-semantic-interposition
+
 Turn on runtime checks for various forms of undefined or suspicious behavior. See user manual for available checks
 
 .. option:: -moutline, -mno-outline

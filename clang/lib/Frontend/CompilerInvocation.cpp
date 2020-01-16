@@ -2685,6 +2685,9 @@ static void ParseLangArgs(LangOptions &Opts, ArgList &Args, InputKind IK,
     Opts.setValueVisibilityMode(DefaultVisibility);
   }
 
+  if (Args.hasArg(OPT_fsemantic_interposition))
+    Opts.SemanticInterposition = 1;
+
   // The type-visibility mode defaults to the value-visibility mode.
   if (Arg *typeVisOpt = Args.getLastArg(OPT_ftype_visibility)) {
     Opts.setTypeVisibilityMode(parseVisibility(typeVisOpt, Args, Diags));
