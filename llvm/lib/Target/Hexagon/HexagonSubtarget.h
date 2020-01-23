@@ -54,6 +54,7 @@ class HexagonSubtarget : public HexagonGenSubtargetInfo {
   bool UseSmallData = false;
   bool UseZRegOps = false;
 
+  bool HasPreV65 = false;
   bool HasMemNoShuf = false;
   bool EnableDuplex = false;
   bool ReservedR19 = false;
@@ -85,6 +86,7 @@ public:
 
 private:
   std::string CPUString;
+  Triple TargetTriple;
   HexagonInstrInfo InstrInfo;
   HexagonRegisterInfo RegInfo;
   HexagonTargetLowering TLInfo;
@@ -95,6 +97,11 @@ private:
 public:
   HexagonSubtarget(const Triple &TT, StringRef CPU, StringRef FS,
                    const TargetMachine &TM);
+
+  const Triple &getTargetTriple() const { return TargetTriple; }
+  bool isEnvironmentMusl() const {
+    return TargetTriple.getEnvironment() == Triple::Musl;
+  }
 
   /// getInstrItins - Return the instruction itineraries based on subtarget
   /// selection.
@@ -170,6 +177,18 @@ public:
 
   bool useHVXOps() const {
     return HexagonHVXVersion > Hexagon::ArchEnum::NoArch;
+  }
+  bool useHVXV60Ops() const {
+    return HexagonHVXVersion >= Hexagon::ArchEnum::V60;
+  }
+  bool useHVXV62Ops() const {
+    return HexagonHVXVersion >= Hexagon::ArchEnum::V62;
+  }
+  bool useHVXV65Ops() const {
+    return HexagonHVXVersion >= Hexagon::ArchEnum::V65;
+  }
+  bool useHVXV66Ops() const {
+    return HexagonHVXVersion >= Hexagon::ArchEnum::V66;
   }
   bool useHVX128BOps() const { return useHVXOps() && UseHVX128BOps; }
   bool useHVX64BOps() const { return useHVXOps() && UseHVX64BOps; }
