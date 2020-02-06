@@ -384,7 +384,10 @@ def GNULabelsAsValue : DiagGroup<"gnu-label-as-value">;
 def LiteralRange : DiagGroup<"literal-range">;
 def LocalTypeTemplateArgs : DiagGroup<"local-type-template-args",
                                       [CXX98CompatLocalTypeTemplateArgs]>;
-def RangeLoopAnalysis : DiagGroup<"range-loop-analysis">;
+def RangeLoopConstruct : DiagGroup<"range-loop-construct">;
+def RangeLoopBindReference : DiagGroup<"range-loop-bind-reference">;
+def RangeLoopAnalysis : DiagGroup<"range-loop-analysis",
+                                  [RangeLoopConstruct, RangeLoopBindReference]>;
 def ForLoopAnalysis : DiagGroup<"for-loop-analysis">;
 def LoopAnalysis : DiagGroup<"loop-analysis", [ForLoopAnalysis,
                                                RangeLoopAnalysis]>;
@@ -858,14 +861,15 @@ def Most : DiagGroup<"most", [
     Comment,
     DeleteNonVirtualDtor,
     Format,
+    ForLoopAnalysis,
     Implicit,
     InfiniteRecursion,
     IntInBoolContext,
-    LoopAnalysis,
     MismatchedTags,
     MissingBraces,
     Move,
     MultiChar,
+    RangeLoopConstruct,
     Reorder,
     ReturnType,
     SelfAssignment,
@@ -1164,14 +1168,14 @@ the token limit, which can be set in three ways:
    .. code-block: c++
       #pragma clang max_tokens_here 1234
 
-2. As a per-translation unit limit, using the ``-fmax-tokens`` command-line
+2. As a per-translation unit limit, using the ``-fmax-tokens=`` command-line
    flag:
 
    .. code-block: console
-      clang -c a.cpp -fmax-tokens 1234
+      clang -c a.cpp -fmax-tokens=1234
 
 3. As a per-translation unit limit using the ``clang max_tokens_total`` pragma,
-   which works like and overrides the ``-fmax-tokens`` flag:
+   which works like and overrides the ``-fmax-tokens=`` flag:
 
    .. code-block: c++
       #pragma clang max_file_tokens 1234

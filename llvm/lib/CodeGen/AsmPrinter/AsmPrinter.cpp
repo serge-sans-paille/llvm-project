@@ -81,7 +81,6 @@
 #include "llvm/IR/Metadata.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/Operator.h"
-#include "llvm/IR/RemarkStreamer.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Value.h"
 #include "llvm/MC/MCAsmInfo.h"
@@ -106,6 +105,7 @@
 #include "llvm/Pass.h"
 #include "llvm/Remarks/Remark.h"
 #include "llvm/Remarks/RemarkFormat.h"
+#include "llvm/Remarks/RemarkStreamer.h"
 #include "llvm/Remarks/RemarkStringTable.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/CommandLine.h"
@@ -727,20 +727,28 @@ void AsmPrinter::EmitFunctionHeader() {
   // Emit M NOPs for -fpatchable-function-entry=N,M where M>0. We arbitrarily
   // place prefix data before NOPs.
   unsigned PatchableFunctionPrefix = 0;
+  unsigned PatchableFunctionEntry = 0;
   (void)F.getFnAttribute("patchable-function-prefix")
       .getValueAsString()
       .getAsInteger(10, PatchableFunctionPrefix);
+  (void)F.getFnAttribute("patchable-function-entry")
+      .getValueAsString()
+      .getAsInteger(10, PatchableFunctionEntry);
   if (PatchableFunctionPrefix) {
     CurrentPatchableFunctionEntrySym =
         OutContext.createLinkerPrivateTempSymbol();
     OutStreamer->EmitLabel(CurrentPatchableFunctionEntrySym);
     emitNops(PatchableFunctionPrefix);
-  } else {
+  } else if (PatchableFunctionEntry) {
+    // May be reassigned when emitting the body, to reference the label after
+    // the initial BTI (AArch64) or endbr32/endbr64 (x86).
     CurrentPatchableFunctionEntrySym = CurrentFnBegin;
   }
 
   // Emit the function descriptor. This is a virtual function to allow targets
-  // to emit their specific function descriptor.
+  // to emit their specific function descriptor. Right now it is only used by
+  // the AIX target. The PowerPC 64-bit V1 ELF target also uses function
+  // descriptors and should be converted to use this hook as well.
   if (MAI->needsFunctionDescriptors())
     EmitFunctionDescriptor();
 
@@ -1392,7 +1400,7 @@ void AsmPrinter::emitGlobalIndirectSymbol(Module &M,
   }
 }
 
-void AsmPrinter::emitRemarksSection(RemarkStreamer &RS) {
+void AsmPrinter::emitRemarksSection(remarks::RemarkStreamer &RS) {
   if (!RS.needsSection())
     return;
 
@@ -1454,7 +1462,7 @@ bool AsmPrinter::doFinalization(Module &M) {
   // Emit the remarks section contents.
   // FIXME: Figure out when is the safest time to emit this section. It should
   // not come after debug info.
-  if (RemarkStreamer *RS = M.getContext().getRemarkStreamer())
+  if (remarks::RemarkStreamer *RS = M.getContext().getMainRemarkStreamer())
     emitRemarksSection(*RS);
 
   const TargetLoweringObjectFile &TLOF = getObjFileLowering();
@@ -1694,9 +1702,11 @@ void AsmPrinter::SetupMachineFunction(MachineFunction &MF) {
   const Function &F = MF.getFunction();
 
   // Get the function symbol.
-  if (MAI->needsFunctionDescriptors()) {
-    assert(TM.getTargetTriple().isOSAIX() && "Function descriptor is only"
-                                             " supported on AIX.");
+  if (TM.getTargetTriple().isOSAIX()) {
+    // AIX is unique here in that the name of the symbol emitted for the
+    // function body does not have the same name as the source function's
+    // C-linkage name.
+    assert(MAI->needsFunctionDescriptors() && "AIX ABI is descriptor based.");
     assert(CurrentFnDescSym && "The function descriptor symbol needs to be"
 		                           " initalized first.");
 
@@ -1704,9 +1714,9 @@ void AsmPrinter::SetupMachineFunction(MachineFunction &MF) {
     CurrentFnSym =
         OutContext.getOrCreateSymbol("." + CurrentFnDescSym->getName());
 
+    // Set the containing csect.
     MCSectionXCOFF *FnEntryPointSec =
         cast<MCSectionXCOFF>(getObjFileLowering().SectionForGlobal(&F, TM));
-    // Set the containing csect.
     cast<MCSymbolXCOFF>(CurrentFnSym)->setContainingCsect(FnEntryPointSec);
   } else {
     CurrentFnSym = getSymbol(&MF.getFunction());

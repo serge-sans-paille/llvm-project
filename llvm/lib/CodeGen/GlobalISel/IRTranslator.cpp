@@ -1062,6 +1062,18 @@ bool IRTranslator::translateGetElementPtr(const User &U,
   if (auto *VT = dyn_cast<VectorType>(U.getType()))
     VectorWidth = VT->getNumElements();
 
+  // We might need to splat the base pointer into a vector if the offsets
+  // are vectors.
+  if (VectorWidth && !PtrTy.isVector()) {
+    BaseReg =
+        MIRBuilder.buildSplatVector(LLT::vector(VectorWidth, PtrTy), BaseReg)
+            .getReg(0);
+    PtrIRTy = VectorType::get(PtrIRTy, VectorWidth);
+    PtrTy = getLLTForType(*PtrIRTy, *DL);
+    OffsetIRTy = DL->getIntPtrType(PtrIRTy);
+    OffsetTy = getLLTForType(*OffsetIRTy, *DL);
+  }
+
   int64_t Offset = 0;
   for (gep_type_iterator GTI = gep_type_begin(&U), E = gep_type_end(&U);
        GTI != E; ++GTI) {
@@ -1386,7 +1398,7 @@ bool IRTranslator::translateKnownIntrinsic(const CallInst &CI, Intrinsic::ID ID,
     if (!V) {
       // Currently the optimizer can produce this; insert an undef to
       // help debugging.  Probably the optimizer should not do this.
-      MIRBuilder.buildDirectDbgValue(0, DI.getVariable(), DI.getExpression());
+      MIRBuilder.buildIndirectDbgValue(0, DI.getVariable(), DI.getExpression());
     } else if (const auto *CI = dyn_cast<Constant>(V)) {
       MIRBuilder.buildConstDbgValue(*CI, DI.getVariable(), DI.getExpression());
     } else {

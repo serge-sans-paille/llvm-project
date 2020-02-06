@@ -59,6 +59,7 @@ public:
   static bool canCache(UNUSED uptr Size) { return false; }
   void disable() {}
   void enable() {}
+  void releaseToOS() {}
 };
 
 template <uptr MaxEntriesCount = 32U, uptr MaxEntrySize = 1UL << 19>
@@ -96,6 +97,7 @@ public:
           Entries[0].BlockEnd = H->BlockEnd;
           Entries[0].MapBase = H->MapBase;
           Entries[0].MapSize = H->MapSize;
+          Entries[0].Data = H->Data;
           Entries[0].Time = Time;
           EntriesCount++;
           EntryCached = true;
@@ -112,6 +114,7 @@ public:
   }
 
   bool retrieve(uptr Size, LargeBlock::Header **H) {
+    const uptr PageSize = getPageSizeCached();
     ScopedLock L(Mutex);
     if (EntriesCount == 0)
       return false;
@@ -121,13 +124,14 @@ public:
       const uptr BlockSize = Entries[I].BlockEnd - Entries[I].Block;
       if (Size > BlockSize)
         continue;
-      if (Size < BlockSize - getPageSizeCached() * 4U)
+      if (Size < BlockSize - PageSize * 4U)
         continue;
       *H = reinterpret_cast<LargeBlock::Header *>(Entries[I].Block);
       Entries[I].Block = 0;
       (*H)->BlockEnd = Entries[I].BlockEnd;
       (*H)->MapBase = Entries[I].MapBase;
       (*H)->MapSize = Entries[I].MapSize;
+      (*H)->Data = Entries[I].Data;
       EntriesCount--;
       return true;
     }
@@ -137,6 +141,8 @@ public:
   static bool canCache(uptr Size) {
     return MaxEntriesCount != 0U && Size <= MaxEntrySize;
   }
+
+  void releaseToOS() { releaseOlderThan(UINT64_MAX); }
 
   void disable() { Mutex.lock(); }
 
@@ -170,31 +176,17 @@ private:
   }
 
   void releaseOlderThan(u64 Time) {
-    struct {
-      uptr Block;
-      uptr BlockSize;
-      MapPlatformData Data;
-    } BlockInfo[MaxEntriesCount];
-    uptr N = 0;
-    {
-      ScopedLock L(Mutex);
-      if (!EntriesCount)
-        return;
-      for (uptr I = 0; I < MaxEntriesCount; I++) {
-        if (!Entries[I].Block || !Entries[I].Time)
-          continue;
-        if (Entries[I].Time > Time)
-          continue;
-        BlockInfo[N].Block = Entries[I].Block;
-        BlockInfo[N].BlockSize = Entries[I].BlockEnd - Entries[I].Block;
-        BlockInfo[N].Data = Entries[I].Data;
-        Entries[I].Time = 0;
-        N++;
-      }
+    ScopedLock L(Mutex);
+    if (!EntriesCount)
+      return;
+    for (uptr I = 0; I < MaxEntriesCount; I++) {
+      if (!Entries[I].Block || !Entries[I].Time || Entries[I].Time > Time)
+        continue;
+      releasePagesToOS(Entries[I].Block, 0,
+                       Entries[I].BlockEnd - Entries[I].Block,
+                       &Entries[I].Data);
+      Entries[I].Time = 0;
     }
-    for (uptr I = 0; I < N; I++)
-      releasePagesToOS(BlockInfo[I].Block, 0, BlockInfo[I].BlockSize,
-                       &BlockInfo[I].Data);
   }
 
   struct CachedBlock {
@@ -258,6 +250,8 @@ public:
   }
 
   static uptr canCache(uptr Size) { return CacheT::canCache(Size); }
+
+  void releaseToOS() { Cache.releaseToOS(); }
 
 private:
   CacheT Cache;

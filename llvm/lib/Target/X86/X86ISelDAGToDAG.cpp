@@ -1409,18 +1409,20 @@ static bool isDispSafeForFrameIndex(int64_t Val) {
 
 bool X86DAGToDAGISel::foldOffsetIntoAddress(uint64_t Offset,
                                             X86ISelAddressMode &AM) {
-  // If there's no offset to fold, we don't need to do any work.
-  if (Offset == 0)
-    return false;
-
-  // Cannot combine ExternalSymbol displacements with integer offsets.
-  if (AM.ES || AM.MCSym)
-    return true;
+  // We may have already matched a displacement and the caller just added the
+  // symbolic displacement. So we still need to do the checks even if Offset
+  // is zero.
 
   int64_t Val = AM.Disp + Offset;
+
+  // Cannot combine ExternalSymbol displacements with integer offsets.
+  if (Val != 0 && (AM.ES || AM.MCSym))
+    return true;
+
   CodeModel::Model M = TM.getCodeModel();
   if (Subtarget->is64Bit()) {
-    if (!X86::isOffsetSuitableForCodeModel(Val, M,
+    if (Val != 0 &&
+        !X86::isOffsetSuitableForCodeModel(Val, M,
                                            AM.hasSymbolicDisplacement()))
       return true;
     // In addition to the checks required for a register base, check that
@@ -1581,24 +1583,13 @@ bool X86DAGToDAGISel::matchAdd(SDValue &N, X86ISelAddressMode &AM,
   if (!matchAddressRecursively(N.getOperand(0), AM, Depth+1) &&
       !matchAddressRecursively(Handle.getValue().getOperand(1), AM, Depth+1))
     return false;
-
-  // Don't try commuting operands if the address is in the form of
-  // sym+disp(%rip). foldOffsetIntoAddress() currently does not know there is a
-  // symbolic displacement and would fold disp. If disp is just a bit smaller
-  // than 2**31, it can easily cause a relocation overflow.
-  bool NoCommutate = false;
-  if (AM.isRIPRelative() && AM.hasSymbolicDisplacement())
-    if (ConstantSDNode *Cst =
-            dyn_cast<ConstantSDNode>(Handle.getValue().getOperand(1)))
-      NoCommutate = Cst->getSExtValue() != 0;
-
   AM = Backup;
-  if (!NoCommutate) {
-    // Try again after commutating the operands.
-    if (!matchAddressRecursively(Handle.getValue().getOperand(1), AM, Depth + 1) &&
-        !matchAddressRecursively(Handle.getValue().getOperand(0), AM, Depth + 1))
-      return false;
-  }
+
+  // Try again after commutating the operands.
+  if (!matchAddressRecursively(Handle.getValue().getOperand(1), AM,
+                               Depth + 1) &&
+      !matchAddressRecursively(Handle.getValue().getOperand(0), AM, Depth + 1))
+    return false;
   AM = Backup;
 
   // If we couldn't fold both operands into the address at the same time,
@@ -5279,6 +5270,35 @@ void X86DAGToDAGISel::Select(SDNode *Node) {
     if (foldLoadStoreIntoMemOperand(Node))
       return;
     break;
+
+  case X86ISD::SETCC_CARRY: {
+    // We have to do this manually because tblgen will put the eflags copy in
+    // the wrong place if we use an extract_subreg in the pattern.
+    MVT VT = Node->getSimpleValueType(0);
+    SDValue Chain = CurDAG->getEntryNode();
+
+    // Copy flags to the EFLAGS register and glue it to next node.
+    SDValue EFLAGS = CurDAG->getCopyToReg(Chain, dl, X86::EFLAGS,
+                                          Node->getOperand(1), SDValue());
+    Chain = EFLAGS;
+
+    // Create a 64-bit instruction if the result is 64-bits otherwise use the
+    // 32-bit version.
+    unsigned Opc = VT == MVT::i64 ? X86::SETB_C64r : X86::SETB_C32r;
+    MVT SetVT = VT == MVT::i64 ? MVT::i64 : MVT::i32;
+    SDValue Result = SDValue(
+        CurDAG->getMachineNode(Opc, dl, SetVT, EFLAGS, EFLAGS.getValue(1)), 0);
+
+    // For less than 32-bits we need to extract from the 32-bit node.
+    if (VT == MVT::i8 || VT == MVT::i16) {
+      int SubIndex = VT == MVT::i16 ? X86::sub_16bit : X86::sub_8bit;
+      Result = CurDAG->getTargetExtractSubreg(SubIndex, dl, VT, Result);
+    }
+
+    ReplaceUses(SDValue(Node, 0), Result);
+    CurDAG->RemoveDeadNode(Node);
+    return;
+  }
   }
 
   SelectCode(Node);
