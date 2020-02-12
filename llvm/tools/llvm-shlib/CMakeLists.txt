@@ -96,7 +96,7 @@ if(LLVM_BUILD_LLVM_C_DYLIB AND NOT MSVC)
 
   add_custom_target(libLLVMCExports DEPENDS ${LLVM_EXPORTED_SYMBOL_FILE})
 
-  add_llvm_library(LLVM-C SHARED ${SOURCES} INSTALL_WITH_TOOLCHAIN)
+  add_llvm_library(LLVM-C SHARED ${SOURCES} INSTALL_WITH_TOOLCHAIN ENABLE_PLUGINS)
   
   target_link_libraries(LLVM-C PUBLIC LLVM)
   add_dependencies(LLVM-C libLLVMCExports)
@@ -170,6 +170,6 @@ if(MSVC)
     VERBATIM )
 
   # Finally link the target.
-  add_llvm_library(LLVM-C SHARED INSTALL_WITH_TOOLCHAIN ${SOURCES} DEPENDS intrinsics_gen)
+  add_llvm_library(LLVM-C SHARED INSTALL_WITH_TOOLCHAIN ENABLE_PLUGINS ${SOURCES} DEPENDS intrinsics_gen)
 
 endif()
