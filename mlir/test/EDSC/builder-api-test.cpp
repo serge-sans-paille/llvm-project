@@ -6,7 +6,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-// RUN: mlir-edsc-builder-api-test | FileCheck %s
+// RUN: mlir-edsc-builder-api-test | FileCheck %s -dump-input-on-failure
 
 #include "mlir/Dialect/AffineOps/EDSC/Intrinsics.h"
 #include "mlir/Dialect/Linalg/EDSC/Intrinsics.h"
@@ -37,6 +37,15 @@ using namespace mlir::edsc;
 using namespace mlir::edsc::intrinsics;
 
 static MLIRContext &globalContext() {
+  static bool init_once = []() {
+    registerDialect<AffineOpsDialect>();
+    registerDialect<linalg::LinalgDialect>();
+    registerDialect<loop::LoopOpsDialect>();
+    registerDialect<StandardOpsDialect>();
+    registerDialect<vector::VectorOpsDialect>();
+    return true;
+  }();
+  (void)init_once;
   static thread_local MLIRContext context;
   return context;
 }
@@ -888,10 +897,9 @@ TEST_FUNC(linalg_dilated_conv_nhwc) {
 
   OpBuilder builder(f.getBody());
   ScopedContext scope(builder, f.getLoc());
-  linalg_dilated_conv_nhwc(
-      makeValueHandles(llvm::to_vector<3>(f.getArguments())),
-      /*depth_multiplier=*/7,
-      /*strides=*/{3, 4}, /*dilations=*/{5, 6});
+  linalg_dilated_conv_nhwc(makeValueHandles(f.getArguments()),
+                           /*depth_multiplier=*/7,
+                           /*strides=*/{3, 4}, /*dilations=*/{5, 6});
 
   f.print(llvm::outs());
   f.erase();

@@ -963,8 +963,6 @@ void SCCPSolver::visitUnaryOperator(Instruction &I) {
   LatticeVal V0State = getValueState(I.getOperand(0));
 
   LatticeVal &IV = ValueState[&I];
-  if (IV.isOverdefined()) return;
-
   if (V0State.isConstant()) {
     Constant *C = ConstantExpr::get(I.getOpcode(), V0State.getConstant());
 
@@ -1023,7 +1021,6 @@ void SCCPSolver::visitBinaryOperator(Instruction &I) {
       NonOverdefVal = &V1State;
     else if (!V2State.isOverdefined())
       NonOverdefVal = &V2State;
-
     if (NonOverdefVal) {
       if (NonOverdefVal->isUnknown())
         return;
@@ -1143,7 +1140,6 @@ void SCCPSolver::visitLoadInst(LoadInst &I) {
   if (PtrVal.isUnknown()) return;   // The pointer is not resolved yet!
 
   LatticeVal &IV = ValueState[&I];
-  if (IV.isOverdefined()) return;
 
   if (!PtrVal.isConstant() || I.isVolatile())
     return (void)markOverdefined(IV, &I);
@@ -1421,6 +1417,8 @@ void SCCPSolver::Solve() {
 /// This scan also checks for values that use undefs. It conservatively marks
 /// them as overdefined.
 bool SCCPSolver::ResolvedUndefsIn(Function &F) {
+  // Keep track of values that dependent on an yet unknown tracked function call. It only makes sense to resolve them once the call is resolved.
+  SmallPtrSet<Value *, 8> DependsOnSkipped;
   for (BasicBlock &BB : F) {
     if (!BBExecutable.count(&BB))
       continue;
@@ -1435,8 +1433,10 @@ bool SCCPSolver::ResolvedUndefsIn(Function &F) {
         // Tracked calls must never be marked overdefined in ResolvedUndefsIn.
         if (CallSite CS = CallSite(&I))
           if (Function *F = CS.getCalledFunction())
-            if (MRVFunctionsTracked.count(F))
+            if (MRVFunctionsTracked.count(F)) {
+              DependsOnSkipped.insert(&I);
               continue;
+            }
 
         // extractvalue and insertvalue don't need to be marked; they are
         // tracked as precisely as their operands.
@@ -1463,8 +1463,17 @@ bool SCCPSolver::ResolvedUndefsIn(Function &F) {
       // never be marked overdefined in ResolvedUndefsIn.
       if (CallSite CS = CallSite(&I))
         if (Function *F = CS.getCalledFunction())
-          if (TrackedRetVals.count(F))
+          if (TrackedRetVals.count(F)) {
+            DependsOnSkipped.insert(&I);
             continue;
+          }
+
+      // Skip instructions that depend on results of calls we skipped earlier. Otherwise we might mark I as overdefined to early when we would end up discovering a constant value for I, if the call later resolves to a constant.
+      if (any_of(I.operands(), [&DependsOnSkipped](Value *V) {
+                 return DependsOnSkipped.find(V) != DependsOnSkipped.end(); })) {
+        DependsOnSkipped.insert(&I);
+        continue;
+      }
 
       markOverdefined(&I);
       return true;
