@@ -1551,7 +1551,7 @@ addr_t ValueObject::GetPointerValue(AddressType *address_type) {
   case Value::eValueTypeLoadAddress:
   case Value::eValueTypeFileAddress: {
     lldb::offset_t data_offset = 0;
-    address = m_data.GetPointer(&data_offset);
+    address = m_data.GetAddress(&data_offset);
   } break;
   }
 
@@ -1650,13 +1650,13 @@ bool ValueObject::GetDeclaration(Declaration &decl) {
 }
 
 ConstString ValueObject::GetTypeName() {
-  return GetCompilerType().GetConstTypeName();
+  return GetCompilerType().GetTypeName();
 }
 
 ConstString ValueObject::GetDisplayTypeName() { return GetTypeName(); }
 
 ConstString ValueObject::GetQualifiedTypeName() {
-  return GetCompilerType().GetConstQualifiedTypeName();
+  return GetCompilerType().GetTypeName();
 }
 
 LanguageType ValueObject::GetObjectRuntimeLanguage() {

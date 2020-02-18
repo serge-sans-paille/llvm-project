@@ -263,7 +263,7 @@ bool MSP430AsmParser::MatchAndEmitInstruction(SMLoc Loc, unsigned &Opcode,
   switch (MatchResult) {
   case Match_Success:
     Inst.setLoc(Loc);
-    Out.EmitInstruction(Inst, STI);
+    Out.emitInstruction(Inst, STI);
     return false;
   case Match_MnemonicFail:
     return Error(Loc, "invalid instruction mnemonic");
@@ -431,7 +431,7 @@ bool MSP430AsmParser::ParseDirectiveRefSym(AsmToken DirectiveID) {
       return TokError("expected identifier in directive");
 
     MCSymbol *Sym = getContext().getOrCreateSymbol(Name);
-    getStreamer().EmitSymbolAttribute(Sym, MCSA_Global);
+    getStreamer().emitSymbolAttribute(Sym, MCSA_Global);
     return false;
 }
 
@@ -540,7 +540,7 @@ bool MSP430AsmParser::ParseLiteralValues(unsigned Size, SMLoc L) {
     const MCExpr *Value;
     if (getParser().parseExpression(Value))
       return true;
-    getParser().getStreamer().EmitValue(Value, Size, L);
+    getParser().getStreamer().emitValue(Value, Size, L);
     return false;
   };
   return (parseMany(parseOne));

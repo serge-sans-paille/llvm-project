@@ -895,7 +895,7 @@ size_t AppleObjCRuntimeV2::GetByteOffsetForIvar(CompilerType &parent_ast_type,
                                                 const char *ivar_name) {
   uint32_t ivar_offset = LLDB_INVALID_IVAR_OFFSET;
 
-  ConstString class_name = parent_ast_type.GetConstTypeName();
+  ConstString class_name = parent_ast_type.GetTypeName();
   if (!class_name.IsEmpty() && ivar_name && ivar_name[0]) {
     // Make the objective C V2 mangled name for the ivar offset from the class
     // name and ivar name
@@ -1497,7 +1497,7 @@ uint32_t AppleObjCRuntimeV2::ParseClassInfoArray(const DataExtractor &data,
   // Iterate through all ClassInfo structures
   lldb::offset_t offset = 0;
   for (uint32_t i = 0; i < num_class_infos; ++i) {
-    ObjCISA isa = data.GetPointer(&offset);
+    ObjCISA isa = data.GetAddress(&offset);
 
     if (isa == 0) {
       if (should_log)
@@ -2548,7 +2548,7 @@ bool AppleObjCRuntimeV2::NonPointerISACache::EvaluateNonPointerISA(
 
           lldb::offset_t offset = 0;
           for (unsigned i = 0; i != num_new_classes; ++i)
-            m_indexed_isa_cache.push_back(data.GetPointer(&offset));
+            m_indexed_isa_cache.push_back(data.GetAddress(&offset));
         }
       }
 

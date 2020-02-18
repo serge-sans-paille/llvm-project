@@ -81,7 +81,7 @@ using namespace lldb_private;
 using namespace clang;
 using llvm::StringSwitch;
 
-LLDB_PLUGIN(TypeSystemClang)
+LLDB_PLUGIN_DEFINE(TypeSystemClang)
 
 namespace {
 #ifdef LLDB_CONFIGURATION_DEBUG
@@ -240,7 +240,7 @@ static lldb::addr_t GetVTableAddress(Process &process,
   if (err.Fail() || vbtable_ptr_offset + data.GetAddressByteSize() > size)
     return LLDB_INVALID_ADDRESS;
 
-  return data.GetPointer(&vbtable_ptr_offset);
+  return data.GetAddress(&vbtable_ptr_offset);
 }
 
 static int64_t ReadVBaseOffsetFromVTable(Process &process,
@@ -1277,11 +1277,12 @@ static TemplateParameterList *CreateTemplateParameterList(
     if (name && name[0])
       identifier_info = &ast.Idents.get(name);
     if (IsValueParam(template_param_infos.args[i])) {
+      QualType template_param_type =
+          template_param_infos.args[i].getIntegralType();
       template_param_decls.push_back(NonTypeTemplateParmDecl::Create(
           ast, decl_context, SourceLocation(), SourceLocation(), depth, i,
-          identifier_info, template_param_infos.args[i].getIntegralType(),
-          parameter_pack, nullptr));
-
+          identifier_info, template_param_type, parameter_pack,
+          ast.getTrivialTypeSourceInfo(template_param_type)));
     } else {
       template_param_decls.push_back(TemplateTypeParmDecl::Create(
           ast, decl_context, SourceLocation(), SourceLocation(), depth, i,
@@ -7898,8 +7899,7 @@ clang::EnumConstantDecl *TypeSystemClang::AddEnumerationValueToEnumerationType(
 clang::EnumConstantDecl *TypeSystemClang::AddEnumerationValueToEnumerationType(
     const CompilerType &enum_type, const Declaration &decl, const char *name,
     int64_t enum_value, uint32_t enum_value_bit_size) {
-  CompilerType underlying_type =
-      GetEnumerationIntegerType(enum_type.GetOpaqueQualType());
+  CompilerType underlying_type = GetEnumerationIntegerType(enum_type);
   bool is_signed = false;
   underlying_type.IsIntegerType(is_signed);
 
@@ -7909,20 +7909,14 @@ clang::EnumConstantDecl *TypeSystemClang::AddEnumerationValueToEnumerationType(
   return AddEnumerationValueToEnumerationType(enum_type, decl, name, value);
 }
 
-CompilerType
-TypeSystemClang::GetEnumerationIntegerType(lldb::opaque_compiler_type_t type) {
-  clang::QualType enum_qual_type(GetCanonicalQualType(type));
-  const clang::Type *clang_type = enum_qual_type.getTypePtr();
-  if (clang_type) {
-    const clang::EnumType *enutype =
-        llvm::dyn_cast<clang::EnumType>(clang_type);
-    if (enutype) {
-      clang::EnumDecl *enum_decl = enutype->getDecl();
-      if (enum_decl)
-        return GetType(enum_decl->getIntegerType());
-    }
-  }
-  return CompilerType();
+CompilerType TypeSystemClang::GetEnumerationIntegerType(CompilerType type) {
+  clang::QualType qt(ClangUtil::GetQualType(type));
+  const clang::Type *clang_type = qt.getTypePtrOrNull();
+  const auto *enum_type = llvm::dyn_cast_or_null<clang::EnumType>(clang_type);
+  if (!enum_type)
+    return CompilerType();
+
+  return GetType(enum_type->getDecl()->getIntegerType());
 }
 
 CompilerType

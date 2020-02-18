@@ -46,7 +46,7 @@ using namespace lldb;
 using namespace lldb_private;
 using namespace lldb_renderscript;
 
-LLDB_PLUGIN(RenderScriptRuntime)
+LLDB_PLUGIN_DEFINE(RenderScriptRuntime)
 
 #define FMT_COORD "(%" PRIu32 ", %" PRIu32 ", %" PRIu32 ")"
 
@@ -3943,7 +3943,8 @@ void RSModuleDescriptor::Dump(Stream &strm) const {
 void RSGlobalDescriptor::Dump(Stream &strm) const {
   strm.Indent(m_name.GetStringRef());
   VariableList var_list;
-  m_module->m_module->FindGlobalVariables(m_name, nullptr, 1U, var_list);
+  m_module->m_module->FindGlobalVariables(m_name, CompilerDeclContext(), 1U,
+                                          var_list);
   if (var_list.GetSize() == 1) {
     auto var = var_list.GetVariableAtIndex(0);
     auto type = var->GetType();

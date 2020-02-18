@@ -930,9 +930,9 @@ private:
   bool validateInstruction(MCInst &Inst, const OperandVector &Ops);
   bool processInstruction(MCInst &Inst, const OperandVector &Ops);
 
-  /// Wrapper around MCStreamer::EmitInstruction(). Possibly adds
+  /// Wrapper around MCStreamer::emitInstruction(). Possibly adds
   /// instrumentation around Inst.
-  void EmitInstruction(MCInst &Inst, OperandVector &Operands, MCStreamer &Out);
+  void emitInstruction(MCInst &Inst, OperandVector &Operands, MCStreamer &Out);
 
   bool MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
                                OperandVector &Operands, MCStreamer &Out,
@@ -3149,9 +3149,9 @@ bool X86AsmParser::validateInstruction(MCInst &Inst, const OperandVector &Ops) {
 
 static const char *getSubtargetFeatureName(uint64_t Val);
 
-void X86AsmParser::EmitInstruction(MCInst &Inst, OperandVector &Operands,
+void X86AsmParser::emitInstruction(MCInst &Inst, OperandVector &Operands,
                                    MCStreamer &Out) {
-  Out.EmitInstruction(Inst, getSTI());
+  Out.emitInstruction(Inst, getSTI());
 }
 
 bool X86AsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
@@ -3186,7 +3186,7 @@ void X86AsmParser::MatchFPUWaitAlias(SMLoc IDLoc, X86Operand &Op,
     Inst.setOpcode(X86::WAIT);
     Inst.setLoc(IDLoc);
     if (!MatchingInlineAsm)
-      EmitInstruction(Inst, Operands, Out);
+      emitInstruction(Inst, Operands, Out);
     Operands[0] = X86Operand::CreateToken(Repl, IDLoc);
   }
 }
@@ -3293,7 +3293,7 @@ bool X86AsmParser::MatchAndEmitATTInstruction(SMLoc IDLoc, unsigned &Opcode,
 
     Inst.setLoc(IDLoc);
     if (!MatchingInlineAsm)
-      EmitInstruction(Inst, Operands, Out);
+      emitInstruction(Inst, Operands, Out);
     Opcode = Inst.getOpcode();
     return false;
   case Match_InvalidImmUnsignedi4: {
@@ -3362,7 +3362,7 @@ bool X86AsmParser::MatchAndEmitATTInstruction(SMLoc IDLoc, unsigned &Opcode,
   if (NumSuccessfulMatches == 1) {
     Inst.setLoc(IDLoc);
     if (!MatchingInlineAsm)
-      EmitInstruction(Inst, Operands, Out);
+      emitInstruction(Inst, Operands, Out);
     Opcode = Inst.getOpcode();
     return false;
   }
@@ -3615,7 +3615,7 @@ bool X86AsmParser::MatchAndEmitIntelInstruction(SMLoc IDLoc, unsigned &Opcode,
         ;
     Inst.setLoc(IDLoc);
     if (!MatchingInlineAsm)
-      EmitInstruction(Inst, Operands, Out);
+      emitInstruction(Inst, Operands, Out);
     Opcode = Inst.getOpcode();
     return false;
   } else if (NumSuccessfulMatches > 1) {
@@ -3737,9 +3737,9 @@ bool X86AsmParser::parseDirectiveEven(SMLoc L) {
     Section = getStreamer().getCurrentSectionOnly();
   }
   if (Section->UseCodeAlign())
-    getStreamer().EmitCodeAlignment(2, 0);
+    getStreamer().emitCodeAlignment(2, 0);
   else
-    getStreamer().EmitValueToAlignment(2, 0, 1, 0);
+    getStreamer().emitValueToAlignment(2, 0, 1, 0);
   return false;
 }
 
@@ -3752,7 +3752,7 @@ bool X86AsmParser::ParseDirectiveCode(StringRef IDVal, SMLoc L) {
     Parser.Lex();
     if (!is16BitMode()) {
       SwitchMode(X86::Mode16Bit);
-      getParser().getStreamer().EmitAssemblerFlag(MCAF_Code16);
+      getParser().getStreamer().emitAssemblerFlag(MCAF_Code16);
     }
   } else if (IDVal == ".code16gcc") {
     // .code16gcc parses as if in 32-bit mode, but emits code in 16-bit mode.
@@ -3760,19 +3760,19 @@ bool X86AsmParser::ParseDirectiveCode(StringRef IDVal, SMLoc L) {
     Code16GCC = true;
     if (!is16BitMode()) {
       SwitchMode(X86::Mode16Bit);
-      getParser().getStreamer().EmitAssemblerFlag(MCAF_Code16);
+      getParser().getStreamer().emitAssemblerFlag(MCAF_Code16);
     }
   } else if (IDVal == ".code32") {
     Parser.Lex();
     if (!is32BitMode()) {
       SwitchMode(X86::Mode32Bit);
-      getParser().getStreamer().EmitAssemblerFlag(MCAF_Code32);
+      getParser().getStreamer().emitAssemblerFlag(MCAF_Code32);
     }
   } else if (IDVal == ".code64") {
     Parser.Lex();
     if (!is64BitMode()) {
       SwitchMode(X86::Mode64Bit);
-      getParser().getStreamer().EmitAssemblerFlag(MCAF_Code64);
+      getParser().getStreamer().emitAssemblerFlag(MCAF_Code64);
     }
   } else {
     Error(L, "unknown directive " + IDVal);

@@ -820,6 +820,11 @@ void SCCPSolver::visitPHINode(PHINode &PN) {
 void SCCPSolver::visitReturnInst(ReturnInst &I) {
   if (I.getNumOperands() == 0) return;  // ret void
 
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&I].isOverdefined())
+    return;
+
   Function *F = I.getParent()->getParent();
   Value *ResultOp = I.getOperand(0);
 
@@ -856,6 +861,11 @@ void SCCPSolver::visitTerminator(Instruction &TI) {
 }
 
 void SCCPSolver::visitCastInst(CastInst &I) {
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&I].isOverdefined())
+    return;
+
   LatticeVal OpSt = getValueState(I.getOperand(0));
   if (OpSt.isOverdefined())          // Inherit overdefinedness of operand
     markOverdefined(&I);
@@ -871,6 +881,11 @@ void SCCPSolver::visitCastInst(CastInst &I) {
 }
 
 void SCCPSolver::visitExtractValueInst(ExtractValueInst &EVI) {
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&EVI].isOverdefined())
+    return;
+
   // If this returns a struct, mark all elements over defined, we don't track
   // structs in structs.
   if (EVI.getType()->isStructTy())
@@ -895,6 +910,11 @@ void SCCPSolver::visitInsertValueInst(InsertValueInst &IVI) {
   auto *STy = dyn_cast<StructType>(IVI.getType());
   if (!STy)
     return (void)markOverdefined(&IVI);
+
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&IVI].isOverdefined())
+    return;
 
   // If this has more than one index, we can't handle it, drive all results to
   // undef.
@@ -930,6 +950,11 @@ void SCCPSolver::visitSelectInst(SelectInst &I) {
   if (I.getType()->isStructTy())
     return (void)markOverdefined(&I);
 
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&I].isOverdefined())
+    return;
+
   LatticeVal CondValue = getValueState(I.getCondition());
   if (CondValue.isUnknown())
     return;
@@ -963,6 +988,8 @@ void SCCPSolver::visitUnaryOperator(Instruction &I) {
   LatticeVal V0State = getValueState(I.getOperand(0));
 
   LatticeVal &IV = ValueState[&I];
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
   if (IV.isOverdefined()) return;
 
   if (V0State.isConstant()) {
@@ -1023,7 +1050,6 @@ void SCCPSolver::visitBinaryOperator(Instruction &I) {
       NonOverdefVal = &V1State;
     else if (!V2State.isOverdefined())
       NonOverdefVal = &V2State;
-
     if (NonOverdefVal) {
       if (NonOverdefVal->isUnknown())
         return;
@@ -1122,6 +1148,11 @@ void SCCPSolver::visitStoreInst(StoreInst &SI) {
   if (TrackedGlobals.empty() || !isa<GlobalVariable>(SI.getOperand(1)))
     return;
 
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&SI].isOverdefined())
+    return;
+
   GlobalVariable *GV = cast<GlobalVariable>(SI.getOperand(1));
   DenseMap<GlobalVariable*, LatticeVal>::iterator I = TrackedGlobals.find(GV);
   if (I == TrackedGlobals.end() || I->second.isOverdefined()) return;
@@ -1139,11 +1170,15 @@ void SCCPSolver::visitLoadInst(LoadInst &I) {
   if (I.getType()->isStructTy())
     return (void)markOverdefined(&I);
 
+  // ResolvedUndefsIn might mark I as overdefined. Bail out, even if we would
+  // discover a concrete value later.
+  if (ValueState[&I].isOverdefined())
+    return;
+
   LatticeVal PtrVal = getValueState(I.getOperand(0));
   if (PtrVal.isUnknown()) return;   // The pointer is not resolved yet!
 
   LatticeVal &IV = ValueState[&I];
-  if (IV.isOverdefined()) return;
 
   if (!PtrVal.isConstant() || I.isVolatile())
     return (void)markOverdefined(IV, &I);

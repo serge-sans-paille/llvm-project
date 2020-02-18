@@ -1135,7 +1135,7 @@ bool SystemZAsmParser::ParseDirectiveInsn(SMLoc L) {
   }
 
   // Emit as a regular instruction.
-  Parser.getStreamer().EmitInstruction(Inst, getSTI());
+  Parser.getStreamer().emitInstruction(Inst, getSTI());
 
   return false;
 }
@@ -1288,7 +1288,7 @@ bool SystemZAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
   switch (MatchResult) {
   case Match_Success:
     Inst.setLoc(IDLoc);
-    Out.EmitInstruction(Inst, getSTI());
+    Out.emitInstruction(Inst, getSTI());
     return false;
 
   case Match_MissingFeature: {
@@ -1358,7 +1358,7 @@ SystemZAsmParser::parsePCRel(OperandVector &Operands, int64_t MinVal,
     }
     int64_t Value = CE->getValue();
     MCSymbol *Sym = Ctx.createTempSymbol();
-    Out.EmitLabel(Sym);
+    Out.emitLabel(Sym);
     const MCExpr *Base = MCSymbolRefExpr::create(Sym, MCSymbolRefExpr::VK_None,
                                                  Ctx);
     Expr = Value == 0 ? Base : MCBinaryExpr::createAdd(Base, Expr, Ctx);

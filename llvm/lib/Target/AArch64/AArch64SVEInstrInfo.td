@@ -96,6 +96,12 @@ def AArch64rev       : SDNode<"AArch64ISD::REV", SDT_AArch64Rev>;
 def SDT_AArch64PTest : SDTypeProfile<0, 2, [SDTCisVec<0>, SDTCisSameAs<0,1>]>;
 def AArch64ptest     : SDNode<"AArch64ISD::PTEST", SDT_AArch64PTest>;
 
+def SDT_AArch64DUP_PRED  : SDTypeProfile<1, 3, [SDTCisVec<0>, SDTCisSameAs<0,1>, SDTCisVec<2>, SDTCVecEltisVT<2,i1>]>;
+def AArch64dup_pred : SDNode<"AArch64ISD::DUP_PRED", SDT_AArch64DUP_PRED>;
+
+def SDT_IndexVector : SDTypeProfile<1, 2, [SDTCisVec<0>, SDTCisSameAs<1, 2>, SDTCisInt<2>]>;
+def index_vector : SDNode<"AArch64ISD::INDEX_VECTOR", SDT_IndexVector, []>;
+
 let Predicates = [HasSVE] in {
 
   defm RDFFR_PPz  : sve_int_rdffr_pred<0b0, "rdffr", int_aarch64_sve_rdffr_z>;
@@ -287,8 +293,8 @@ let Predicates = [HasSVE] in {
   defm DUP_ZZI : sve_int_perm_dup_i<"dup">;
 
   // Splat scalar register (predicated)
-  defm CPY_ZPmR : sve_int_perm_cpy_r<"cpy">;
-  defm CPY_ZPmV : sve_int_perm_cpy_v<"cpy">;
+  defm CPY_ZPmR : sve_int_perm_cpy_r<"cpy", AArch64dup_pred>;
+  defm CPY_ZPmV : sve_int_perm_cpy_v<"cpy", AArch64dup_pred>;
 
   // Select elements from either vector (predicated)
   defm SEL_ZPZZ    : sve_int_sel_vvv<"sel", vselect>;
@@ -958,10 +964,10 @@ let Predicates = [HasSVE] in {
   defm INCP_ZP     : sve_int_count_v<0b10000, "incp">;
   defm DECP_ZP     : sve_int_count_v<0b10100, "decp">;
 
-  defm INDEX_RR : sve_int_index_rr<"index">;
-  defm INDEX_IR : sve_int_index_ir<"index">;
-  defm INDEX_RI : sve_int_index_ri<"index">;
-  defm INDEX_II : sve_int_index_ii<"index">;
+  defm INDEX_RR : sve_int_index_rr<"index", index_vector>;
+  defm INDEX_IR : sve_int_index_ir<"index", index_vector>;
+  defm INDEX_RI : sve_int_index_ri<"index", index_vector>;
+  defm INDEX_II : sve_int_index_ii<"index", index_vector>;
 
   // Unpredicated shifts
   defm ASR_ZZI : sve_int_bin_cons_shift_imm_right<0b00, "asr">;
@@ -1282,6 +1288,9 @@ let Predicates = [HasSVE] in {
   multiclass unpred_store<ValueType Ty, Instruction RegImmInst, Instruction PTrue> {
     def _fi : Pat<(store (Ty ZPR:$val), (am_sve_fi GPR64sp:$base, simm4s1:$offset)),
                        (RegImmInst ZPR:$val, (PTrue 31), GPR64sp:$base, simm4s1:$offset)>;
+
+    def _default : Pat<(store (Ty ZPR:$val), GPR64:$base),
+                       (RegImmInst ZPR:$val, (PTrue 31), GPR64:$base, (i64 0))>;
   }
 
   defm Pat_ST1B        : unpred_store<nxv16i8, ST1B_IMM, PTRUE_B>;
@@ -1295,6 +1304,9 @@ let Predicates = [HasSVE] in {
   multiclass unpred_load<ValueType Ty, Instruction RegImmInst, Instruction PTrue> {
     def _fi : Pat<(Ty (load  (am_sve_fi GPR64sp:$base, simm4s1:$offset))),
                   (RegImmInst (PTrue 31), GPR64sp:$base, simm4s1:$offset)>;
+
+    def _default : Pat<(Ty (load GPR64:$base)),
+                       (RegImmInst (PTrue 31), GPR64:$base, (i64 0))>;
   }
 
   defm Pat_LD1B        : unpred_load<nxv16i8, LD1B_IMM, PTRUE_B>;
@@ -1308,6 +1320,9 @@ let Predicates = [HasSVE] in {
   multiclass unpred_store_predicate<ValueType Ty, Instruction Store> {
     def _fi : Pat<(store (Ty PPR:$val), (am_sve_fi GPR64sp:$base, simm9:$offset)),
                   (Store PPR:$val, GPR64sp:$base, simm9:$offset)>;
+
+    def _default : Pat<(store (Ty PPR:$Val), GPR64:$base),
+                  (Store PPR:$Val, GPR64:$base, (i64 0))>;
   }
 
   defm Pat_Store_P16 : unpred_store_predicate<nxv16i1, STR_PXI>;
@@ -1318,6 +1333,9 @@ let Predicates = [HasSVE] in {
   multiclass unpred_load_predicate<ValueType Ty, Instruction Load> {
     def _fi : Pat<(Ty (load (am_sve_fi GPR64sp:$base, simm9:$offset))),
                   (Load GPR64sp:$base, simm9:$offset)>;
+
+    def _default : Pat<(Ty (load GPR64:$base)),
+                  (Load GPR64:$base, (i64 0))>;
   }
 
   defm Pat_Load_P16 : unpred_load_predicate<nxv16i1, LDR_PXI>;
@@ -1396,8 +1414,8 @@ let Predicates = [HasSVE] in {
 
 let Predicates = [HasSVE2] in {
   // SVE2 integer multiply-add (indexed)
-  defm MLA_ZZZI : sve2_int_mla_by_indexed_elem<0b01, 0b0, "mla", null_frag>;
-  defm MLS_ZZZI : sve2_int_mla_by_indexed_elem<0b01, 0b1, "mls", null_frag>;
+  defm MLA_ZZZI : sve2_int_mla_by_indexed_elem<0b01, 0b0, "mla", int_aarch64_sve_mla_lane>;
+  defm MLS_ZZZI : sve2_int_mla_by_indexed_elem<0b01, 0b1, "mls", int_aarch64_sve_mls_lane>;
 
   // SVE2 saturating multiply-add high (indexed)
   defm SQRDMLAH_ZZZI : sve2_int_mla_by_indexed_elem<0b10, 0b0, "sqrdmlah", int_aarch64_sve_sqrdmlah_lane>;
@@ -1408,7 +1426,7 @@ let Predicates = [HasSVE2] in {
   defm SQRDMLSH_ZZZ : sve2_int_mla<0b1, "sqrdmlsh", int_aarch64_sve_sqrdmlsh>;
 
   // SVE2 integer multiply (indexed)
-  defm MUL_ZZZI : sve2_int_mul_by_indexed_elem<0b1110, "mul", null_frag>;
+  defm MUL_ZZZI : sve2_int_mul_by_indexed_elem<0b1110, "mul", int_aarch64_sve_mul_lane>;
 
   // SVE2 saturating multiply high (indexed)
   defm SQDMULH_ZZZI  : sve2_int_mul_by_indexed_elem<0b1100, "sqdmulh",  int_aarch64_sve_sqdmulh_lane>;
@@ -1619,10 +1637,10 @@ let Predicates = [HasSVE2] in {
   defm UABALT_ZZZ : sve2_int_absdiff_accum_long<0b11, "uabalt", int_aarch64_sve_uabalt>;
 
   // SVE2 integer add/subtract long with carry
-  defm ADCLB_ZZZ : sve2_int_addsub_long_carry<0b00, "adclb">;
-  defm ADCLT_ZZZ : sve2_int_addsub_long_carry<0b01, "adclt">;
-  defm SBCLB_ZZZ : sve2_int_addsub_long_carry<0b10, "sbclb">;
-  defm SBCLT_ZZZ : sve2_int_addsub_long_carry<0b11, "sbclt">;
+  defm ADCLB_ZZZ : sve2_int_addsub_long_carry<0b00, "adclb", int_aarch64_sve_adclb>;
+  defm ADCLT_ZZZ : sve2_int_addsub_long_carry<0b01, "adclt", int_aarch64_sve_adclt>;
+  defm SBCLB_ZZZ : sve2_int_addsub_long_carry<0b10, "sbclb", int_aarch64_sve_sbclb>;
+  defm SBCLT_ZZZ : sve2_int_addsub_long_carry<0b11, "sbclt", int_aarch64_sve_sbclt>;
 
   // SVE2 bitwise shift right narrow (bottom)
   defm SQSHRUNB_ZZI  : sve2_int_bin_shift_imm_right_narrow_bottom<0b000, "sqshrunb",  int_aarch64_sve_sqshrunb>;

@@ -873,53 +873,71 @@ function(add_llvm_pass_plugin name)
     if (TARGET intrinsics_gen)
       add_dependencies(obj.${name} intrinsics_gen)
     endif()
-    message(STATUS "Registering ${name} as a pass plugin (static build: ${LLVM_${name_upper}_LINK_INTO_TOOLS})")
-    set_property(GLOBAL APPEND PROPERTY LLVM_COMPILE_EXTENSIONS ${name})
+    set_property(GLOBAL APPEND PROPERTY LLVM_STATIC_EXTENSIONS ${name})
   elseif(NOT ARG_NO_MODULE)
     add_llvm_library(${name} MODULE ${ARG_UNPARSED_ARGUMENTS})
   else()
     add_llvm_library(${name} OBJECT ${ARG_UNPARSED_ARGUMENTS})
   endif()
+  message(STATUS "Registering ${name} as a pass plugin (static build: ${LLVM_${name_upper}_LINK_INTO_TOOLS})")
 
 endfunction(add_llvm_pass_plugin)
 
-# Generate X Macro file for extension handling. It provides a
-# HANDLE_EXTENSION(extension_namespace, ExtensionProject) call for each extension
-# allowing client code to define HANDLE_EXTENSION to have a specific code be run for
-# each extension.
+# process_llvm_pass_plugins([NO_GEN])
 #
-# Also correctly set lib dependencies between plugins and tools.
+# Correctly set lib dependencies between plugins and tools, based on tools
+# registered with the ENABLE_PLUGINS option.
+#
+# if GEN_CONFIG option is set, also generate X Macro file for extension
+# handling. It provides a HANDLE_EXTENSION(extension_namespace, ExtensionProject)
+# call for each extension allowing client code to define
+# HANDLE_EXTENSION to have a specific code be run for each extension.
+#
 function(process_llvm_pass_plugins)
-  get_property(LLVM_EXTENSIONS GLOBAL PROPERTY LLVM_COMPILE_EXTENSIONS)
-  file(WRITE "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "//extension handlers\n")
-  foreach(llvm_extension ${LLVM_EXTENSIONS})
-    string(TOLOWER ${llvm_extension} llvm_extension_lower)
+  cmake_parse_arguments(ARG
+      "GEN_CONFIG" "" ""
+    ${ARGN})
 
-    string(TOUPPER ${llvm_extension} llvm_extension_upper)
-    string(SUBSTRING ${llvm_extension_upper} 0 1 llvm_extension_upper_first)
-    string(SUBSTRING ${llvm_extension_lower} 1 -1 llvm_extension_lower_tail)
-    string(CONCAT llvm_extension_project ${llvm_extension_upper_first} ${llvm_extension_lower_tail})
+  if(ARG_GEN_CONFIG)
+      get_property(LLVM_STATIC_EXTENSIONS GLOBAL PROPERTY LLVM_STATIC_EXTENSIONS)
+  else()
+      include(LLVMConfigExtensions)
+  endif()
 
-    if(LLVM_${llvm_extension_upper}_LINK_INTO_TOOLS)
-      file(APPEND "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "HANDLE_EXTENSION(${llvm_extension_project})\n")
-
-      get_property(llvm_plugin_targets GLOBAL PROPERTY LLVM_PLUGIN_TARGETS)
-      foreach(llvm_plugin_target ${llvm_plugin_targets})
-        set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY LINK_LIBRARIES ${llvm_extension})
-        set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${llvm_extension})
-      endforeach()
-    else()
-      add_llvm_library(${llvm_extension_lower} MODULE obj.${llvm_extension_lower})
-    endif()
-
+  # Add static plugins to each plugin target.
+  foreach(llvm_extension ${LLVM_STATIC_EXTENSIONS})
+    get_property(llvm_plugin_targets GLOBAL PROPERTY LLVM_PLUGIN_TARGETS)
+    foreach(llvm_plugin_target ${llvm_plugin_targets})
+      set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY LINK_LIBRARIES ${llvm_extension})
+      set_property(TARGET ${llvm_plugin_target} APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${llvm_extension})
+    endforeach()
   endforeach()
-  file(APPEND "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "#undef HANDLE_EXTENSION\n")
 
-  # only replace if there's an actual change
-  execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp"
-    "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def")
-  file(REMOVE "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp")
+  # Eventually generate the extension header, and store config to a cmake file
+  # for usage in third-party configuration.
+  if(ARG_GEN_CONFIG)
+      set(LLVM_INSTALL_PACKAGE_DIR lib${LLVM_LIBDIR_SUFFIX}/cmake/llvm)
+      set(llvm_cmake_builddir "${LLVM_BINARY_DIR}/${LLVM_INSTALL_PACKAGE_DIR}")
+      file(WRITE
+          "${llvm_cmake_builddir}/LLVMConfigExtensions.cmake"
+          "set(LLVM_STATIC_EXTENSIONS ${LLVM_STATIC_EXTENSIONS})")
+      install(FILES
+          ${llvm_cmake_builddir}/LLVMConfigExtensions.cmake
+          DESTINATION ${LLVM_INSTALL_PACKAGE_DIR}
+          COMPONENT cmake-exports)
+
+      file(WRITE "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "//extension handlers\n")
+      foreach(llvm_extension ${LLVM_STATIC_EXTENSIONS})
+        file(APPEND "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "HANDLE_EXTENSION(${llvm_extension})\n")
+      endforeach()
+      file(APPEND "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp" "#undef HANDLE_EXTENSION\n")
+
+      # only replace if there's an actual change
+      execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp"
+        "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def")
+      file(REMOVE "${LLVM_BINARY_DIR}/include/llvm/Support/Extension.def.tmp")
+  endif()
 endfunction()
 
 function(export_executable_symbols target)
@@ -1325,36 +1343,6 @@ function(add_benchmark benchmark_name)
   set_output_directory(${benchmark_name} BINARY_DIR ${outdir} LIBRARY_DIR ${outdir})
   set_property(TARGET ${benchmark_name} PROPERTY FOLDER "Utils")
   target_link_libraries(${benchmark_name} PRIVATE benchmark)
-endfunction()
-
-function(llvm_add_go_executable binary pkgpath)
-  cmake_parse_arguments(ARG "ALL" "" "DEPENDS;GOFLAGS" ${ARGN})
-
-  if(LLVM_BINDINGS MATCHES "go")
-    # FIXME: This should depend only on the libraries Go needs.
-    get_property(llvmlibs GLOBAL PROPERTY LLVM_LIBS)
-    set(binpath ${CMAKE_BINARY_DIR}/bin/${binary}${CMAKE_EXECUTABLE_SUFFIX})
-    set(cc "${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_ARG1}")
-    set(cxx "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1}")
-    set(cppflags "")
-    get_property(include_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
-    foreach(d ${include_dirs})
-      set(cppflags "${cppflags} -I${d}")
-    endforeach(d)
-    set(ldflags "${CMAKE_EXE_LINKER_FLAGS}")
-    add_custom_command(OUTPUT ${binpath}
-      COMMAND ${CMAKE_BINARY_DIR}/bin/llvm-go "go=${GO_EXECUTABLE}" "cc=${cc}" "cxx=${cxx}" "cppflags=${cppflags}" "ldflags=${ldflags}" "packages=${LLVM_GO_PACKAGES}"
-              ${ARG_GOFLAGS} build -o ${binpath} ${pkgpath}
-      DEPENDS llvm-config ${CMAKE_BINARY_DIR}/bin/llvm-go${CMAKE_EXECUTABLE_SUFFIX}
-              ${llvmlibs} ${ARG_DEPENDS}
-      COMMENT "Building Go executable ${binary}"
-      VERBATIM)
-    if (ARG_ALL)
-      add_custom_target(${binary} ALL DEPENDS ${binpath})
-    else()
-      add_custom_target(${binary} DEPENDS ${binpath})
-    endif()
-  endif()
 endfunction()
 
 # This function canonicalize the CMake variables passed by names

@@ -371,7 +371,9 @@ def AnyComplex : Type<CPred<"$_self.isa<ComplexType>()">, "complex-type">;
 
 class OpaqueType<string dialect, string name, string description>
   : Type<CPred<"isOpaqueTypeWithName($_self, \""#dialect#"\", \""#name#"\")">,
-         description>;
+         description>,
+    BuildableType<"OpaqueType::get($_builder.getIdentifier(\"" # dialect #
+                  "\"), \"" # name # "\", $_builder.getContext())">;
 
 // Function Type
 
@@ -1128,6 +1130,8 @@ class TypedArrayAttrBase<Attr element, string description>: ArrayAttrBase<
                           "; })">]>,
     description> {
   let constBuilderCall = "$_builder.getArrayAttr($0)";
+
+  Attr elementAttr = element;
 }
 
 def I32ArrayAttr : TypedArrayAttrBase<I32Attr,
@@ -1288,7 +1292,7 @@ class ArrayCount<int n> : AttrConstraint<
 class IntArrayNthElemEq<int index, int value> : AttrConstraint<
     And<[
       CPred<"$_self.cast<ArrayAttr>().size() > " # index>,
-      CPred<"$_self.cast<ArrayAttr>().getValue()[" # index # "]"
+      CPred<"$_self.cast<ArrayAttr>()[" # index # "]"
         ".cast<IntegerAttr>().getInt() == " # value>
        ]>,
     "whose " # index # "-th element must be " # value>;
@@ -1296,7 +1300,7 @@ class IntArrayNthElemEq<int index, int value> : AttrConstraint<
 class IntArrayNthElemMinValue<int index, int min> : AttrConstraint<
     And<[
       CPred<"$_self.cast<ArrayAttr>().size() > " # index>,
-      CPred<"$_self.cast<ArrayAttr>().getValue()[" # index # "]"
+      CPred<"$_self.cast<ArrayAttr>()[" # index # "]"
         ".cast<IntegerAttr>().getInt() >= " # min>
         ]>,
     "whose " # index # "-th element must be at least " # min>;
@@ -1499,6 +1503,10 @@ class OpInterface<string name> : OpInterfaceTrait<name> {
 
   // The list of methods defined by this interface.
   list<InterfaceMethod> methods = [];
+
+  // An optional code block containing extra declarations to place in the
+  // interface declaration.
+  code extraClassDeclaration = "";
 }
 
 // Whether to declare the op interface methods in the op's header. This class
