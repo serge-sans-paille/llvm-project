@@ -1,0 +1,26 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build_llvm:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macOS-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Install Ninja
+      uses: tstellar/actions/install-ninja@master
+      with:
+        os: ${{ runner.os }}
+    - name: Test LLVM / dynamic
+      if: startsWith(matrix.os, 'windows') == false
+      uses: tstellar/actions/build-test-llvm-project@master
+      with:
+        cmake_args: -G Ninja -DCMAKE_BUILD_TYPE=Release ${{ matrix.cmake_args }} -DLLVM_ENABLE_PROJECTS='clang'  -DLLVM_ENABLE_LTO=Off -DLLVM_BUILD_EXAMPLES=On -DLLVM_BUILD_EXTERNAL_COMPILER_RT=On -DLLVM_ENABLE_ASSERTIONS=On
+        os: ${{ runner.os }}
