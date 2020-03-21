@@ -87,6 +87,7 @@
       <item> readnone </item>
       <item> readonly </item>
       <item> ssp </item>
+      <item> sspobject </item>
       <item> sspreq </item>
       <item> sspstrong </item>
     </list>

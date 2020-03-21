@@ -1480,6 +1480,9 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
   if (CodeGenOpts.UnwindTables)
     B.addAttribute(llvm::Attribute::UWTable);
 
+  if (CodeGenOpts.StackObjectProtector)
+    B.addAttribute(llvm::Attribute::StackProtectObject);
+
   if (!hasUnwindExceptions(LangOpts))
     B.addAttribute(llvm::Attribute::NoUnwind);
 

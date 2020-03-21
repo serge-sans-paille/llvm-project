@@ -1284,6 +1284,7 @@ PassBuilder::buildLTODefaultPipeline(OptimizationLevel Level, bool DebugLogging,
   MainFPM.addPass(InstCombinePass());
   invokePeepholeEPCallbacks(MainFPM, Level);
   MainFPM.addPass(JumpThreadingPass());
+
   MPM.addPass(createModuleToFunctionPassAdaptor(std::move(MainFPM)));
 
   // Create a function that performs CFI checks for cross-DSO calls with

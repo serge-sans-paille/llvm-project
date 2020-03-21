@@ -1301,6 +1301,9 @@ bool LLParser::ParseFnAttributeValuePairs(AttrBuilder &B,
       B.addAttribute(Attribute::ReturnsTwice); break;
     case lltok::kw_speculatable: B.addAttribute(Attribute::Speculatable); break;
     case lltok::kw_ssp: B.addAttribute(Attribute::StackProtect); break;
+    case lltok::kw_sspobject:
+      B.addAttribute(Attribute::StackProtectObject);
+      break;
     case lltok::kw_sspreq: B.addAttribute(Attribute::StackProtectReq); break;
     case lltok::kw_sspstrong:
       B.addAttribute(Attribute::StackProtectStrong); break;
@@ -1675,6 +1678,7 @@ bool LLParser::ParseOptionalParamAttrs(AttrBuilder &B) {
     case lltok::kw_sanitize_thread:
     case lltok::kw_speculative_load_hardening:
     case lltok::kw_ssp:
+    case lltok::kw_sspobject:
     case lltok::kw_sspreq:
     case lltok::kw_sspstrong:
     case lltok::kw_safestack:
@@ -1774,6 +1778,7 @@ bool LLParser::ParseOptionalReturnAttrs(AttrBuilder &B) {
     case lltok::kw_sanitize_thread:
     case lltok::kw_speculative_load_hardening:
     case lltok::kw_ssp:
+    case lltok::kw_sspobject:
     case lltok::kw_sspreq:
     case lltok::kw_sspstrong:
     case lltok::kw_safestack:

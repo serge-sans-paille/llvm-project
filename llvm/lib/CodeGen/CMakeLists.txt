@@ -142,6 +142,7 @@ add_llvm_library(LLVMCodeGen
   StackColoring.cpp
   StackMapLivenessAnalysis.cpp
   StackMaps.cpp
+  StackObjectCanary.cpp
   StackProtector.cpp
   StackSlotColoring.cpp
   SwiftErrorValueTracking.cpp

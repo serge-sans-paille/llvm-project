@@ -1671,6 +1671,10 @@ def fno_signed_char : Flag<["-"], "fno-signed-char">, Group<f_Group>,
 def fsplit_stack : Flag<["-"], "fsplit-stack">, Group<f_Group>;
 def fstack_protector_all : Flag<["-"], "fstack-protector-all">, Group<f_Group>,
   HelpText<"Enable stack protectors for all functions">;
+def fstack_object_protection : Flag<["-"], "fstack-object-protection">, Group<f_Group>, Flags<[CC1Option]>,
+  HelpText<"Enable stack object protection">;
+def fnostack_object_protection : Flag<["-"], "fnostack-object-protection">, Group<f_Group>,
+  HelpText<"Disable stack object protection">;
 def fstack_protector_strong : Flag<["-"], "fstack-protector-strong">, Group<f_Group>,
   HelpText<"Enable stack protectors for some functions vulnerable to stack smashing. "
            "Compared to -fstack-protector, this uses a stronger heuristic "

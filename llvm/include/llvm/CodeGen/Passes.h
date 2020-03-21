@@ -317,6 +317,11 @@ namespace llvm {
   ///
   FunctionPass *createStackProtectorPass();
 
+  /// createStackObjectCanaryPass - This pass adds stack protectors to stack
+  /// objects.
+  ///
+  FunctionPass *createStackObjectCanaryPass();
+
   /// createMachineVerifierPass - This pass verifies cenerated machine code
   /// instructions for correctness.
   ///

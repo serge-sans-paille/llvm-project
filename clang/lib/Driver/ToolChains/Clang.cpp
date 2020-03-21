@@ -2552,6 +2552,13 @@ static void RenderSSPOptions(const ToolChain &TC, const ArgList &Args,
   }
 }
 
+static void RenderSOPOptions(const ToolChain &TC, const ArgList &Args,
+                             ArgStringList &CmdArgs) {
+  if (Args.hasFlag(options::OPT_fstack_object_protection,
+                   options::OPT_fnostack_object_protection, false))
+    CmdArgs.push_back("-fstack-object-protection");
+}
+
 static void RenderTrivialAutoVarInitOptions(const Driver &D,
                                             const ToolChain &TC,
                                             const ArgList &Args,
@@ -4632,6 +4639,7 @@ void Clang::ConstructJob(Compilation &C, const JobAction &JA,
     CmdArgs.push_back(Args.MakeArgString("-mspeculative-load-hardening"));
 
   RenderSSPOptions(TC, Args, CmdArgs, KernelOrKext);
+  RenderSOPOptions(TC, Args, CmdArgs);
   RenderTrivialAutoVarInitOptions(D, TC, Args, CmdArgs);
 
   // Translate -mstackrealign
