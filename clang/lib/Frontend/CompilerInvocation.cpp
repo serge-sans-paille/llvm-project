@@ -1230,6 +1230,8 @@ static bool ParseCodeGenArgs(CodeGenOptions &Opts, ArgList &Args, InputKind IK,
 
   Opts.StackClashProtector = Args.hasArg(OPT_fstack_clash_protection);
 
+  Opts.StackObjectProtector = Args.hasArg(OPT_fstack_object_protection);
+
   if (Arg *A = Args.getLastArg(OPT_fobjc_dispatch_method_EQ)) {
     StringRef Name = A->getValue();
     unsigned Method = llvm::StringSwitch<unsigned>(Name)

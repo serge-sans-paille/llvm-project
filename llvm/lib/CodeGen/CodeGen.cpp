@@ -100,6 +100,7 @@ void llvm::initializeCodeGen(PassRegistry &Registry) {
   initializeShrinkWrapPass(Registry);
   initializeSjLjEHPreparePass(Registry);
   initializeSlotIndexesPass(Registry);
+  initializeStackObjectCanaryPass(Registry);
   initializeStackColoringPass(Registry);
   initializeStackMapLivenessPass(Registry);
   initializeStackProtectorPass(Registry);

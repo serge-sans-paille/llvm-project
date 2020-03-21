@@ -1803,6 +1803,11 @@ Directly create compilation output files. This may lead to incorrect incremental
 
 Disable stack clash protection
 
+Disable stack object protection
+
+.. option:: -fnostack-object-protection
+
+
 .. option:: -fnoxray-link-deps
 
 .. option:: -fobjc-abi-version=<arg>
@@ -2093,6 +2098,10 @@ Enables splitting of the LTO unit.
 .. option:: -fstack-clash-protection
 
 Enable stack clash protection
+
+Enable stack object protection
+
+.. option:: -fstack-object-protection
 
 .. option:: -fstack-protector, -fno-stack-protector
 

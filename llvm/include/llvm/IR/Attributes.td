@@ -167,6 +167,9 @@ def StackProtectReq : EnumAttr<"sspreq">;
 /// Strong Stack protection.
 def StackProtectStrong : EnumAttr<"sspstrong">;
 
+/// Per Object Stack protection.
+def StackProtectObject : EnumAttr<"sspobject">;
+
 /// Function was called in a scope requiring strict floating point semantics.
 def StrictFP : EnumAttr<"strictfp">;
 

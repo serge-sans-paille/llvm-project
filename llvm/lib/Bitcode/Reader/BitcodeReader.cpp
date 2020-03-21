@@ -1304,6 +1304,10 @@ static uint64_t getRawAttributeMask(Attribute::AttrKind Val) {
   case Attribute::SanitizeMemTag:
     llvm_unreachable("sanitize_memtag attribute not supported in raw format");
     break;
+  case Attribute::StackProtectObject:
+    llvm_unreachable(
+        "stack_protect_object attribute not supported in raw format");
+    break;
   }
   llvm_unreachable("Unsupported attribute type");
 }
@@ -1313,11 +1317,9 @@ static void addRawAttributeValue(AttrBuilder &B, uint64_t Val) {
 
   for (Attribute::AttrKind I = Attribute::None; I != Attribute::EndAttrKinds;
        I = Attribute::AttrKind(I + 1)) {
-    if (I == Attribute::SanitizeMemTag ||
-        I == Attribute::Dereferenceable ||
-        I == Attribute::DereferenceableOrNull ||
-        I == Attribute::ArgMemOnly ||
-        I == Attribute::AllocSize ||
+    if (I == Attribute::SanitizeMemTag || I == Attribute::Dereferenceable ||
+        I == Attribute::DereferenceableOrNull || I == Attribute::ArgMemOnly ||
+        I == Attribute::AllocSize || I == Attribute::StackProtectObject ||
         I == Attribute::NoSync)
       continue;
     if (uint64_t A = (Val & getRawAttributeMask(I))) {

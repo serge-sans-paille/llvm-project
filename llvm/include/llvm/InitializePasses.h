@@ -392,6 +392,7 @@ void initializeSpeculativeExecutionLegacyPassPass(PassRegistry&);
 void initializeSpillPlacementPass(PassRegistry&);
 void initializeStackColoringPass(PassRegistry&);
 void initializeStackMapLivenessPass(PassRegistry&);
+void initializeStackObjectCanaryPass(PassRegistry &);
 void initializeStackProtectorPass(PassRegistry&);
 void initializeStackSafetyGlobalInfoWrapperPassPass(PassRegistry &);
 void initializeStackSafetyInfoWrapperPassPass(PassRegistry &);

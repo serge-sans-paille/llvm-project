@@ -79,6 +79,7 @@ func TestAttributes(t *testing.T) {
 		"signext",
 		"safestack",
 		"ssp",
+		"sspobject",
 		"sspreq",
 		"sspstrong",
 		"sret",

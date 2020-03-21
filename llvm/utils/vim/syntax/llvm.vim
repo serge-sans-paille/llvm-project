@@ -146,6 +146,7 @@ syn keyword llvmKeyword
       \ spir_kernel
       \ sret
       \ ssp
+      \ sspobject
       \ sspreq
       \ sspstrong
       \ strictfp

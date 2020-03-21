@@ -61,6 +61,8 @@ Non-comprehensive list of changes in this release
 New Compiler Flags
 ------------------
 
+- -fstack-object-protection provides protection against some buffer overflow
+  that may write to other stack objects.
 
 - -fstack-clash-protection will provide a protection against the stack clash
   attack for x86 architecture through automatic probing of each page of

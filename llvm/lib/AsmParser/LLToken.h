@@ -220,6 +220,7 @@ enum Kind {
   kw_signext,
   kw_speculatable,
   kw_ssp,
+  kw_sspobject,
   kw_sspreq,
   kw_sspstrong,
   kw_safestack,

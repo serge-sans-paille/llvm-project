@@ -1548,6 +1548,9 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
   if (CodeGenOpts.StackClashProtector)
     B.addAttribute("probe-stack", "inline-asm");
 
+  if (CodeGenOpts.StackObjectProtector)
+    B.addAttribute(llvm::Attribute::StackProtectObject);
+
   if (!hasUnwindExceptions(LangOpts))
     B.addAttribute(llvm::Attribute::NoUnwind);
 

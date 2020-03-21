@@ -742,8 +742,11 @@ void TargetPassConfig::addISelPrepare() {
   if (requiresCodeGenSCCOrder())
     addPass(new DummyCGSCCPass);
 
-  // Add both the safe stack and the stack protection passes: each of them will
-  // only protect functions that have corresponding attributes.
+  // Add both the stack object canary, the safe stack and the stack protection
+  // passes: each of them will only protect functions that have corresponding
+  // attributes.
+
+  addPass(createStackObjectCanaryPass());
   addPass(createSafeStackPass());
   addPass(createStackProtectorPass());
 

@@ -243,6 +243,7 @@ patterns:
             \\bspir_kernel\\b|\
             \\bsret\\b|\
             \\bssp\\b|\
+            \\bsspobject\\b|\
             \\bsspreq\\b|\
             \\bsspstrong\\b|\
             \\bstrictfp\\b|\

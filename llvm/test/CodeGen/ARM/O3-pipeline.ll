@@ -63,6 +63,10 @@
 ; CHECK-NEXT:      Scalar Evolution Analysis
 ; CHECK-NEXT:      Loop Pass Manager
 ; CHECK-NEXT:        Transform predicated vector loops to use MVE tail predication
+; CHECK-NEXT:      Basic Alias Analysis (stateless AA impl)
+; CHECK-NEXT:      Function Alias Analysis Results
+; CHECK-NEXT:      Lazy Value Information Analysis
+; CHECK-NEXT:      Stack Object Canary Protection
 ; CHECK-NEXT:      Safe Stack instrumentation pass
 ; CHECK-NEXT:      Insert stack protectors
 ; CHECK-NEXT:      Module Verifier

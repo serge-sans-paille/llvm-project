@@ -408,6 +408,8 @@ std::string Attribute::getAsString(bool InAttrGrp) const {
     return "speculatable";
   if (hasAttribute(Attribute::StackProtect))
     return "ssp";
+  if (hasAttribute(Attribute::StackProtectObject))
+    return "sspobject";
   if (hasAttribute(Attribute::StackProtectReq))
     return "sspreq";
   if (hasAttribute(Attribute::StackProtectStrong))

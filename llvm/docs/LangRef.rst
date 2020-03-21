@@ -1764,6 +1764,12 @@ example:
     If a function that has an ``ssp`` attribute is inlined into a
     function that doesn't have an ``ssp`` attribute, then the resulting
     function will have an ``ssp`` attribute.
+
+``sspobject``
+    This attribute indicates that the function should emit a canary after each
+    non-scalar object allocated on the stack, and use that canary to check for
+    buffer overflows.
+
 ``sspreq``
     This attribute indicates that the function should *always* emit a
     stack smashing protector. This overrides the ``ssp`` function
