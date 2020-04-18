@@ -406,10 +406,14 @@ endfunction(set_windows_version_resource_properties)
 #      This is used to specify that this is a component library of
 #      LLVM which means that the source resides in llvm/lib/ and it is a
 #      candidate for inclusion into libLLVM.so.
+#   PLUGIN_LIB
+#      This is used to specify that this is a statically loaded plugin library
+#      of LLVM which means that it behaves as a component, except that it
+#      doesn't interact with LLVMBuild.txt.
 #   )
 function(llvm_add_library name)
   cmake_parse_arguments(ARG
-    "MODULE;SHARED;STATIC;OBJECT;DISABLE_LLVM_LINK_LLVM_DYLIB;SONAME;NO_INSTALL_RPATH;COMPONENT_LIB;ENABLE_PLUGINS"
+    "MODULE;SHARED;STATIC;OBJECT;DISABLE_LLVM_LINK_LLVM_DYLIB;SONAME;NO_INSTALL_RPATH;COMPONENT_LIB;ENABLE_PLUGINS;PLUGIN_LIB"
     "OUTPUT_NAME;PLUGIN_TOOL;ENTITLEMENTS;BUNDLE_PATH"
     "ADDITIONAL_HEADERS;DEPENDS;LINK_COMPONENTS;LINK_LIBS;OBJLIBS"
     ${ARGN})
@@ -498,7 +502,7 @@ function(llvm_add_library name)
     add_library(${name} STATIC ${ALL_FILES})
   endif()
 
-  if(ARG_COMPONENT_LIB)
+  if(ARG_COMPONENT_LIB OR ARG_PLUGIN_LIB)
     set_target_properties(${name} PROPERTIES LLVM_COMPONENT TRUE)
     set_property(GLOBAL APPEND PROPERTY LLVM_COMPONENT_LIBS ${name})
   endif()
@@ -606,7 +610,7 @@ function(llvm_add_library name)
     get_property(lib_deps GLOBAL PROPERTY LLVMBUILD_LIB_DEPS_${name})
   endif()
 
-  if(ARG_STATIC)
+  if(ARG_STATIC OR ARG_PLUGIN_LIB)
     set(libtype PUBLIC)
   else()
     # We can use PRIVATE since SO knows its dependent libs.
@@ -879,11 +883,16 @@ function(add_llvm_pass_plugin name)
   endif()
   option(LLVM_${name_upper}_LINK_INTO_TOOLS "Statically link ${name} into tools (if available)" ${link_into_tools_default})
 
+  # If we statically link the plugin, don't use llvm dylib
+  if(LLVM_${name_upper}_LINK_INTO_TOOLS)
+      list(APPEND ARG_UNPARSED_ARGUMENTS DISABLE_LLVM_LINK_LLVM_DYLIB)
+  endif()
+
   if(LLVM_${name_upper}_LINK_INTO_TOOLS)
     list(REMOVE_ITEM ARG_UNPARSED_ARGUMENTS BUILDTREE_ONLY)
     # process_llvm_pass_plugins takes care of the actual linking, just create an
     # object library as of now
-    add_llvm_component_library(${name} OBJECT ${ARG_UNPARSED_ARGUMENTS})
+    add_llvm_library(${name} OBJECT ${ARG_UNPARSED_ARGUMENTS} PLUGIN_LIB)
     target_compile_definitions(${name} PRIVATE LLVM_${name_upper}_LINK_INTO_TOOLS)
     set_property(TARGET ${name} APPEND PROPERTY COMPILE_DEFINITIONS LLVM_LINK_INTO_TOOLS)
     if (TARGET intrinsics_gen)
