@@ -427,7 +427,10 @@ function(llvm_add_library name)
   else()
     llvm_process_sources(ALL_FILES ${ARG_UNPARSED_ARGUMENTS} ${ARG_ADDITIONAL_HEADERS})
   endif()
-  if(ARG_ENABLE_PLUGINS)
+
+  # If the library is a target for plugins, register it. Unless it links with LLVM_DYLIB that already is a target
+  # of plugins, which is why we always register component_lib.
+  if(ARG_ENABLE_PLUGINS AND (NOT LLVM_LINK_LLVM_DYLIB OR ARG_DISABLE_LLVM_LINK_LLVM_DYLIB OR ARG_COMPONENT_LIB))
     set_property(GLOBAL APPEND PROPERTY LLVM_PLUGIN_TARGETS ${name})
   endif()
 
@@ -849,7 +852,9 @@ macro(add_llvm_executable name)
     # API for all shared libaries loaded by this executable.
     target_link_libraries(${name} PRIVATE ${LLVM_PTHREAD_LIB})
   endif()
-  if(ARG_ENABLE_PLUGINS)
+
+  # A tool that already links with LLVM_DYLIB does not need plugins, as plugins are already linked in LLVM_DYLIB
+  if(ARG_ENABLE_PLUGINS AND (NOT LLVM_LINK_LLVM_DYLIB OR DISABLE_LLVM_LINK_LLVM_DYLIB))
     set_property(GLOBAL APPEND PROPERTY LLVM_PLUGIN_TARGETS ${name})
   endif()
 
