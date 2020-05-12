@@ -53,26 +53,27 @@ public:
   /// Also update LLVMTypeKind and LLVMGetTypeKind () in the C binding.
   ///
   enum TypeID {
-    // PrimitiveTypes - make sure LastPrimitiveTyID stays up to date.
-    VoidTyID = 0,  ///<  0: type with no size
-    HalfTyID,      ///<  1: 16-bit floating point type
-    FloatTyID,     ///<  2: 32-bit floating point type
-    DoubleTyID,    ///<  3: 64-bit floating point type
-    X86_FP80TyID,  ///<  4: 80-bit floating point type (X87)
-    FP128TyID,     ///<  5: 128-bit floating point type (112-bit mantissa)
-    PPC_FP128TyID, ///<  6: 128-bit floating point type (two 64-bits, PowerPC)
+    // PrimitiveTypes
+    HalfTyID=0,    ///<  0: 16-bit floating point type
+    FloatTyID,     ///<  1: 32-bit floating point type
+    DoubleTyID,    ///<  2: 64-bit floating point type
+    X86_FP80TyID,  ///<  3: 80-bit floating point type (X87)
+    FP128TyID,     ///<  4: 128-bit floating point type (112-bit mantissa)
+    PPC_FP128TyID, ///<  5: 128-bit floating point type (two 64-bits, PowerPC)
+    VoidTyID,      ///<  6: type with no size
     LabelTyID,     ///<  7: Labels
     MetadataTyID,  ///<  8: Metadata
     X86_MMXTyID,   ///<  9: MMX vectors (64 bits, X86 specific)
     TokenTyID,     ///< 10: Tokens
 
     // Derived types... see DerivedTypes.h file.
-    // Make sure FirstDerivedTyID stays up to date!
-    IntegerTyID,       ///< 11: Arbitrary bit width integers
-    FunctionTyID,      ///< 12: Functions
-    StructTyID,        ///< 13: Structures
-    ArrayTyID,         ///< 14: Arrays
-    PointerTyID,       ///< 15: Pointers
+    IntegerTyID,  ///< 11: Arbitrary bit width integers
+    FunctionTyID, ///< 12: Functions
+    PointerTyID,  ///< 14: Pointers
+    StructTyID,   ///< 13: Structures
+    ArrayTyID,    ///< 15: Arrays
+    // Make sure these two remains the last of this list. It makes isa<VectorTy>
+    // more concise.
     FixedVectorTyID,   ///< 16: Fixed width SIMD vector type
     ScalableVectorTyID ///< 17: Scalable SIMD vector type
   };
