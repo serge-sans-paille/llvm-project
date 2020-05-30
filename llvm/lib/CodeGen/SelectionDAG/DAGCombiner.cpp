@@ -153,7 +153,7 @@ namespace {
     /// This is used to find and remove nodes from the worklist (by nulling
     /// them) when they are deleted from the underlying DAG. It relies on
     /// stable indices of nodes within the worklist.
-    DenseMap<SDNode *, unsigned> WorklistMap;
+    DenseSet<SDNode *> WorklistSet;
     /// This records all nodes attempted to add to the worklist since we
     /// considered a new worklist entry. As we keep do not add duplicate nodes
     /// in the worklist, this is different from the tail of the worklist.
@@ -204,20 +204,17 @@ namespace {
     SDNode *getNextWorklistEntry() {
       // Before we do any work, remove nodes that are not in use.
       clearAddedDanglingWorklistEntries();
-      SDNode *N = nullptr;
       // The Worklist holds the SDNodes in order, but it may contain null
       // entries.
-      while (!N && !Worklist.empty()) {
-        N = Worklist.pop_back_val();
+      while (!Worklist.empty()) {
+        SDNode* N = Worklist.pop_back_val();
+        auto Where = WorklistSet.find(N);
+        if(Where != WorklistSet.end()) {
+          WorklistSet.erase(Where);
+          return N;
+        }
       }
-
-      if (N) {
-        bool GoodWorklistEntry = WorklistMap.erase(N);
-        (void)GoodWorklistEntry;
-        assert(GoodWorklistEntry &&
-               "Found a worklist entry without a corresponding map entry!");
-      }
-      return N;
+      return nullptr;
     }
 
     /// Call the node-specific routine that folds each particular type of node.
@@ -259,7 +256,7 @@ namespace {
 
       ConsiderForPruning(N);
 
-      if (WorklistMap.insert(std::make_pair(N, Worklist.size())).second)
+      if (WorklistSet.insert(N).second)
         Worklist.push_back(N);
     }
 
@@ -268,14 +265,7 @@ namespace {
       CombinedNodes.erase(N);
       PruningList.remove(N);
       StoreRootCountMap.erase(N);
-
-      auto It = WorklistMap.find(N);
-      if (It == WorklistMap.end())
-        return; // Not in the worklist.
-
-      // Null out the entry rather than erasing it to avoid a linear operation.
-      Worklist[It->second] = nullptr;
-      WorklistMap.erase(It);
+      WorklistSet.erase(N);
     }
 
     void deleteAndRecombine(SDNode *N);
