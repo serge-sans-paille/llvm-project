@@ -153,17 +153,21 @@ namespace {
     /// This is used to find and remove nodes from the worklist (by nulling
     /// them) when they are deleted from the underlying DAG. It relies on
     /// stable indices of nodes within the worklist.
-    DenseSet<SDNode *> WorklistSet;
+    struct Tags {
+      bool InWokingList : 1;
+      bool IsCombined : 1;
+      bool InPruningList : 1;
+    };
+    DenseMap<SDNode*, Tags> TagSet;
     /// This records all nodes attempted to add to the worklist since we
     /// considered a new worklist entry. As we keep do not add duplicate nodes
     /// in the worklist, this is different from the tail of the worklist.
-    SmallSetVector<SDNode *, 32> PruningList;
+    SmallVector<SDNode *, 32> PruningList;
 
     /// Set of nodes which have been combined (at least once).
     ///
     /// This is used to allow us to reliably add any operands of a DAG node
     /// which have not yet been combined to the worklist.
-    SmallPtrSet<SDNode *, 32> CombinedNodes;
 
     /// Map from candidate StoreNode to the pair of RootNode and count.
     /// The count is used to track how many times we have seen the StoreNode
@@ -196,8 +200,11 @@ namespace {
       // Check any nodes added to the worklist to see if they are prunable.
       while (!PruningList.empty()) {
         auto *N = PruningList.pop_back_val();
-        if (N->use_empty())
-          recursivelyDeleteUnusedNodes(N);
+        if(TagSet[N].InPruningList) {
+          TagSet[N].InPruningList = false;
+          if (N->use_empty())
+            recursivelyDeleteUnusedNodes(N);
+        }
       }
     }
 
@@ -208,9 +215,9 @@ namespace {
       // entries.
       while (!Worklist.empty()) {
         SDNode* N = Worklist.pop_back_val();
-        auto Where = WorklistSet.find(N);
-        if(Where != WorklistSet.end()) {
-          WorklistSet.erase(Where);
+        auto Where = TagSet.find(N);
+        if(Where != TagSet.end() && Where->second.InWokingList) {
+          Where->second.InWokingList = false;
           return N;
         }
       }
@@ -240,7 +247,10 @@ namespace {
 
     void ConsiderForPruning(SDNode *N) {
       // Mark this for potential pruning.
-      PruningList.insert(N);
+      if(TagSet[N].InPruningList)
+        return;
+      TagSet[N].InPruningList = true;
+      PruningList.push_back(N);
     }
 
     /// Add to the worklist making sure its instance is at the back (next to be
@@ -254,18 +264,42 @@ namespace {
       if (N->getOpcode() == ISD::HANDLENODE)
         return;
 
-      ConsiderForPruning(N);
-
-      if (WorklistSet.insert(N).second)
+      auto Where = TagSet.find(N);
+      if(Where == TagSet.end()) {
+        TagSet.insert({N,{true,false,true}});
+        PruningList.push_back(N);
         Worklist.push_back(N);
+      }
+      else {
+        if(!(Where->second.InPruningList)) {
+          Where->second.InPruningList =true;
+          PruningList.push_back(N);
+        }
+        if(!(Where->second.InWokingList)) {
+          Where->second.InWokingList = true;
+          Worklist.push_back(N);
+        }
+      }
+
+    }
+    void AddToWorklistInit(SDNode *N) {
+      assert(N->getOpcode() != ISD::DELETED_NODE &&
+             "Deleted Node added to Worklist");
+
+      // Skip handle nodes as they can't usefully be combined and confuse the
+      // zero-use deletion strategy.
+      if (N->getOpcode() == ISD::HANDLENODE)
+        return;
+
+      TagSet.insert({N,{true,false,true}});
+      PruningList.push_back(N);
+      Worklist.push_back(N);
     }
 
     /// Remove all instances of N from the worklist.
     void removeFromWorklist(SDNode *N) {
-      CombinedNodes.erase(N);
-      PruningList.remove(N);
       StoreRootCountMap.erase(N);
-      WorklistSet.erase(N);
+      TagSet.erase(N);
     }
 
     void deleteAndRecombine(SDNode *N);
@@ -1420,9 +1454,10 @@ void DAGCombiner::Run(CombineLevel AtLevel) {
 
   WorklistInserter AddNodes(*this);
 
+  TagSet.reserve(DAG.allnodes_size());
   // Add all the dag nodes to the worklist.
   for (SDNode &Node : DAG.allnodes())
-    AddToWorklist(&Node);
+    AddToWorklistInit(&Node);
 
   // Create a dummy node (which is not added to allnodes), that adds a reference
   // to the root node, preventing it from being deleted, and tracking any
@@ -1457,9 +1492,9 @@ void DAGCombiner::Run(CombineLevel AtLevel) {
     // Add any operands of the new node which have not yet been combined to the
     // worklist as well. Because the worklist uniques things already, this
     // won't repeatedly process the same operand.
-    CombinedNodes.insert(N);
+    TagSet[N].IsCombined = true;
     for (const SDValue &ChildN : N->op_values())
-      if (!CombinedNodes.count(ChildN.getNode()))
+      if (!(TagSet[ChildN.getNode()].IsCombined))
         AddToWorklist(ChildN.getNode());
 
     SDValue RV = combine(N);
