@@ -10,11 +10,24 @@ if (CXX_SUPPORTS_SUGGEST_OVERRIDE_FLAG)
 endif()
 
 function(add_flang_nongtest_unittest test_name)
+  cmake_parse_arguments(ARG
+    "SLOW_TEST"
+    ""
+    ""
+    ${ARGN})
   add_executable(${test_name}.test ${test_name}.cpp)
+    if (LLVM_LINK_LLVM_DYLIB AND NOT ARG_DISABLE_LLVM_LINK_LLVM_DYLIB)
+      set(llvm_libs LLVM)
+    else()
+      llvm_map_components_to_libnames(llvm_libs Support)
+    endif()
+    target_link_libraries(${test_name}.test
+	    ${llvm_libs} ${ARG_UNPARSED_ARGUMENTS}
+      )
 
-  target_link_libraries(${test_name}.test ${ARGN})
-
-  add_dependencies(FlangUnitTests ${test_name}.test)
+  if(NOT ARG_SLOW_TEST)
+    add_dependencies(FlangUnitTests ${test_name}.test)
+  endif()
 endfunction()
 
 add_subdirectory(Optimizer)
