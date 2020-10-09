@@ -18,4 +18,5 @@ add_llvm_component_library(LLVMVectorize
 
   DEPENDS
   intrinsics_gen
+  LINK_COMPONENTS Analysis Core Support TransformUtils
   )

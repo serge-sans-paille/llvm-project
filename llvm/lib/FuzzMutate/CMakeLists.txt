@@ -10,4 +10,6 @@ add_llvm_component_library(LLVMFuzzMutate
 
   DEPENDS
   intrinsics_gen
+
+  LINK_COMPONENTS Analysis BitReader BitWriter Core Scalar Support Target
   )

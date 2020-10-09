@@ -13,4 +13,6 @@ add_llvm_component_library(LLVMTextAPI
   "${LLVM_MAIN_INCLUDE_DIR}/llvm/TextAPI"
   "${LLVM_MAIN_INCLUDE_DIR}/llvm/TextAPI/Elf"
   "${LLVM_MAIN_INCLUDE_DIR}/llvm/TextAPI/MachO"
+
+  LINK_COMPONENTS Support BinaryFormat
 )

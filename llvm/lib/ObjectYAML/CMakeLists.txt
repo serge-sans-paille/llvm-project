@@ -22,4 +22,5 @@ add_llvm_component_library(LLVMObjectYAML
 
   ADDITIONAL_HEADER_DIRS
   ${LLVM_MAIN_INCLUDE_DIR}/llvm/ObjectYAML
+  LINK_COMPONENTS BinaryFormat Object Support DebugInfoCodeView MC
   )

@@ -29,6 +29,10 @@ add_llvm_component_library(LLVMOrcJIT
 
   DEPENDS
   intrinsics_gen
+
+  LINK_COMPONENTS Core ExecutionEngine JITLink Object OrcError MC Passes RuntimeDyld Support Target TransformUtils
+
+
   )
 
 target_link_libraries(LLVMOrcJIT

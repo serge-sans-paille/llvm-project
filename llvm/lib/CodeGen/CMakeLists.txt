@@ -196,6 +196,10 @@ add_llvm_component_library(LLVMCodeGen
 
   DEPENDS
   intrinsics_gen
+
+
+  LINK_COMPONENTS Analysis BitReader BitWriter Core MC ProfileData Scalar Support Target TransformUtils
+
   )
 
 add_subdirectory(SelectionDAG)

@@ -13,4 +13,6 @@ add_llvm_component_library(LLVMARMDesc
   ARMUnwindOpAsm.cpp
   ARMWinCOFFObjectWriter.cpp
   ARMWinCOFFStreamer.cpp
+  LINK_COMPONENTS ARMInfo ARMUtils MC MCDisassembler Support BinaryFormat
+  ADD_TO_COMPONENT ARM
   )

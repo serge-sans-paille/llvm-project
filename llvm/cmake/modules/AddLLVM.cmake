@@ -614,6 +614,13 @@ function(llvm_add_library name)
     endif()
   endif()
 
+  if(ARG_STATIC)
+    set(libtype PUBLIC)
+  else()
+    # We can use PRIVATE since SO knows its dependent libs.
+    set(libtype PRIVATE)
+  endif()
+
   if(ARG_MODULE AND LLVM_EXPORT_SYMBOLS_FOR_PLUGINS AND ARG_PLUGIN_TOOL AND (WIN32 OR CYGWIN))
     # On DLL platforms symbols are imported from the tool by linking against it.
     set(llvm_libs ${ARG_PLUGIN_TOOL})
@@ -621,10 +628,10 @@ function(llvm_add_library name)
     if (LLVM_LINK_LLVM_DYLIB AND NOT ARG_DISABLE_LLVM_LINK_LLVM_DYLIB)
       set(llvm_libs LLVM)
     else()
-      llvm_map_components_to_libnames(llvm_libs
-       ${ARG_LINK_COMPONENTS}
-       ${LLVM_LINK_COMPONENTS}
-       )
+        llvm_map_components_to_libnames(llvm_libs
+            ${ARG_LINK_COMPONENTS}
+            ${LLVM_LINK_COMPONENTS}
+        )
     endif()
   else()
     # Components have not been defined explicitly in CMake, so add the
@@ -633,14 +640,9 @@ function(llvm_add_library name)
     # It would be nice to verify that we have the dependencies for this library
     # name, but using get_property(... SET) doesn't suffice to determine if a
     # property has been set to an empty value.
-    get_property(lib_deps GLOBAL PROPERTY LLVMBUILD_LIB_DEPS_${name})
-  endif()
-
-  if(ARG_STATIC)
-    set(libtype PUBLIC)
-  else()
-    # We can use PRIVATE since SO knows its dependent libs.
-    set(libtype PRIVATE)
+    set_property(TARGET ${name} PROPERTY LLVM_LINK_COMPONENTS ${ARG_LINK_COMPONENTS} ${LLVM_LINK_COMPONENTS})
+    set_property(TARGET ${name} PROPERTY LLVM_LINK_LIBS ${ARG_LINK_LIBS})
+    set_property(TARGET ${name} PROPERTY LLVM_LIBTYPE ${libtype})
   endif()
 
   target_link_libraries(${name} ${libtype}
@@ -721,8 +723,40 @@ function(add_llvm_install_targets target)
   endif()
 endfunction()
 
+# Define special targets that behave like component group. They don't have any
+# source attached but other component can add themselves to them. If the
+# component supports is a Target and it supports JIT compilation, HAS_JIT must
+# be passed.
+function(add_llvm_component_group name)
+  cmake_parse_arguments(ARG "HAS_JIT" "" "LINK_COMPONENTS" ${ARGN})
+  add_custom_target(${name})
+  if(ARG_HAS_JIT)
+    set_property(TARGET ${name} PROPERTY COMPONENT_HAS_JIT ON)
+  endif()
+  if(ARG_LINK_COMPONENTS)
+    set_property(TARGET ${name} PROPERTY LLVM_LINK_COMPONENTS ${ARG_LINK_COMPONENTS})
+  endif()
+endfunction()
+
+
 function(add_llvm_component_library name)
-  add_llvm_library(${name} COMPONENT_LIB ${ARGN})
+  cmake_parse_arguments(ARG
+    ""
+    "COMPONENT_NAME;ADD_TO_COMPONENT"
+    ""
+    ${ARGN})
+  add_llvm_library(${name} COMPONENT_LIB ${ARG_UNPARSED_ARGUMENTS})
+  string(REGEX REPLACE "^LLVM" "" component_name ${name})
+  set_property(TARGET ${name} PROPERTY LLVM_COMPONENT_NAME ${component_name})
+
+  if(ARG_COMPONENT_NAME)
+    set_property(GLOBAL PROPERTY LLVM_COMPONENT_NAME_${ARG_COMPONENT_NAME} ${component_name})
+  endif()
+
+  if(ARG_ADD_TO_COMPONENT)
+    set_property(TARGET ${ARG_ADD_TO_COMPONENT} APPEND PROPERTY LLVM_LINK_COMPONENTS ${component_name})
+  endif()
+
 endfunction()
 
 macro(add_llvm_library name)

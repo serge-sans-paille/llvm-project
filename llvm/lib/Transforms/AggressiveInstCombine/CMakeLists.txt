@@ -8,4 +8,5 @@ add_llvm_component_library(LLVMAggressiveInstCombine
 
   DEPENDS
   intrinsics_gen
+  LINK_COMPONENTS Analysis Core Support TransformUtils
   )
