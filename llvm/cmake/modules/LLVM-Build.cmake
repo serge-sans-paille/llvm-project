@@ -6,6 +6,11 @@ function(LLVMBuildGenerateCFragment)
   # Write C header
   #################
   get_property(llvmbuild_components GLOBAL PROPERTY LLVM_COMPONENT_LIBS)
+  foreach(llvmbuild_component ${llvmbuild_components})
+    string(REGEX REPLACE "^LLVM" "" component_name ${llvmbuild_component})
+    list(APPEND all_component_libdeps ${component_name})
+  endforeach()
+  list(APPEND llvmbuild_components all)
   list(APPEND llvmbuild_components all-targets)
   list(APPEND llvmbuild_components Engine)
   list(APPEND llvmbuild_components Native)
@@ -33,8 +38,14 @@ function(LLVMBuildGenerateCFragment)
   ")
 
   foreach(llvmbuild_component ${llvmbuild_components})
-    get_property(llvmbuild_libname TARGET ${llvmbuild_component} PROPERTY LLVM_COMPONENT_NAME)
-    get_property(llvmbuild_libdeps TARGET ${llvmbuild_component} PROPERTY LLVM_LINK_COMPONENTS)
+
+    if(llvmbuild_component STREQUAL "all")
+      unset(llvmbuild_libname)
+      set(llvmbuild_libdeps ${all_component_libdeps})
+    else()
+      get_property(llvmbuild_libname TARGET ${llvmbuild_component} PROPERTY LLVM_COMPONENT_NAME)
+      get_property(llvmbuild_libdeps TARGET ${llvmbuild_component} PROPERTY LLVM_LINK_COMPONENTS)
+    endif()
     string(TOLOWER ${llvmbuild_component} llvmbuild_componentname)
 
     if(NOT llvmbuild_libname)
