@@ -267,40 +267,40 @@ define i32 @test_target_features1(i32 %i) "target-features"="+sse4.2" {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @less-precise-fpmad_callee0(i32 %i) "less-precise-fpmad"="false" {
+define i32 @less-precise-fpmad_callee0(i32 %i) {
   ret i32 %i
-; CHECK: @less-precise-fpmad_callee0(i32 %i) [[FPMAD_FALSE:#[0-9]+]] {
+; CHECK: @less-precise-fpmad_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @less-precise-fpmad_callee1(i32 %i) "less-precise-fpmad"="true" {
+define i32 @less-precise-fpmad_callee1(i32 %i) "less-precise-fpmad" {
   ret i32 %i
 ; CHECK: @less-precise-fpmad_callee1(i32 %i) [[FPMAD_TRUE:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_less-precise-fpmad0(i32 %i) "less-precise-fpmad"="false" {
+define i32 @test_less-precise-fpmad0(i32 %i) {
   %1 = call i32 @less-precise-fpmad_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_less-precise-fpmad0(i32 %i) [[FPMAD_FALSE]] {
+; CHECK: @test_less-precise-fpmad0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_less-precise-fpmad1(i32 %i) "less-precise-fpmad"="false" {
+define i32 @test_less-precise-fpmad1(i32 %i) {
   %1 = call i32 @less-precise-fpmad_callee1(i32 %i)
   ret i32 %1
-; CHECK: @test_less-precise-fpmad1(i32 %i) [[FPMAD_FALSE]] {
+; CHECK: @test_less-precise-fpmad1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_less-precise-fpmad2(i32 %i) "less-precise-fpmad"="true" {
+define i32 @test_less-precise-fpmad2(i32 %i) "less-precise-fpmad" {
   %1 = call i32 @less-precise-fpmad_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_less-precise-fpmad2(i32 %i) [[FPMAD_FALSE]] {
+; CHECK: @test_less-precise-fpmad2(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_less-precise-fpmad3(i32 %i) "less-precise-fpmad"="true" {
+define i32 @test_less-precise-fpmad3(i32 %i) "less-precise-fpmad" {
   %1 = call i32 @less-precise-fpmad_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_less-precise-fpmad3(i32 %i) [[FPMAD_TRUE]] {
@@ -355,7 +355,7 @@ define i32 @no-use-jump-tables_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-use-jump-tables_callee1(i32 %i) "no-jump-tables"="true" {
+define i32 @no-use-jump-tables_callee1(i32 %i) "no-jump-tables" {
   ret i32 %i
 ; CHECK: @no-use-jump-tables_callee1(i32 %i) [[NOUSEJUMPTABLES:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
@@ -375,14 +375,14 @@ define i32 @test_no-use-jump-tables1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-use-jump-tables2(i32 %i) "no-jump-tables"="true" {
+define i32 @test_no-use-jump-tables2(i32 %i) "no-jump-tables" {
   %1 = call i32 @no-use-jump-tables_callee0(i32 %i)
   ret i32 %1
 ; CHECK: @test_no-use-jump-tables2(i32 %i) [[NOUSEJUMPTABLES]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-use-jump-tables3(i32 %i) "no-jump-tables"="true" {
+define i32 @test_no-use-jump-tables3(i32 %i) "no-jump-tables" {
   %1 = call i32 @no-use-jump-tables_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_no-use-jump-tables3(i32 %i) [[NOUSEJUMPTABLES]] {
@@ -440,160 +440,160 @@ define i32 @test_null-pointer-is-valid2(i32 %i) null_pointer_is_valid {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-infs-fp-math_callee0(i32 %i) "no-infs-fp-math"="false" {
+define i32 @no-infs-fp-math_callee0(i32 %i) {
   ret i32 %i
-; CHECK: @no-infs-fp-math_callee0(i32 %i) [[NO_INFS_FPMATH_FALSE:#[0-9]+]] {
+; CHECK: @no-infs-fp-math_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-infs-fp-math_callee1(i32 %i) "no-infs-fp-math"="true" {
+define i32 @no-infs-fp-math_callee1(i32 %i) "no-infs-fp-math" {
   ret i32 %i
 ; CHECK: @no-infs-fp-math_callee1(i32 %i) [[NO_INFS_FPMATH_TRUE:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-infs-fp-math0(i32 %i) "no-infs-fp-math"="false" {
+define i32 @test_no-infs-fp-math0(i32 %i) {
   %1 = call i32 @no-infs-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-infs-fp-math0(i32 %i) [[NO_INFS_FPMATH_FALSE]] {
+; CHECK: @test_no-infs-fp-math0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-infs-fp-math1(i32 %i) "no-infs-fp-math"="false" {
+define i32 @test_no-infs-fp-math1(i32 %i) {
   %1 = call i32 @no-infs-fp-math_callee1(i32 %i)
   ret i32 %1
-; CHECK: @test_no-infs-fp-math1(i32 %i) [[NO_INFS_FPMATH_FALSE]] {
+; CHECK: @test_no-infs-fp-math1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-infs-fp-math2(i32 %i) "no-infs-fp-math"="true" {
+define i32 @test_no-infs-fp-math2(i32 %i) "no-infs-fp-math" {
   %1 = call i32 @no-infs-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-infs-fp-math2(i32 %i) [[NO_INFS_FPMATH_FALSE]] {
+; CHECK: @test_no-infs-fp-math2(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-infs-fp-math3(i32 %i) "no-infs-fp-math"="true" {
+define i32 @test_no-infs-fp-math3(i32 %i) "no-infs-fp-math" {
   %1 = call i32 @no-infs-fp-math_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_no-infs-fp-math3(i32 %i) [[NO_INFS_FPMATH_TRUE]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-nans-fp-math_callee0(i32 %i) "no-nans-fp-math"="false" {
+define i32 @no-nans-fp-math_callee0(i32 %i) {
   ret i32 %i
-; CHECK: @no-nans-fp-math_callee0(i32 %i) [[NO_NANS_FPMATH_FALSE:#[0-9]+]] {
+; CHECK: @no-nans-fp-math_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-nans-fp-math_callee1(i32 %i) "no-nans-fp-math"="true" {
+define i32 @no-nans-fp-math_callee1(i32 %i) "no-nans-fp-math" {
   ret i32 %i
 ; CHECK: @no-nans-fp-math_callee1(i32 %i) [[NO_NANS_FPMATH_TRUE:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-nans-fp-math0(i32 %i) "no-nans-fp-math"="false" {
+define i32 @test_no-nans-fp-math0(i32 %i) {
   %1 = call i32 @no-nans-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-nans-fp-math0(i32 %i) [[NO_NANS_FPMATH_FALSE]] {
+; CHECK: @test_no-nans-fp-math0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-nans-fp-math1(i32 %i) "no-nans-fp-math"="false" {
+define i32 @test_no-nans-fp-math1(i32 %i) {
   %1 = call i32 @no-nans-fp-math_callee1(i32 %i)
   ret i32 %1
-; CHECK: @test_no-nans-fp-math1(i32 %i) [[NO_NANS_FPMATH_FALSE]] {
+; CHECK: @test_no-nans-fp-math1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-nans-fp-math2(i32 %i) "no-nans-fp-math"="true" {
+define i32 @test_no-nans-fp-math2(i32 %i) "no-nans-fp-math" {
   %1 = call i32 @no-nans-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-nans-fp-math2(i32 %i) [[NO_NANS_FPMATH_FALSE]] {
+; CHECK: @test_no-nans-fp-math2(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-nans-fp-math3(i32 %i) "no-nans-fp-math"="true" {
+define i32 @test_no-nans-fp-math3(i32 %i) "no-nans-fp-math" {
   %1 = call i32 @no-nans-fp-math_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_no-nans-fp-math3(i32 %i) [[NO_NANS_FPMATH_TRUE]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-signed-zeros-fp-math_callee0(i32 %i) "no-signed-zeros-fp-math"="false" {
+define i32 @no-signed-zeros-fp-math_callee0(i32 %i) {
   ret i32 %i
-; CHECK: @no-signed-zeros-fp-math_callee0(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_FALSE:#[0-9]+]] {
+; CHECK: @no-signed-zeros-fp-math_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @no-signed-zeros-fp-math_callee1(i32 %i) "no-signed-zeros-fp-math"="true" {
+define i32 @no-signed-zeros-fp-math_callee1(i32 %i) "no-signed-zeros-fp-math" {
   ret i32 %i
 ; CHECK: @no-signed-zeros-fp-math_callee1(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_TRUE:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-signed-zeros-fp-math0(i32 %i) "no-signed-zeros-fp-math"="false" {
+define i32 @test_no-signed-zeros-fp-math0(i32 %i) {
   %1 = call i32 @no-signed-zeros-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-signed-zeros-fp-math0(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_FALSE]] {
+; CHECK: @test_no-signed-zeros-fp-math0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-signed-zeros-fp-math1(i32 %i) "no-signed-zeros-fp-math"="false" {
+define i32 @test_no-signed-zeros-fp-math1(i32 %i) {
   %1 = call i32 @no-signed-zeros-fp-math_callee1(i32 %i)
   ret i32 %1
-; CHECK: @test_no-signed-zeros-fp-math1(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_FALSE]] {
+; CHECK: @test_no-signed-zeros-fp-math1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-signed-zeros-fp-math2(i32 %i) "no-signed-zeros-fp-math"="true" {
+define i32 @test_no-signed-zeros-fp-math2(i32 %i) "no-signed-zeros-fp-math" {
   %1 = call i32 @no-signed-zeros-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_no-signed-zeros-fp-math2(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_FALSE]] {
+; CHECK: @test_no-signed-zeros-fp-math2(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_no-signed-zeros-fp-math3(i32 %i) "no-signed-zeros-fp-math"="true" {
+define i32 @test_no-signed-zeros-fp-math3(i32 %i) "no-signed-zeros-fp-math" {
   %1 = call i32 @no-signed-zeros-fp-math_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_no-signed-zeros-fp-math3(i32 %i) [[NO_SIGNED_ZEROS_FPMATH_TRUE]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @unsafe-fp-math_callee0(i32 %i) "unsafe-fp-math"="false" {
+define i32 @unsafe-fp-math_callee0(i32 %i) {
   ret i32 %i
-; CHECK: @unsafe-fp-math_callee0(i32 %i) [[UNSAFE_FPMATH_FALSE:#[0-9]+]] {
+; CHECK: @unsafe-fp-math_callee0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @unsafe-fp-math_callee1(i32 %i) "unsafe-fp-math"="true" {
+define i32 @unsafe-fp-math_callee1(i32 %i) "unsafe-fp-math" {
   ret i32 %i
 ; CHECK: @unsafe-fp-math_callee1(i32 %i) [[UNSAFE_FPMATH_TRUE:#[0-9]+]] {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_unsafe-fp-math0(i32 %i) "unsafe-fp-math"="false" {
+define i32 @test_unsafe-fp-math0(i32 %i) {
   %1 = call i32 @unsafe-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_unsafe-fp-math0(i32 %i) [[UNSAFE_FPMATH_FALSE]] {
+; CHECK: @test_unsafe-fp-math0(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_unsafe-fp-math1(i32 %i) "unsafe-fp-math"="false" {
+define i32 @test_unsafe-fp-math1(i32 %i) {
   %1 = call i32 @unsafe-fp-math_callee1(i32 %i)
   ret i32 %1
-; CHECK: @test_unsafe-fp-math1(i32 %i) [[UNSAFE_FPMATH_FALSE]] {
+; CHECK: @test_unsafe-fp-math1(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_unsafe-fp-math2(i32 %i) "unsafe-fp-math"="true" {
+define i32 @test_unsafe-fp-math2(i32 %i) "unsafe-fp-math" {
   %1 = call i32 @unsafe-fp-math_callee0(i32 %i)
   ret i32 %1
-; CHECK: @test_unsafe-fp-math2(i32 %i) [[UNSAFE_FPMATH_FALSE]] {
+; CHECK: @test_unsafe-fp-math2(i32 %i) {
 ; CHECK-NEXT: ret i32
 }
 
-define i32 @test_unsafe-fp-math3(i32 %i) "unsafe-fp-math"="true" {
+define i32 @test_unsafe-fp-math3(i32 %i) "unsafe-fp-math" {
   %1 = call i32 @unsafe-fp-math_callee1(i32 %i)
   ret i32 %1
 ; CHECK: @test_unsafe-fp-math3(i32 %i) [[UNSAFE_FPMATH_TRUE]] {
@@ -601,16 +601,11 @@ define i32 @test_unsafe-fp-math3(i32 %i) "unsafe-fp-math"="true" {
 }
 
 ; CHECK: attributes [[SLH]] = { speculative_load_hardening }
-; CHECK: attributes [[FPMAD_FALSE]] = { "less-precise-fpmad"="false" }
-; CHECK: attributes [[FPMAD_TRUE]] = { "less-precise-fpmad"="true" }
+; CHECK: attributes [[FPMAD_TRUE]] = { "less-precise-fpmad" }
 ; CHECK: attributes [[NOIMPLICITFLOAT]] = { noimplicitfloat }
-; CHECK: attributes [[NOUSEJUMPTABLES]] = { "no-jump-tables"="true" }
+; CHECK: attributes [[NOUSEJUMPTABLES]] = { "no-jump-tables" }
 ; CHECK: attributes [[NULLPOINTERISVALID]] = { null_pointer_is_valid }
-; CHECK: attributes [[NO_INFS_FPMATH_FALSE]] = { "no-infs-fp-math"="false" }
-; CHECK: attributes [[NO_INFS_FPMATH_TRUE]] = { "no-infs-fp-math"="true" }
-; CHECK: attributes [[NO_NANS_FPMATH_FALSE]] = { "no-nans-fp-math"="false" }
-; CHECK: attributes [[NO_NANS_FPMATH_TRUE]] = { "no-nans-fp-math"="true" }
-; CHECK: attributes [[NO_SIGNED_ZEROS_FPMATH_FALSE]] = { "no-signed-zeros-fp-math"="false" }
-; CHECK: attributes [[NO_SIGNED_ZEROS_FPMATH_TRUE]] = { "no-signed-zeros-fp-math"="true" }
-; CHECK: attributes [[UNSAFE_FPMATH_FALSE]] = { "unsafe-fp-math"="false" }
-; CHECK: attributes [[UNSAFE_FPMATH_TRUE]] = { "unsafe-fp-math"="true" }
+; CHECK: attributes [[NO_INFS_FPMATH_TRUE]] = { "no-infs-fp-math" }
+; CHECK: attributes [[NO_NANS_FPMATH_TRUE]] = { "no-nans-fp-math" }
+; CHECK: attributes [[NO_SIGNED_ZEROS_FPMATH_TRUE]] = { "no-signed-zeros-fp-math" }
+; CHECK: attributes [[UNSAFE_FPMATH_TRUE]] = { "unsafe-fp-math" }

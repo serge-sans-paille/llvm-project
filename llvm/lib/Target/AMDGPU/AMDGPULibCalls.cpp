@@ -475,8 +475,7 @@ bool AMDGPULibCalls::isUnsafeMath(const CallInst *CI) const {
     if (Op->isFast())
       return true;
   const Function *F = CI->getParent()->getParent();
-  Attribute Attr = F->getFnAttribute("unsafe-fp-math");
-  return Attr.getValueAsString() == "true";
+  return F->hasFnAttribute("unsafe-fp-math");
 }
 
 bool AMDGPULibCalls::useNativeFunc(const StringRef F) const {

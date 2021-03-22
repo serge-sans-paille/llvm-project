@@ -589,10 +589,8 @@ void ARMAsmPrinter::emitEndOfAsmFile(Module &M) {
  // Returns true if all functions have the same function attribute value.
  // It also returns true when the module has no functions.
 static bool checkFunctionsAttributeConsistency(const Module &M, StringRef Attr,
-                                               StringRef Value) {
-   return !any_of(M, [&](const Function &F) {
-       return F.getFnAttribute(Attr).getValueAsString() != Value;
-   });
+                                               bool Value) {
+   return all_of(M, [&](const Function &F) { return F.hasFnAttribute(Attr) == Value;});
 }
 // Returns true if all functions have the same denormal mode.
 // It also returns true when the module has no functions.
@@ -701,8 +699,7 @@ void ARMAsmPrinter::emitAttributes() {
   }
 
   // Set FP exceptions and rounding
-  if (checkFunctionsAttributeConsistency(*MMI->getModule(),
-                                         "no-trapping-math", "true") ||
+  if (checkFunctionsAttributeConsistency(*MMI->getModule(), "no-trapping-math") ||
       TM.Options.NoTrappingFPMath)
     ATS.emitAttribute(ARMBuildAttrs::ABI_FP_exceptions,
                       ARMBuildAttrs::Not_Allowed);

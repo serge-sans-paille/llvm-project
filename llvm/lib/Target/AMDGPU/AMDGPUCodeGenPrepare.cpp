@@ -808,8 +808,7 @@ bool AMDGPUCodeGenPrepare::visitFDiv(BinaryOperator &FDiv) {
 }
 
 static bool hasUnsafeFPMath(const Function &F) {
-  Attribute Attr = F.getFnAttribute("unsafe-fp-math");
-  return Attr.getValueAsString() == "true";
+  return F.hasFnAttribute("unsafe-fp-math");
 }
 
 static std::pair<Value*, Value*> getMul64(IRBuilder<> &Builder,

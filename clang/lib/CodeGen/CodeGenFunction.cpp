@@ -173,11 +173,10 @@ void CodeGenFunction::CGFPOptionsRAII::ConstructorHelper(FPOptions FPFeatures) {
          "FPConstrained should be enabled on entire function");
 
   auto mergeFnAttrValue = [&](StringRef Name, bool Value) {
-    auto OldValue =
-        CGF.CurFn->getFnAttribute(Name).getValueAsString() == "true";
+    auto OldValue = CGF.CurFn->hasFnAttribute(Name);
     auto NewValue = OldValue & Value;
-    if (OldValue != NewValue)
-      CGF.CurFn->addFnAttr(Name, llvm::toStringRef(NewValue));
+    if (OldValue && !NewValue)
+      CGF.CurFn->removeFnAttr(Name);
   };
   mergeFnAttrValue("no-infs-fp-math", FPFeatures.getNoHonorInfs());
   mergeFnAttrValue("no-nans-fp-math", FPFeatures.getNoHonorNaNs());
@@ -861,7 +860,7 @@ void CodeGenFunction::StartFunction(GlobalDecl GD, QualType RetTy,
 
   // Add no-jump-tables value.
   if (CGM.getCodeGenOpts().NoUseJumpTables)
-    Fn->addFnAttr("no-jump-tables", "true");
+    Fn->addFnAttr("no-jump-tables");
 
   // Add no-inline-line-tables value.
   if (CGM.getCodeGenOpts().NoInlineLineTables)

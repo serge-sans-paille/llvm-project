@@ -2066,13 +2066,15 @@ struct EnumAttr {
 struct StrBoolAttr {
   static bool isSet(const Function &Fn,
                     StringRef Kind) {
-    auto A = Fn.getFnAttribute(Kind);
-    return A.getValueAsString().equals("true");
+    return Fn.hasFnAttribute(Kind);
   }
 
   static void set(Function &Fn,
                   StringRef Kind, bool Val) {
-    Fn.addFnAttr(Kind, Val ? "true" : "false");
+    if (Val)
+      Fn.addFnAttr(Kind);
+    else
+      Fn.removeFnAttr(Kind);
   }
 };
 

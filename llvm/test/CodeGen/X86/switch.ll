@@ -31,7 +31,7 @@ return: ret void
 }
 
 ; Should never be lowered as a jump table because of the attribute
-define void @basic_nojumptable(i32 %x) "no-jump-tables"="true" {
+define void @basic_nojumptable(i32 %x) "no-jump-tables" {
 entry:
   switch i32 %x, label %return [
     i32 3, label %bb0
@@ -50,7 +50,7 @@ return: ret void
 }
 
 ; Should be lowered as a jump table because of the attribute
-define void @basic_nojumptable_false(i32 %x) "no-jump-tables"="false" {
+define void @basic_nojumptable_false(i32 %x) {
 entry:
   switch i32 %x, label %return [
     i32 3, label %bb0

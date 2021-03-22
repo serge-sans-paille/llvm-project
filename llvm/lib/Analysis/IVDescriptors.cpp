@@ -623,10 +623,8 @@ bool RecurrenceDescriptor::isReductionPHI(PHINode *Phi, Loop *TheLoop,
   BasicBlock *Header = TheLoop->getHeader();
   Function &F = *Header->getParent();
   FastMathFlags FMF;
-  FMF.setNoNaNs(
-      F.getFnAttribute("no-nans-fp-math").getValueAsString() == "true");
-  FMF.setNoSignedZeros(
-      F.getFnAttribute("no-signed-zeros-fp-math").getValueAsString() == "true");
+  FMF.setNoNaNs(F.hasFnAttribute("no-nans-fp-math"));
+  FMF.setNoSignedZeros(F.hasFnAttribute("no-signed-zeros-fp-math"));
 
   if (AddReductionVar(Phi, RecurKind::Add, TheLoop, FMF, RedDes, DB, AC, DT)) {
     LLVM_DEBUG(dbgs() << "Found an ADD reduction PHI." << *Phi << "\n");
