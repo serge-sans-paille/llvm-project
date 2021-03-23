@@ -1785,7 +1785,7 @@ void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
     FuncAttrs.addAttribute("frame-pointer", FpKind);
 
     if (CodeGenOpts.LessPreciseFPMAD)
-      FuncAttrs.addAttribute("less-precise-fpmad", "true");
+      FuncAttrs.addAttribute("less-precise-fpmad");
 
     if (CodeGenOpts.NullPointerIsValid)
       FuncAttrs.addAttribute(llvm::Attribute::NullPointerIsValid);
@@ -1800,7 +1800,7 @@ void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
     }
 
     if (LangOpts.getFPExceptionMode() == LangOptions::FPE_Ignore)
-      FuncAttrs.addAttribute("no-trapping-math", "true");
+      FuncAttrs.addAttribute("no-trapping-math");
 
     // Strict (compliant) code is the default, so only add this attribute to
     // indicate that we are trying to workaround a problem case.
@@ -1810,17 +1810,17 @@ void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
     // TODO: Are these all needed?
     // unsafe/inf/nan/nsz are handled by instruction-level FastMathFlags.
     if (LangOpts.NoHonorInfs)
-      FuncAttrs.addAttribute("no-infs-fp-math", "true");
+      FuncAttrs.addAttribute("no-infs-fp-math");
     if (LangOpts.NoHonorNaNs)
-      FuncAttrs.addAttribute("no-nans-fp-math", "true");
+      FuncAttrs.addAttribute("no-nans-fp-math");
     if (LangOpts.UnsafeFPMath)
-      FuncAttrs.addAttribute("unsafe-fp-math", "true");
+      FuncAttrs.addAttribute("unsafe-fp-math");
     if (CodeGenOpts.SoftFloat)
       FuncAttrs.addAttribute("use-soft-float", "true");
     FuncAttrs.addAttribute("stack-protector-buffer-size",
                            llvm::utostr(CodeGenOpts.SSPBufferSize));
     if (LangOpts.NoSignedZero)
-      FuncAttrs.addAttribute("no-signed-zeros-fp-math", "true");
+      FuncAttrs.addAttribute("no-signed-zeros-fp-math");
 
     // TODO: Reciprocal estimate codegen options should apply to instructions?
     const std::vector<std::string> &Recips = CodeGenOpts.Reciprocals;

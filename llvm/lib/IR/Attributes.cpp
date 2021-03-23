@@ -1661,6 +1661,17 @@ void AttrBuilder::clear() {
 
 AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
   if (Attr.isStringAttribute()) {
+
+#ifndef NDEBUG
+    // ensure StrBoolAttr are either set or unset, without any value set
+#define GET_ATTR_NAMES
+#define ATTRIBUTE_STRBOOL(ENUM_NAME, DISPLAY_NAME)                             \
+  if (Attr.getKindAsString() == #DISPLAY_NAME)                                 \
+    assert(Attr.getValueAsString().empty() && "StrBoolAttr doens't need "      \
+                                              "value");
+#include "llvm/IR/Attributes.inc"
+#endif
+
     addAttribute(Attr.getKindAsString(), Attr.getValueAsString());
     return *this;
   }
@@ -2164,13 +2175,15 @@ struct EnumAttr {
 struct StrBoolAttr {
   static bool isSet(const Function &Fn,
                     StringRef Kind) {
-    auto A = Fn.getFnAttribute(Kind);
-    return A.getValueAsString().equals("true");
+    return Fn.hasFnAttribute(Kind);
   }
 
   static void set(Function &Fn,
                   StringRef Kind, bool Val) {
-    Fn.addFnAttr(Kind, Val ? "true" : "false");
+    if (Val)
+      Fn.addFnAttr(Kind);
+    else
+      Fn.removeFnAttr(Kind);
   }
 };
 

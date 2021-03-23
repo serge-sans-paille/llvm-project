@@ -4452,6 +4452,22 @@ std::string llvm::UpgradeDataLayoutString(StringRef DL, StringRef TT) {
 }
 
 void llvm::UpgradeAttributes(AttrBuilder &B) {
+  // StrBoolAttributes are either set with no value, or unset
+  SmallVector<StringRef> ToRemove;
+  for (auto &KV : B.td_attrs()) {
+#define GET_ATTR_NAMES
+#define ATTRIBUTE_STRBOOL(ENUM_NAME, DISPLAY_NAME)                             \
+  if (KV.first == #DISPLAY_NAME) {                                             \
+    if (KV.second == "false")                                                  \
+      ToRemove.push_back(KV.first);                                            \
+    else if (KV.second == "true")                                              \
+      KV.second = "";                                                          \
+  }
+#include "llvm/IR/Attributes.inc"
+  }
+  for (auto const &AttrName : ToRemove)
+    B.removeAttribute(AttrName);
+
   StringRef FramePointer;
   if (B.contains("no-frame-pointer-elim")) {
     // The value can be "true" or "false".
