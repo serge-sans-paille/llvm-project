@@ -1252,9 +1252,12 @@ unsigned SourceManager::getPresumedColumnNumber(SourceLocation Loc,
   return PLoc.getColumn();
 }
 
-#ifdef __SSE2__
-#include <emmintrin.h>
-#endif
+
+template<class T>
+static constexpr inline bool hasless(T x, T n) {
+  // See http://graphics.stanford.edu/~seander/bithacks.html#HasLessInWord
+  return (((x)-~static_cast<T)>(0)/255*(n))&~(x)&(~static_cast<T>(0)/255*128);
+}
 
 LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
                                          llvm::BumpPtrAllocator &Alloc) {
@@ -1269,9 +1272,43 @@ LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
   const unsigned char *End = (const unsigned char *)Buffer.getBufferEnd();
   const std::size_t BufLen = End - Buf;
   unsigned I = 0;
+  uintmax_t Word;
+
+  constexpr char NewLineBound = std::max('\r', '\n');
+
+  // scan sizeof(Word) bytes at a time for new lines.
+  // This is much faster than scanning each byte independently.
+  if(BufLen > sizeof(Word)) {
+    while (I < BufLen - sizeof(Word)) {
+      memcpy(&Word, Buf + I, sizeof(Word));
+      // no new line => jump over sizeof(Word) bytes.
+      if(!hasless(Word, 1 + NewLineBound)) {
+        I += sizeof(Word);
+        continue;
+      }
+
+      // Otherwise scan for the next newline - it's very likely there's one.
+      for(unsigned J = I + sizeof(Word); I < J; ++I) {
+        if (Buf[I] == '\n') {
+          LineOffsets.push_back(I + 1);
+	  ++I;
+	  break;
+        } else if (Buf[I] == '\r') {
+          // If this is \r\n, skip both characters.
+          if (I + 1 < BufLen && Buf[I + 1] == '\n')
+            ++I;
+          LineOffsets.push_back(I + 1);
+	  ++I;
+	  break;
+        }
+      }
+    }
+  }
+
+  // Handle tail using a regular check.
   while (I < BufLen) {
     // Use a fast check to catch both newlines
-    if (LLVM_UNLIKELY(Buf[I] <= std::max('\n', '\r'))) {
+    if (LLVM_UNLIKELY(Buf[I] <= NewLineBound)) {
       if (Buf[I] == '\n') {
         LineOffsets.push_back(I + 1);
       } else if (Buf[I] == '\r') {
