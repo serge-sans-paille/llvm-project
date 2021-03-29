@@ -1259,80 +1259,85 @@ static constexpr inline bool hasless(T x, unsigned char n) {
   return ((x)-~static_cast<T>(0)/255*(n))&~(x)&(~static_cast<T>(0)/255*128);
 }
 
-LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
-                                         llvm::BumpPtrAllocator &Alloc) {
+#ifdef __SSE2__
+#include <emmintrin.h>
+#include <immintrin.h>
+#ifdef __tAVX2__
+#define VBROADCAST(v) _mm256_set1_epi8(v)
+#define VLOAD(v) _mm256_loadu_si256((const __m256i*)(v))
+#define VOR(x, y) _mm256_or_si256(x, y)
+#define VEQ(x, y) _mm256_cmpeq_epi8(x, y)
+#define VMOVEMASK(v) _mm256_movemask_epi8(v)
+#else
+#define VBROADCAST(v) _mm_set1_epi8(v)
+#define VLOAD(v) _mm_loadu_si128((const __m128i*)(v))
+#define VOR(x, y) _mm_or_si128(x, y)
+#define VEQ(x, y) _mm_cmpeq_epi8(x, y)
+#define VMOVEMASK(v) _mm_movemask_epi8(v)
+#endif
+#endif
 
-	// Find the file offsets of all of the *physical* source lines.  This does
-	// not look at trigraphs, escaped newlines, or anything else tricky.
-	SmallVector<unsigned, 256> LineOffsets;
+LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
+		                         llvm::BumpPtrAllocator &Alloc) {
+
+  SmallVector<unsigned, 256> LineOffsets;
 
   // Line #1 starts at char 0.
   LineOffsets.push_back(0);
 
+  // Find the file offsets of all of the *physical* source lines.  This does
+  // not look at trigraphs, escaped newlines, or anything else tricky.
+
   const unsigned char *Buf = (const unsigned char *)Buffer.getBufferStart();
   const unsigned char *End = (const unsigned char *)Buffer.getBufferEnd();
   const std::size_t BufLen = End - Buf;
+
+  // Line #1 starts at char 0.
   unsigned I = 0;
-  constexpr char NewLineBound = std::max('\r', '\n');
-#if 1
-  uintmax_t Word;
-#define likelyhasbetween(x,m,n) \
-  ((((x)-~0UL/255*(n))&~(x)&((x)&~0UL/255*127)+~0UL/255*(127-(m)))&~0UL/255*128)
 
+#ifdef __SSE2__
+  const auto CRs = VBROADCAST('\r');
+  const auto LFs = VBROADCAST('\n');
 
-  // scan sizeof(Word) bytes at a time for new lines.
-  // This is much faster than scanning each byte independently.
-  if(BufLen > sizeof(Word)) {
-    while (I < BufLen - sizeof(Word)) {
-      memcpy(&Word, Buf + I, sizeof(Word));
-      // no new line => jump over sizeof(Word) bytes.
-      //if(!hasless(Word, 1 + NewLineBound)) {
-      if(!likelyhasbetween(Word, '\n'-1,'\r'+2)) {
-        I += sizeof(Word);
-        continue;
+    while (I+ sizeof(CRs) <= BufLen) {
+      const auto Chunk = VLOAD(Buf + I);
+      const auto Cmp = VOR(VEQ(Chunk, LFs), VEQ(CRs, Chunk));
+      unsigned Mask = VMOVEMASK(Cmp);
+
+      unsigned J = I;
+      while (Mask) {
+	unsigned N = llvm::countTrailingZeros(Mask);
+        J += N;
+	Mask >>= N;
+	if (Buf[J] == '\n') {
+	  LineOffsets.push_back(J + 1);
+	} else {
+	  if (J+1 < BufLen && Buf[J+1] == '\n') {
+	    ++J;
+	    Mask >>= 1;
+	  }
+	  LineOffsets.push_back(J + 1);
+	}
+	++J;
+	Mask >>= 1;
       }
-
-      // Otherwise scan for the next newline - it's very likely there's one.
-scan:
-      switch(Buf[I]) {
-	      case '\n':
-		      LineOffsets.push_back(I + 1);
-		      ++I;
-		      break;
-	      case '\r':
-		      // If this is \r\n, skip both characters.
-		      if (I + 1 < BufLen && Buf[I + 1] == '\n')
-			      ++I;
-		      LineOffsets.push_back(I + 1);
-		      ++I;
-		      break;
-	      case 11:
-	      case 12:
-	      case 14:
-		      ++I; break;
-	      default:
-		      ++I;
-		      goto scan;
-      }
+      I += sizeof(CRs);
     }
-  }
 #endif
 
   // Handle tail using a regular check.
   while (I < BufLen) {
-    // Use a fast check to catch both newlines
-    if (LLVM_UNLIKELY(Buf[I] <= NewLineBound)) {
-      if (Buf[I] == '\n') {
-        LineOffsets.push_back(I + 1);
-      } else if (Buf[I] == '\r') {
-        // If this is \r\n, skip both characters.
-        if (I + 1 < BufLen && Buf[I + 1] == '\n')
-          ++I;
-        LineOffsets.push_back(I + 1);
-      }
+    if (Buf[I] == '\n') {
+      LineOffsets.push_back(I + 1);
+    } else if (Buf[I] == '\r') {
+      // If this is \r\n, skip both characters.
+      if (I + 1 < BufLen && Buf[I + 1] == '\n')
+        ++I;
+      LineOffsets.push_back(I + 1);
     }
     ++I;
   }
+
 
   return LineOffsetMapping(LineOffsets, Alloc);
 }
@@ -1342,6 +1347,7 @@ LineOffsetMapping::LineOffsetMapping(ArrayRef<unsigned> LineOffsets,
     : Storage(Alloc.Allocate<unsigned>(LineOffsets.size() + 1)) {
   Storage[0] = LineOffsets.size();
   std::copy(LineOffsets.begin(), LineOffsets.end(), Storage + 1);
+
 }
 
 /// getLineNumber - Given a SourceLocation, return the spelling line number
@@ -1382,7 +1388,8 @@ unsigned SourceManager::getLineNumber(FileID FID, unsigned FilePos,
       return 1;
 
     Content->SourceLineCache =
-        LineOffsetMapping::get(*Buffer, ContentCacheAlloc);
+	    LineOffsetMapping::get(*Buffer, ContentCacheAlloc);
+
   } else if (Invalid)
     *Invalid = false;
 
@@ -1730,7 +1737,7 @@ SourceLocation SourceManager::translateLineCol(FileID FID,
     return SourceLocation();
   if (!Content->SourceLineCache)
     Content->SourceLineCache =
-        LineOffsetMapping::get(*Buffer, ContentCacheAlloc);
+	    LineOffsetMapping::get(*Buffer, ContentCacheAlloc);
 
   if (Line > Content->SourceLineCache.size()) {
     unsigned Size = Buffer->getBufferSize();
