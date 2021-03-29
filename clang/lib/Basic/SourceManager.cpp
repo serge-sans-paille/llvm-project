@@ -1254,16 +1254,17 @@ unsigned SourceManager::getPresumedColumnNumber(SourceLocation Loc,
 
 
 template<class T>
-static constexpr inline bool hasless(T x, T n) {
+static constexpr inline bool hasless(T x, unsigned char n) {
   // See http://graphics.stanford.edu/~seander/bithacks.html#HasLessInWord
-  return (((x)-~static_cast<T)>(0)/255*(n))&~(x)&(~static_cast<T>(0)/255*128);
+  return ((x)-~static_cast<T>(0)/255*(n))&~(x)&(~static_cast<T>(0)/255*128);
 }
 
 LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
                                          llvm::BumpPtrAllocator &Alloc) {
-  // Find the file offsets of all of the *physical* source lines.  This does
-  // not look at trigraphs, escaped newlines, or anything else tricky.
-  SmallVector<unsigned, 256> LineOffsets;
+
+	// Find the file offsets of all of the *physical* source lines.  This does
+	// not look at trigraphs, escaped newlines, or anything else tricky.
+	SmallVector<unsigned, 256> LineOffsets;
 
   // Line #1 starts at char 0.
   LineOffsets.push_back(0);
@@ -1272,9 +1273,12 @@ LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
   const unsigned char *End = (const unsigned char *)Buffer.getBufferEnd();
   const std::size_t BufLen = End - Buf;
   unsigned I = 0;
-  uintmax_t Word;
-
   constexpr char NewLineBound = std::max('\r', '\n');
+#if 1
+  uintmax_t Word;
+#define likelyhasbetween(x,m,n) \
+  ((((x)-~0UL/255*(n))&~(x)&((x)&~0UL/255*127)+~0UL/255*(127-(m)))&~0UL/255*128)
+
 
   // scan sizeof(Word) bytes at a time for new lines.
   // This is much faster than scanning each byte independently.
@@ -1282,28 +1286,37 @@ LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
     while (I < BufLen - sizeof(Word)) {
       memcpy(&Word, Buf + I, sizeof(Word));
       // no new line => jump over sizeof(Word) bytes.
-      if(!hasless(Word, 1 + NewLineBound)) {
+      //if(!hasless(Word, 1 + NewLineBound)) {
+      if(!likelyhasbetween(Word, '\n'-1,'\r'+2)) {
         I += sizeof(Word);
         continue;
       }
 
       // Otherwise scan for the next newline - it's very likely there's one.
-      for(unsigned J = I + sizeof(Word); I < J; ++I) {
-        if (Buf[I] == '\n') {
-          LineOffsets.push_back(I + 1);
-	  ++I;
-	  break;
-        } else if (Buf[I] == '\r') {
-          // If this is \r\n, skip both characters.
-          if (I + 1 < BufLen && Buf[I + 1] == '\n')
-            ++I;
-          LineOffsets.push_back(I + 1);
-	  ++I;
-	  break;
-        }
+scan:
+      switch(Buf[I]) {
+	      case '\n':
+		      LineOffsets.push_back(I + 1);
+		      ++I;
+		      break;
+	      case '\r':
+		      // If this is \r\n, skip both characters.
+		      if (I + 1 < BufLen && Buf[I + 1] == '\n')
+			      ++I;
+		      LineOffsets.push_back(I + 1);
+		      ++I;
+		      break;
+	      case 11:
+	      case 12:
+	      case 14:
+		      ++I; break;
+	      default:
+		      ++I;
+		      goto scan;
       }
     }
   }
+#endif
 
   // Handle tail using a regular check.
   while (I < BufLen) {
