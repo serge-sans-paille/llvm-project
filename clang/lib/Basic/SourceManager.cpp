@@ -1252,12 +1252,18 @@ unsigned SourceManager::getPresumedColumnNumber(SourceLocation Loc,
   return PLoc.getColumn();
 }
 
-#ifdef __SSE2__
-#include <emmintrin.h>
-#endif
+template <class T>
+static constexpr inline bool likelyhasbetween(T x, unsigned char m,
+                                              unsigned char n) {
+  // see http://graphics.stanford.edu/~seander/bithacks.html#HasBetweenInWord
+  return (((x) - ~0UL / 255 * (n)) & ~(x) &
+          ((x) & ~0UL / 255 * 127) + ~0UL / 255 * (127 - (m))) &
+         ~0UL / 255 * 128;
+}
 
 LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
                                          llvm::BumpPtrAllocator &Alloc) {
+
   // Find the file offsets of all of the *physical* source lines.  This does
   // not look at trigraphs, escaped newlines, or anything else tricky.
   SmallVector<unsigned, 256> LineOffsets;
@@ -1269,9 +1275,53 @@ LineOffsetMapping LineOffsetMapping::get(llvm::MemoryBufferRef Buffer,
   const unsigned char *End = (const unsigned char *)Buffer.getBufferEnd();
   const std::size_t BufLen = End - Buf;
   unsigned I = 0;
+  constexpr char NewLineBound = std::max('\r', '\n');
+  uintmax_t Word;
+
+  // scan sizeof(Word) bytes at a time for new lines.
+  // This is much faster than scanning each byte independently.
+  if (BufLen > sizeof(Word)) {
+    while (I < BufLen - sizeof(Word)) {
+      memcpy(&Word, Buf + I, sizeof(Word));
+      // no new line => jump over sizeof(Word) bytes.
+      if (!likelyhasbetween(Word, '\n' - 1, '\r' + 1)) {
+        I += sizeof(Word);
+        continue;
+      }
+
+      // Otherwise scan for the next newline - it's very likely there's one.
+      // Note that according to
+      // http://graphics.stanford.edu/~seander/bithacks.html#HasBetweenInWord,
+      // likelyhasbetween may have false positive for the upper bound.
+    scan:
+      switch (Buf[I]) {
+      case '\n':
+        LineOffsets.push_back(I + 1);
+        ++I;
+        break;
+      case '\r':
+        // If this is \r\n, skip both characters.
+        if (I + 1 < BufLen && Buf[I + 1] == '\n')
+          ++I;
+        LineOffsets.push_back(I + 1);
+        ++I;
+        break;
+      case '\n' + 1:
+      case '\n' + 2:
+      case '\r' + 1:
+        ++I;
+        break;
+      default:
+        ++I;
+        goto scan;
+      }
+    }
+  }
+
+  // Handle tail using a regular check.
   while (I < BufLen) {
     // Use a fast check to catch both newlines
-    if (LLVM_UNLIKELY(Buf[I] <= std::max('\n', '\r'))) {
+    if (LLVM_UNLIKELY(Buf[I] <= NewLineBound)) {
       if (Buf[I] == '\n') {
         LineOffsets.push_back(I + 1);
       } else if (Buf[I] == '\r') {
