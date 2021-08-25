@@ -53,7 +53,7 @@ uint8_t MipsABIFlagsSection::getCPR1SizeValue() {
   return (uint8_t)CPR1Size;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCStreamer &operator<<(MCStreamer &OS, MipsABIFlagsSection &ABIFlagsSection) {
   // Write out a Elf_Internal_ABIFlags_v0 struct
@@ -71,4 +71,4 @@ MCStreamer &operator<<(MCStreamer &OS, MipsABIFlagsSection &ABIFlagsSection) {
   return OS;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

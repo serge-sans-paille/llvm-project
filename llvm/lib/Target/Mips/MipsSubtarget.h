@@ -31,7 +31,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "MipsGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 class MipsTargetMachine;
@@ -406,6 +406,6 @@ public:
   const RegisterBankInfo *getRegBankInfo() const override;
   InstructionSelector *getInstructionSelector() const override;
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

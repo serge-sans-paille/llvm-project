@@ -26,9 +26,9 @@
 
 #define DEBUG_TYPE "bpf-preserve-di-type"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 constexpr StringRef BPFCoreSharedInfo::TypeIdAttr;
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 using namespace llvm;
 

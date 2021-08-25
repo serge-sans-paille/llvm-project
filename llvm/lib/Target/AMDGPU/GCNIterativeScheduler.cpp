@@ -19,14 +19,14 @@ using namespace llvm;
 
 #define DEBUG_TYPE "machine-scheduler"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::vector<const SUnit *> makeMinRegSchedule(ArrayRef<const SUnit *> TopRoots,
                                               const ScheduleDAG &DAG);
 
   std::vector<const SUnit*> makeGCNILPScheduler(ArrayRef<const SUnit*> BotRoots,
     const ScheduleDAG &DAG);
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 // shim accessors for different order containers
 static inline MachineInstr *getMachineInstr(MachineInstr *MI) {

@@ -22,7 +22,7 @@
 #include "llvm/Target/TargetMachine.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SystemZTargetMachine : public LLVMTargetMachine {
   std::unique_ptr<TargetLoweringObjectFile> TLOF;
@@ -53,6 +53,6 @@ public:
   bool targetSchedulesPostRAScheduling() const override { return true; };
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_SYSTEMZ_SYSTEMZTARGETMACHINE_H

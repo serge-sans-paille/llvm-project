@@ -27,8 +27,8 @@ using namespace llvm;
 STATISTIC(MemFoldCopies, "Number of copies inserted before folded mem ops.");
 STATISTIC(LOCRMuxJumps, "Number of LOCRMux jump-sequences (lower is better)");
 
-namespace llvm {
-  void initializeSystemZPostRewritePass(PassRegistry&);
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeSystemZPostRewritePass(PassRegistry &);
 }
 
 namespace {

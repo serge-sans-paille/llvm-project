@@ -16,8 +16,8 @@
 #include "ARMBaseInstrInfo.h"
 #include "ARMRegisterInfo.h"
 
-namespace llvm {
-  class ARMSubtarget;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class ARMSubtarget;
 
 class ARMInstrInfo : public ARMBaseInstrInfo {
   ARMRegisterInfo RI;
@@ -41,6 +41,6 @@ private:
   void expandLoadStackGuard(MachineBasicBlock::iterator MI) const override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

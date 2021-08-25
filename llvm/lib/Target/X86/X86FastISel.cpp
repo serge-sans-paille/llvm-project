@@ -4027,10 +4027,9 @@ unsigned X86FastISel::fastEmitInst_rrrr(unsigned MachineInstOpcode,
   return ResultReg;
 }
 
-
-namespace llvm {
-  FastISel *X86::createFastISel(FunctionLoweringInfo &funcInfo,
-                                const TargetLibraryInfo *libInfo) {
-    return new X86FastISel(funcInfo, libInfo);
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+FastISel *X86::createFastISel(FunctionLoweringInfo &funcInfo,
+                              const TargetLibraryInfo *libInfo) {
+  return new X86FastISel(funcInfo, libInfo);
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY

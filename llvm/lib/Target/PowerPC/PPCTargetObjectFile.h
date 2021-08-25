@@ -13,21 +13,21 @@
 #include "llvm/Target/TargetLoweringObjectFile.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  /// PPC64LinuxTargetObjectFile - This implementation is used for
-  /// 64-bit PowerPC Linux.
-  class PPC64LinuxTargetObjectFile : public TargetLoweringObjectFileELF {
+/// PPC64LinuxTargetObjectFile - This implementation is used for
+/// 64-bit PowerPC Linux.
+class PPC64LinuxTargetObjectFile : public TargetLoweringObjectFileELF {
 
-    void Initialize(MCContext &Ctx, const TargetMachine &TM) override;
+  void Initialize(MCContext &Ctx, const TargetMachine &TM) override;
 
-    MCSection *SelectSectionForGlobal(const GlobalObject *GO, SectionKind Kind,
-                                      const TargetMachine &TM) const override;
+  MCSection *SelectSectionForGlobal(const GlobalObject *GO, SectionKind Kind,
+                                    const TargetMachine &TM) const override;
 
-    /// Describe a TLS variable address within debug info.
-    const MCExpr *getDebugThreadLocalSymbol(const MCSymbol *Sym) const override;
+  /// Describe a TLS variable address within debug info.
+  const MCExpr *getDebugThreadLocalSymbol(const MCSymbol *Sym) const override;
   };
 
-}  // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

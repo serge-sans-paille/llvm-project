@@ -17,7 +17,7 @@
 #include "AMDGPUISelLowering.h"
 #include "AMDGPUArgumentUsageInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNSubtarget;
 class SIMachineFunctionInfo;
@@ -487,6 +487,6 @@ public:
                                               Type *Ty) const;
 };
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

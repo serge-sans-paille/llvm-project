@@ -12,7 +12,7 @@
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/MCSubtargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class RISCVTargetStreamer : public MCTargetStreamer {
 public:
@@ -59,5 +59,5 @@ public:
   void emitDirectiveOptionNoRelax() override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

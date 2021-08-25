@@ -28,7 +28,7 @@
 #include <memory>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SUnit;
 
@@ -270,6 +270,6 @@ protected:
 #endif
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONMACHINESCHEDULER_H

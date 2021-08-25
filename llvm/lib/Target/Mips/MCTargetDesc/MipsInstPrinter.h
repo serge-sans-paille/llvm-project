@@ -14,7 +14,7 @@
 #define LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSINSTPRINTER_H
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 // These enumeration declarations were originally in MipsInstrInfo.h but
 // had to be moved here to avoid circular dependencies between
 // LLVMMipsCodeGen and LLVMMipsAsmPrinter.
@@ -113,6 +113,6 @@ private:
   void printSaveRestore(const MCInst *MI, raw_ostream &O);
   void printRegisterList(const MCInst *MI, int opNum, raw_ostream &O);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

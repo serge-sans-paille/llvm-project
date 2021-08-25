@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MipsTargetMachine;
   class MipsTargetObjectFile : public TargetLoweringObjectFileELF {
     MCSection *SmallDataSection;
@@ -44,6 +44,6 @@ class MipsTargetMachine;
     /// Describe a TLS variable address within debug info.
     const MCExpr *getDebugThreadLocalSymbol(const MCSymbol *Sym) const override;
   };
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

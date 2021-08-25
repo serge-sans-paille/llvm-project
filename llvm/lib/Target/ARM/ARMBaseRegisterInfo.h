@@ -24,7 +24,7 @@
 #define GET_REGINFO_HEADER
 #include "ARMGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LiveIntervals;
 
@@ -211,6 +211,6 @@ public:
                       LiveIntervals &LIS) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMBASEREGISTERINFO_H

@@ -139,10 +139,10 @@ void ExportClustering::apply(ScheduleDAGInstrs *DAG) {
 
 } // end namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<ScheduleDAGMutation> createAMDGPUExportClusteringDAGMutation() {
   return std::make_unique<ExportClustering>();
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

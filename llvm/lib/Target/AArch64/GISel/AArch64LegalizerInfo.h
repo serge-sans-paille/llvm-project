@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/GlobalISel/LegalizerHelper.h"
 #include "llvm/CodeGen/GlobalISel/LegalizerInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LLVMContext;
 class AArch64Subtarget;
@@ -49,5 +49,5 @@ private:
   bool legalizeVectorTrunc(MachineInstr &MI, LegalizerHelper &Helper) const;
   const AArch64Subtarget *ST;
 };
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

@@ -13,11 +13,12 @@
 #ifndef LLVM_LIB_TARGET_VE_MCTARGETDESC_VEMCTARGETDESC_H
 #define LLVM_LIB_TARGET_VE_MCTARGETDESC_VEMCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -38,7 +39,7 @@ MCAsmBackend *createVEAsmBackend(const Target &T, const MCSubtargetInfo &STI,
                                  const MCRegisterInfo &MRI,
                                  const MCTargetOptions &Options);
 std::unique_ptr<MCObjectTargetWriter> createVEELFObjectWriter(uint8_t OSABI);
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for VE registers.  This defines a mapping from
 // register name to register number.

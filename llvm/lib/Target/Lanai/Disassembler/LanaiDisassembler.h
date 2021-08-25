@@ -17,7 +17,7 @@
 
 #include "llvm/MC/MCDisassembler/MCDisassembler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiDisassembler : public MCDisassembler {
 public:
@@ -31,6 +31,6 @@ public:
                  uint64_t Address, raw_ostream &CStream) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_DISASSEMBLER_LANAIDISASSEMBLER_H

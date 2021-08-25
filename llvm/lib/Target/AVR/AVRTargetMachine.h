@@ -22,7 +22,7 @@
 #include "AVRSelectionDAGInfo.h"
 #include "AVRSubtarget.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// A generic AVR implementation.
 class AVRTargetMachine : public LLVMTargetMachine {
@@ -51,6 +51,6 @@ private:
   AVRSubtarget SubTarget;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_TARGET_MACHINE_H

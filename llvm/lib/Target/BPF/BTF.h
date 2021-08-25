@@ -48,7 +48,7 @@
 #ifndef LLVM_LIB_TARGET_BPF_BTF_H
 #define LLVM_LIB_TARGET_BPF_BTF_H
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace BTF {
 
 enum : uint32_t { MAGIC = 0xeB9F, VERSION = 1 };
@@ -256,6 +256,6 @@ struct SecFieldReloc {
 };
 
 } // End namespace BTF.
-} // End namespace llvm.
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

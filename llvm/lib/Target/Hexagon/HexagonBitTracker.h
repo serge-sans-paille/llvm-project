@@ -13,7 +13,7 @@
 #include "llvm/ADT/DenseMap.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class HexagonInstrInfo;
 class HexagonRegisterInfo;
@@ -72,6 +72,6 @@ private:
   RegExtMap VRX;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONBITTRACKER_H

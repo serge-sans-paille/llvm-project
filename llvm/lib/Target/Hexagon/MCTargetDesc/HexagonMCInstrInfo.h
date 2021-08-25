@@ -21,7 +21,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class HexagonMCChecker;
 class MCContext;
@@ -367,6 +367,6 @@ void tryCompound(MCInstrInfo const &MCII, MCSubtargetInfo const &STI,
 
 } // end namespace HexagonMCInstrInfo
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_MCTARGETDESC_HEXAGONMCINSTRINFO_H

@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "MSP430GenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct MSP430RegisterInfo : public MSP430GenRegisterInfo {
 public:
@@ -40,6 +40,6 @@ public:
   Register getFrameRegister(const MachineFunction &MF) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

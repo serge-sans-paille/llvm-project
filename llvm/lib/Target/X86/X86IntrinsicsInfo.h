@@ -17,7 +17,7 @@
 #include "X86InstrInfo.h"
 #include "llvm/IR/IntrinsicsX86.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 enum IntrinsicType : uint16_t {
   CVTNEPS2BF16_MASK,
@@ -1172,6 +1172,6 @@ static void verifyIntrinsicTables() {
           std::end(IntrinsicsWithChain)) &&
          "Intrinsic data tables should have unique entries");
 }
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -16,7 +16,7 @@
 #include "llvm/MC/MCInstPrinter.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCOperand;
 
@@ -82,6 +82,6 @@ private:
   void printCond4Operand(const MCInst *MI, int OpNum, raw_ostream &O);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_SYSTEMZ_MCTARGETDESC_SYSTEMZINSTPRINTER_H

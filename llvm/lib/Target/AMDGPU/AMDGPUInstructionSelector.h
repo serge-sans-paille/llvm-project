@@ -27,7 +27,7 @@ namespace {
 #undef AMDGPUSubtarget
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AMDGPU {
 struct ImageDimIntrinsicInfo;
@@ -335,5 +335,5 @@ private:
 #undef GET_GLOBALISEL_TEMPORARIES_DECL
 };
 
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

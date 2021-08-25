@@ -11,7 +11,7 @@
 
 #include "AVRTargetStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// A target streamer for an AVR ELF object file.
 class AVRELFStreamer : public AVRTargetStreamer {
@@ -23,6 +23,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

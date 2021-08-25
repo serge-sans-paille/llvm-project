@@ -14,7 +14,7 @@
 
 struct amd_kernel_code_t;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class DataLayout;
 class Function;
@@ -185,5 +185,5 @@ public:
       bool ReserveXNACK) override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

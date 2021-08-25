@@ -21,7 +21,7 @@
 #include "llvm/Support/DataTypes.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace X86 {
   // Enums for memory operand decoding.  Each memory operand is represented with
@@ -1221,6 +1221,6 @@ namespace X86II {
   }
 }
 
-} // end namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

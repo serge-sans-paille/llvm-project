@@ -32,7 +32,7 @@
 
 STATISTIC(MCNumEmitted, "Number of MC instructions emitted");
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace {
 
@@ -300,7 +300,7 @@ unsigned LanaiMCCodeEmitter::getBranchTargetOpValue(
 
 #include "LanaiGenMCCodeEmitter.inc"
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 llvm::MCCodeEmitter *
 llvm::createLanaiMCCodeEmitter(const MCInstrInfo &InstrInfo,

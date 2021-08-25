@@ -16,7 +16,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/raw_ostream.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace RISCVSysReg {
 #define GET_SysRegsList_IMPL
 #include "RISCVGenSearchableTables.inc"
@@ -139,4 +139,4 @@ void RISCVVType::printVType(unsigned VType, raw_ostream &OS) {
     OS << ",mu";
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

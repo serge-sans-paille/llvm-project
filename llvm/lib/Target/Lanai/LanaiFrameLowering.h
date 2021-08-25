@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BitVector;
 class LanaiSubtarget;
@@ -50,6 +50,6 @@ public:
                             RegScavenger *RS = nullptr) const override;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAIFRAMELOWERING_H

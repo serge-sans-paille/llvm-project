@@ -101,7 +101,7 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeNVPTXLowerArgsPass(PassRegistry &);
 }
 

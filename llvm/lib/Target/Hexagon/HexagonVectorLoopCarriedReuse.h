@@ -120,7 +120,7 @@
 
 #include "llvm/Transforms/Scalar/LoopPassManager.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Loop;
 
@@ -134,6 +134,6 @@ struct HexagonVectorLoopCarriedReusePass
                         LoopStandardAnalysisResults &AR, LPMUpdater &U);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONVLCR_H

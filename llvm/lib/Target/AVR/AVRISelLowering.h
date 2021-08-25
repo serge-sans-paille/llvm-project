@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/CallingConvLower.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AVRISD {
 
@@ -184,6 +184,6 @@ private:
   MachineBasicBlock *insertMul(MachineInstr &MI, MachineBasicBlock *BB) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_ISEL_LOWERING_H

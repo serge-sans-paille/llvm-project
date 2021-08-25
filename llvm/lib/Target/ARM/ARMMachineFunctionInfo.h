@@ -20,7 +20,7 @@
 #include "llvm/Support/ErrorHandling.h"
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// ARMFunctionInfo - This class is derived from MachineFunctionInfo and
 /// contains private ARM-specific information for each MachineFunction.
@@ -261,6 +261,6 @@ public:
   bool getPreservesR0() const { return PreservesR0; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMMACHINEFUNCTIONINFO_H

@@ -17,118 +17,117 @@
 
 using namespace llvm;
 
-namespace llvm {
-  namespace AArch64AT {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+namespace AArch64AT {
 #define GET_AT_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64DBnXS {
 #define GET_DBNXS_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64DB {
 #define GET_DB_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64DC {
 #define GET_DC_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64IC {
 #define GET_IC_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64ISB {
 #define GET_ISB_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64TSB {
 #define GET_TSB_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64PRCTX {
 #define GET_PRCTX_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64PRFM {
 #define GET_PRFM_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64SVEPRFM {
 #define GET_SVEPRFM_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64SVEPredPattern {
 #define GET_SVEPREDPAT_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64ExactFPImm {
 #define GET_EXACTFPIMM_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64PState {
 #define GET_PSTATE_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64PSBHint {
 #define GET_PSB_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64BTIHint {
 #define GET_BTI_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
+  namespace llvm LLVM_LIBRARY_VISIBILITY {
   namespace AArch64SysReg {
 #define GET_SYSREG_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 uint32_t AArch64SysReg::parseGenericRegister(StringRef Name) {
   // Try to parse an S<op0>_<op1>_<Cn>_<Cm>_<op2> register name
@@ -163,9 +162,9 @@ std::string AArch64SysReg::genericRegisterString(uint32_t Bits) {
          utostr(CRm) + "_" + utostr(Op2);
 }
 
-namespace llvm {
-  namespace AArch64TLBI {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+namespace AArch64TLBI {
 #define GET_TLBITable_IMPL
 #include "AArch64GenSystemOperands.inc"
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY

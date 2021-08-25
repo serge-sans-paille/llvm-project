@@ -12,7 +12,7 @@
 #include "llvm/MC/MCELFStreamer.h"
 #include "llvm/Support/Alignment.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // NaCl MIPS sandbox's instruction bundle size.
 static const Align MIPS_NACL_BUNDLE_ALIGN = Align(16);
@@ -27,6 +27,6 @@ MCELFStreamer *createMipsNaClELFStreamer(MCContext &Context,
                                          std::unique_ptr<MCObjectWriter> OW,
                                          std::unique_ptr<MCCodeEmitter> Emitter,
                                          bool RelaxAll);
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

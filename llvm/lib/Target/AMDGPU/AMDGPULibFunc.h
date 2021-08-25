@@ -11,7 +11,7 @@
 
 #include "llvm/ADT/StringRef.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class FunctionCallee;
 class FunctionType;
@@ -455,5 +455,5 @@ public:
 
   void setFunctionType(FunctionType *FT) { FuncTy = FT; }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif // _AMDGPU_LIBFUNC_H_

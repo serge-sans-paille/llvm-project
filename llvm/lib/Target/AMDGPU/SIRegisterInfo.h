@@ -17,7 +17,7 @@
 #define GET_REGINFO_HEADER
 #include "AMDGPUGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNSubtarget;
 class LiveIntervals;
@@ -330,6 +330,6 @@ private:
                            RegScavenger *RS) const;
 };
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

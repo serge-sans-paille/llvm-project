@@ -17,7 +17,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include <string>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// ManagedStringPool - The strings allocated from a managed string pool are
 /// owned by the string pool and will be deleted together with the managed
@@ -43,6 +43,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_NVPTX_MANAGEDSTRINGPOOL_H

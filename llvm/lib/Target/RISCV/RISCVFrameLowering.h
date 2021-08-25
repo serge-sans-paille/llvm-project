@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class RISCVSubtarget;
 
 class RISCVFrameLowering : public TargetFrameLowering {
@@ -74,5 +74,5 @@ private:
                  const DebugLoc &DL, Register DestReg, Register SrcReg,
                  int64_t Val, MachineInstr::MIFlag Flag) const;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

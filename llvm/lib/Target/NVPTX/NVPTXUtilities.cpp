@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace {
 typedef std::map<std::string, std::vector<unsigned> > key_val_pair_t;
@@ -315,4 +315,4 @@ bool getAlign(const CallInst &I, unsigned index, unsigned &align) {
   return false;
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

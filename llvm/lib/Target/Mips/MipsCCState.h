@@ -13,7 +13,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/CallingConvLower.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class SDNode;
 class MipsSubtarget;
 
@@ -161,6 +161,6 @@ public:
   bool IsCallOperandFixed(unsigned ValNo) { return CallOperandIsFixed[ValNo]; }
   SpecialCallingConvType getSpecialCallingConv() { return SpecialCallingConv; }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -26,7 +26,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "NVPTXGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXSubtarget : public NVPTXGenSubtargetInfo {
   virtual void anchor();
@@ -86,6 +86,6 @@ public:
   void ParseSubtargetFeatures(StringRef CPU, StringRef TuneCPU, StringRef FS);
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

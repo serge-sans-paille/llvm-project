@@ -19,7 +19,7 @@
 #include "llvm/MC/MCStreamer.h"
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstr;
 class MCInst;
@@ -56,6 +56,6 @@ class TargetMachine;
                                const char *ExtraCode, raw_ostream &OS) override;
   };
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONASMPRINTER_H

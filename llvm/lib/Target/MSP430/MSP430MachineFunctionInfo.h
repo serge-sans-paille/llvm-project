@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// MSP430MachineFunctionInfo - This class is derived from MachineFunction and
 /// contains private MSP430 target-specific information for each MachineFunction.
@@ -56,6 +56,6 @@ public:
   void setVarArgsFrameIndex(int Index) { VarArgsFrameIndex = Index; }
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

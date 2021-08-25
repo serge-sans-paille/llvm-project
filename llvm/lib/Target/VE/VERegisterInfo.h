@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "VEGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 struct VERegisterInfo : public VEGenRegisterInfo {
 public:
   VERegisterInfo();
@@ -42,6 +42,6 @@ public:
   Register getFrameRegister(const MachineFunction &MF) const override;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

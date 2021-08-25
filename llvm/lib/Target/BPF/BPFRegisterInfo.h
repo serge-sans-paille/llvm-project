@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "BPFGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct BPFRegisterInfo : public BPFGenRegisterInfo {
 
@@ -34,6 +34,6 @@ struct BPFRegisterInfo : public BPFGenRegisterInfo {
 
   Register getFrameRegister(const MachineFunction &MF) const override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

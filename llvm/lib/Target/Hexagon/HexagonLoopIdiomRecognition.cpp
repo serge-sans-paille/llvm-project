@@ -108,13 +108,12 @@ static cl::opt<unsigned> SimplifyLimit("hlir-simplify-limit", cl::init(10000),
 static const char *HexagonVolatileMemcpyName
   = "hexagon_memcpy_forward_vp4cp4n2";
 
-
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void initializeHexagonLoopIdiomRecognizeLegacyPassPass(PassRegistry &);
 Pass *createHexagonLoopIdiomPass();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

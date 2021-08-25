@@ -24,7 +24,7 @@ using namespace llvm;
 #define DEBUG_TYPE "arm-block-placement"
 #define DEBUG_PREFIX "ARM Block Placement: "
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class ARMBlockPlacement : public MachineFunctionPass {
 private:
   const ARMBaseInstrInfo *TII;
@@ -46,7 +46,7 @@ public:
   }
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 FunctionPass *llvm::createARMBlockPlacementPass() {
   return new ARMBlockPlacement();

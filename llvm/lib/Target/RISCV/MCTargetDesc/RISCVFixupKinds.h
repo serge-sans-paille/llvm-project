@@ -13,7 +13,7 @@
 
 #undef RISCV
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace RISCV {
 enum Fixups {
   // fixup_riscv_hi20 - 20-bit fixup corresponding to hi(foo) for
@@ -87,6 +87,6 @@ enum Fixups {
   NumTargetFixupKinds = fixup_riscv_invalid - FirstTargetFixupKind
 };
 } // end namespace RISCV
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

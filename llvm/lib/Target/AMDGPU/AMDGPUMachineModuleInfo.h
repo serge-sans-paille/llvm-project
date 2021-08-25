@@ -17,7 +17,7 @@
 
 #include "llvm/CodeGen/MachineModuleInfoImpls.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUMachineModuleInfo final : public MachineModuleInfoELF {
 private:
@@ -136,6 +136,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUMACHINEMODULEINFO_H

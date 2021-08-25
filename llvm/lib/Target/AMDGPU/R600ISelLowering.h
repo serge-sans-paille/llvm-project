@@ -16,7 +16,7 @@
 
 #include "AMDGPUISelLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600InstrInfo;
 class R600Subtarget;
@@ -107,6 +107,6 @@ private:
   SDNode *PostISelFolding(MachineSDNode *N, SelectionDAG &DAG) const override;
 };
 
-} // End namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

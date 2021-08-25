@@ -61,11 +61,11 @@ using namespace llvm;
 
 #define DEBUG_TYPE "mips-asm-parser"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCInstrInfo;
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 extern cl::opt<bool> EmitJalrReloc;
 
@@ -1745,11 +1745,11 @@ public:
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 extern const MCInstrDesc MipsInsts[];
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static const MCInstrDesc &getInstDesc(unsigned Opcode) {
   return MipsInsts[Opcode];

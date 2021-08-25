@@ -21,17 +21,17 @@
 #include "SIInstrInfo.h"
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCInst;
 class MCInstrInfo;
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_SUBTARGETINFO_HEADER
 #include "AMDGPUGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNTargetMachine;
 
@@ -1059,6 +1059,6 @@ public:
                              SDep &Dep) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_GCNSUBTARGET_H

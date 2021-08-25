@@ -45,7 +45,7 @@
 // Name of the global offset table as defined by the Hexagon ABI
 #define HEXAGON_GOT_SYM_NAME "_GLOBAL_OFFSET_TABLE_"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct InstrStage;
 class FeatureBitset;
@@ -99,7 +99,7 @@ createHexagonELFObjectWriter(uint8_t OSABI, StringRef CPU);
 unsigned HexagonGetLastSlot();
 unsigned HexagonConvertUnits(unsigned ItinUnits, unsigned *Lanes);
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Define symbolic names for Hexagon registers.  This defines a mapping from
 // register name to register number.

@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "AVRGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Utilities relating to AVR registers.
 class AVRRegisterInfo : public AVRGenRegisterInfo {
@@ -60,6 +60,6 @@ public:
                       LiveIntervals &LIS) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_REGISTER_INFO_H

@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/GlobalISel/GISelChangeObserver.h"
 #include "llvm/CodeGen/GlobalISel/LegalizerInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsSubtarget;
 
@@ -30,5 +30,5 @@ public:
   bool legalizeIntrinsic(LegalizerHelper &Helper,
                          MachineInstr &MI) const override;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

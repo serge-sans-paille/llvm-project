@@ -381,7 +381,7 @@ static MCRelocationInfo *createX86MCRelocationInfo(const Triple &TheTriple,
   return llvm::createMCRelocationInfo(TheTriple, Ctx);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace X86_MC {
 
 class X86MCInstrAnalysis : public MCInstrAnalysis {
@@ -557,7 +557,7 @@ Optional<uint64_t> X86MCInstrAnalysis::evaluateMemoryOperandAddress(
 
 } // end of namespace X86_MC
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static MCInstrAnalysis *createX86MCInstrAnalysis(const MCInstrInfo *Info) {
   return new X86_MC::X86MCInstrAnalysis(Info);

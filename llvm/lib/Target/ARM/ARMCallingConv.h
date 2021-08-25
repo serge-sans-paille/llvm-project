@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/CallingConvLower.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 bool CC_ARM_AAPCS(unsigned ValNo, MVT ValVT, MVT LocVT,
                   CCValAssign::LocInfo LocInfo, ISD::ArgFlagsTy ArgFlags,
@@ -48,6 +48,6 @@ bool RetFastCC_ARM_APCS(unsigned ValNo, MVT ValVT, MVT LocVT,
                         CCValAssign::LocInfo LocInfo, ISD::ArgFlagsTy ArgFlags,
                         CCState &State);
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

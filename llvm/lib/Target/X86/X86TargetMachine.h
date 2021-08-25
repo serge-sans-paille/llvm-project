@@ -20,7 +20,7 @@
 #include "llvm/Target/TargetMachine.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringRef;
 class TargetTransformInfo;
@@ -58,6 +58,6 @@ public:
   bool isNoopAddrSpaceCast(unsigned SrcAS, unsigned DestAS) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_X86TARGETMACHINE_H

@@ -23,7 +23,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "ARCGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringRef;
 class TargetMachine;
@@ -60,6 +60,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCSUBTARGET_H

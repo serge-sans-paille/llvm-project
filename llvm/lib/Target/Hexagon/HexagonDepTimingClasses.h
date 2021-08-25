@@ -14,7 +14,7 @@
 
 #include "HexagonInstrInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 inline bool is_TC1(unsigned SchedClass) {
   switch (SchedClass) {
@@ -151,6 +151,6 @@ inline bool is_TC4x(unsigned SchedClass) {
     return false;
   }
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif  // LLVM_LIB_TARGET_HEXAGON_HEXAGONDEPTIMINGCLASSES_H

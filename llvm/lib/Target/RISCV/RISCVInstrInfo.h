@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "RISCVGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class RISCVSubtarget;
 
@@ -137,5 +137,5 @@ protected:
   const RISCVSubtarget &STI;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

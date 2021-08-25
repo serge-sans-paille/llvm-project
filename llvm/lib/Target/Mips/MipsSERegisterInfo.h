@@ -16,7 +16,7 @@
 
 #include "MipsRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsSERegisterInfo : public MipsRegisterInfo {
 public:
@@ -34,6 +34,6 @@ private:
                    int64_t SPOffset) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

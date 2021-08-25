@@ -16,7 +16,7 @@
 #include "llvm/MC/MCTargetOptions.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -37,7 +37,7 @@ MCAsmBackend *createCSKYAsmBackend(const Target &T, const MCSubtargetInfo &STI,
 MCCodeEmitter *createCSKYMCCodeEmitter(const MCInstrInfo &MCII,
                                        const MCRegisterInfo &MRI,
                                        MCContext &Ctx);
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_REGINFO_ENUM
 #include "CSKYGenRegisterInfo.inc"

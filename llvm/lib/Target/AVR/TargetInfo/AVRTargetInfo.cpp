@@ -8,12 +8,12 @@
 
 #include "TargetInfo/AVRTargetInfo.h"
 #include "llvm/Support/TargetRegistry.h"
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 Target &getTheAVRTarget() {
   static Target TheAVRTarget;
   return TheAVRTarget;
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAVRTargetInfo() {
   llvm::RegisterTarget<llvm::Triple::avr> X(llvm::getTheAVRTarget(), "avr",

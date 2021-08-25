@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace SystemZ {
 enum FixupKind {
   // These correspond directly to R_390_* relocations.
@@ -26,6 +26,6 @@ enum FixupKind {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 } // end namespace SystemZ
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

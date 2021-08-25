@@ -30,7 +30,7 @@ using namespace llvm;
 #define GET_INSTRINFO_CTOR_DTOR
 #include "XCoreGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace XCore {
 
   // XCore Condition Codes
@@ -40,7 +40,7 @@ namespace XCore {
     COND_INVALID
   };
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Pin the vtable to this file.
 void XCoreInstrInfo::anchor() {}

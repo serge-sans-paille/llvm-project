@@ -40,7 +40,7 @@ void AVRMCELFStreamer::emitValueForModiferKind(
                            SizeInBytes, Loc);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 MCStreamer *createAVRELFStreamer(Triple const &TT, MCContext &Context,
                                  std::unique_ptr<MCAsmBackend> MAB,
                                  std::unique_ptr<MCObjectWriter> OW,
@@ -49,4 +49,4 @@ MCStreamer *createAVRELFStreamer(Triple const &TT, MCContext &Context,
                               std::move(CE));
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

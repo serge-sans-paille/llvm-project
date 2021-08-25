@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "MSP430GenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MSP430Subtarget;
 
@@ -75,6 +75,6 @@ public:
   }
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

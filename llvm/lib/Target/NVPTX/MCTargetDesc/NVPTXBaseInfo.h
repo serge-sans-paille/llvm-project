@@ -16,7 +16,9 @@
 #ifndef LLVM_LIB_TARGET_NVPTX_MCTARGETDESC_NVPTXBASEINFO_H
 #define LLVM_LIB_TARGET_NVPTX_MCTARGETDESC_NVPTXBASEINFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 enum AddressSpace {
   ADDRESS_SPACE_GENERIC = 0,
@@ -41,5 +43,5 @@ enum {
 };
 } // namespace NVPTXII
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

@@ -22,7 +22,7 @@
 
 #include "MipsGenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace Mips {
 enum PartialMappingIdx {
   PMI_GPR,
@@ -69,7 +69,7 @@ RegisterBankInfo::ValueMapping ValueMappings[] = {
 };
 
 } // end namespace Mips
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 using namespace llvm;
 

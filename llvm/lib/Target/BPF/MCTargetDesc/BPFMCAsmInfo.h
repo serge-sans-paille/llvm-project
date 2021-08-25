@@ -16,7 +16,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/MC/MCAsmInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BPFMCAsmInfo : public MCAsmInfo {
 public:
@@ -49,6 +49,6 @@ public:
     DwarfUsesRelocationsAcrossSections = enable;
   }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

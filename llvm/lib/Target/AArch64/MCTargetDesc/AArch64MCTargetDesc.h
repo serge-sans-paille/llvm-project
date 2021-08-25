@@ -13,11 +13,12 @@
 #ifndef LLVM_LIB_TARGET_AARCH64_MCTARGETDESC_AARCH64MCTARGETDESC_H
 #define LLVM_LIB_TARGET_AARCH64_MCTARGETDESC_AARCH64MCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class formatted_raw_ostream;
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -69,7 +70,7 @@ namespace AArch64_MC {
 void initLLVMToCVRegMapping(MCRegisterInfo *MRI);
 }
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for AArch64 registers.  This defines a mapping from
 // register name to register number.

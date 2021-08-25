@@ -20,7 +20,7 @@
 #include <cstdint>
 #include <functional>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64TargetLowering;
 class CCValAssign;
@@ -80,6 +80,6 @@ private:
                                     SmallVectorImpl<ArgInfo> &OutArgs) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_AARCH64CALLLOWERING_H

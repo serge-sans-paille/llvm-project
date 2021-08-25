@@ -183,7 +183,7 @@ private:
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <>
 struct GraphTraits<MachineGadgetGraph *>
@@ -227,7 +227,7 @@ struct DOTGraphTraits<MachineGadgetGraph *> : DefaultDOTGraphTraits {
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 constexpr MachineInstr *MachineGadgetGraph::ArgNodeSentinel;
 constexpr int MachineGadgetGraph::GadgetEdgeSentinel;

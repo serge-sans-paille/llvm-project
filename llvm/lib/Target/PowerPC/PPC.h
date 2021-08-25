@@ -15,11 +15,12 @@
 #define LLVM_LIB_TARGET_POWERPC_PPC_H
 
 #include "llvm/Support/CodeGen.h"
+#include "llvm/Support/Compiler.h"
 
 // GCC #defines PPC on Linux but we use it as our namespace name
 #undef PPC
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class PPCRegisterBankInfo;
 class PPCSubtarget;
 class PPCTargetMachine;
@@ -163,6 +164,6 @@ FunctionPass *createPPCCTRLoops();
   };
   } // end namespace PPCII
 
-} // end namespace llvm;
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

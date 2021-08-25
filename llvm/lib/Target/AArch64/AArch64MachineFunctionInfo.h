@@ -24,7 +24,7 @@
 #include "llvm/MC/MCLinkerOptimizationHint.h"
 #include <cassert>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace yaml {
 struct AArch64FunctionInfo;
@@ -399,6 +399,6 @@ template <> struct MappingTraits<AArch64FunctionInfo> {
 
 } // end namespace yaml
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_AARCH64MACHINEFUNCTIONINFO_H

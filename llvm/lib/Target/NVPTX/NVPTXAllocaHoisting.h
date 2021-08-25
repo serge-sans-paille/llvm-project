@@ -13,10 +13,12 @@
 #ifndef LLVM_LIB_TARGET_NVPTX_NVPTXALLOCAHOISTING_H
 #define LLVM_LIB_TARGET_NVPTX_NVPTXALLOCAHOISTING_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class FunctionPass;
 
 extern FunctionPass *createAllocaHoisting();
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMSubtarget;
 class CalleeSavedInfo;
@@ -95,6 +95,6 @@ private:
                                 MachineBasicBlock::iterator MI) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMFRAMELOWERING_H

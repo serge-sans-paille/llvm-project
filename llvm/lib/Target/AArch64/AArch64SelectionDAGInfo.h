@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64SelectionDAGInfo : public SelectionDAGTargetInfo {
 public:
@@ -30,6 +30,6 @@ public:
                                   bool ZeroData) const override;
   bool generateFMAsInMachineCombiner(CodeGenOpt::Level OptLevel) const override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

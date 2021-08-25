@@ -16,7 +16,7 @@
 #include "ARMBaseInstrInfo.h"
 #include "ThumbRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class ARMSubtarget;
 class ScheduleHazardRecognizer;
 
@@ -93,6 +93,6 @@ inline ARMVCC::VPTCodes getVPTInstrPredicate(const MachineInstr &MI) {
 // MVEVPTBlockInsertion pass has run, and should be used whenever a predicated
 // instruction is added to/removed from the block.
 void recomputeVPTBlockMask(MachineInstr &Instr);
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

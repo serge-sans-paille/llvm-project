@@ -14,13 +14,15 @@
 #ifndef LLVM_LIB_TARGET_X86_MCTARGETDESC_X86INSTCOMMENTS_H
 #define LLVM_LIB_TARGET_X86_MCTARGETDESC_X86INSTCOMMENTS_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
 
-  class MCInst;
-  class MCInstrInfo;
-  class raw_ostream;
-  bool EmitAnyX86InstComments(const MCInst *MI, raw_ostream &OS,
-                              const MCInstrInfo &MCII);
-}
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+
+class MCInst;
+class MCInstrInfo;
+class raw_ostream;
+bool EmitAnyX86InstComments(const MCInst *MI, raw_ostream &OS,
+                            const MCInstrInfo &MCII);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

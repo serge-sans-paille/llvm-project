@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "ARCGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetInstrInfo;
 
@@ -50,6 +50,6 @@ public:
   static bool needsFrameMoves(const MachineFunction &MF);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCREGISTERINFO_H

@@ -15,9 +15,11 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUMCTARGETDESC_H
 #define LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUMCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
+
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -52,7 +54,7 @@ MCAsmBackend *createAMDGPUAsmBackend(const Target &T,
 std::unique_ptr<MCObjectTargetWriter>
 createAMDGPUELFObjectWriter(bool Is64Bit, uint8_t OSABI,
                             bool HasRelocationAddend, uint8_t ABIVersion);
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_REGINFO_ENUM
 #include "AMDGPUGenRegisterInfo.inc"

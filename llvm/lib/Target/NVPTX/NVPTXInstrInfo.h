@@ -20,7 +20,7 @@
 #define GET_INSTRINFO_HEADER
 #include "NVPTXGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXInstrInfo : public NVPTXGenInstrInfo {
   const NVPTXRegisterInfo RegInfo;
@@ -65,6 +65,6 @@ public:
                         int *BytesAdded = nullptr) const override;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

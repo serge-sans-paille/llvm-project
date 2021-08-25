@@ -18,7 +18,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class XCoreInstPrinter : public MCInstPrinter {
 public:
@@ -42,6 +42,6 @@ private:
   void printMemOperand(const MCInst *MI, int opNum, raw_ostream &O);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_XCORE_MCTARGETDESC_XCOREINSTPRINTER_H

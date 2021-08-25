@@ -14,7 +14,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class SystemZTargetMachine;
 class SystemZSubtarget;
 
@@ -71,6 +71,6 @@ public:
     return usePackedStack(MF) ? SystemZMC::CallFrameSize - 8 : 0;
   }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

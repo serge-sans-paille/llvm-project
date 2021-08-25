@@ -18,7 +18,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "MipsGenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetRegisterInfo;
 
@@ -226,5 +226,5 @@ private:
     };
   };
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

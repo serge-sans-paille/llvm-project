@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/MachineMemOperand.h"
 #include <map>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// MipsFunctionInfo - This class is derived from MachineFunction private
 /// Mips target-specific information for each MachineFunction.
@@ -123,6 +123,6 @@ private:
   int MoveF64ViaSpillFI = -1;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSMACHINEFUNCTION_H

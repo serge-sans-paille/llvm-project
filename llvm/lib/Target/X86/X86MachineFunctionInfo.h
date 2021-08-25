@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/CallingConvLower.h"
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// X86MachineFunctionInfo - This class is derived from MachineFunction and
 /// contains private X86 target-specific information for each MachineFunction.
@@ -225,6 +225,6 @@ public:
   }
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

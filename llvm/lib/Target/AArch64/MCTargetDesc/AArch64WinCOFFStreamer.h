@@ -16,12 +16,12 @@
 #include "AArch64TargetStreamer.h"
 #include "llvm/MC/MCWinCOFFStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCWinCOFFStreamer *createAArch64WinCOFFStreamer(
     MCContext &Context, std::unique_ptr<MCAsmBackend> TAB,
     std::unique_ptr<MCObjectWriter> OW, std::unique_ptr<MCCodeEmitter> Emitter,
     bool RelaxAll, bool IncrementalLinkerCompatible);
-} // end llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -16,7 +16,7 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_AMDGPUPTNOTE_H
 #define LLVM_LIB_TARGET_AMDGPU_AMDGPUPTNOTE_H
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AMDGPU {
 
 namespace ElfNote {
@@ -44,5 +44,5 @@ enum NoteType{
 
 } // End namespace ElfNote
 } // End namespace AMDGPU
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUNOTETYPE_H

@@ -23,7 +23,7 @@
 #define GET_INSTRINFO_HEADER
 #include "X86GenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class X86Subtarget;
 
 namespace X86 {
@@ -629,6 +629,6 @@ private:
                                      bool IsIntrinsic = false) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

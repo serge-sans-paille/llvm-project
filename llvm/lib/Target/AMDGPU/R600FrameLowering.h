@@ -11,7 +11,7 @@
 
 #include "AMDGPUFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600FrameLowering : public AMDGPUFrameLowering {
 public:
@@ -32,6 +32,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_R600FRAMELOWERING_H

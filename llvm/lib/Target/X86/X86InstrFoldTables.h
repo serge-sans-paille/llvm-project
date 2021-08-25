@@ -13,9 +13,11 @@
 #ifndef LLVM_LIB_TARGET_X86_X86INSTRFOLDTABLES_H
 #define LLVM_LIB_TARGET_X86_X86INSTRFOLDTABLES_H
 
+#include "llvm/Support/Compiler.h"
+
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 enum {
   // Select which memory operand is being unfolded.
@@ -92,6 +94,6 @@ const X86MemoryFoldTableEntry *lookupFoldTable(unsigned RegOp, unsigned OpNum);
 // Look up the memory unfolding table entry for this instruction.
 const X86MemoryFoldTableEntry *lookupUnfoldTable(unsigned MemOp);
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/DFAPacketizer.h"
 #include "llvm/CodeGen/ScheduleHazardRecognizer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class HexagonHazardRecognizer : public ScheduleHazardRecognizer {
   DFAPacketizer *Resources;
@@ -79,6 +79,6 @@ public:
   void AdvanceCycle() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONPROFITRECOGNIZER_H

@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AVR {
 
 /// The set of supported fixups.
@@ -142,6 +142,6 @@ template <typename T> inline void adjustBranchTarget(T &val) { val >>= 1; }
 
 } // end of namespace fixups
 }
-} // end of namespace llvm::AVR
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_FIXUP_KINDS_H

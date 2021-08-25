@@ -21,7 +21,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -103,7 +103,7 @@ static inline bool isRunOfOnes64(uint64_t Val, unsigned &MB, unsigned &ME) {
   return false;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Generated files will use "namespace PPC". To avoid symbol clash,
 // undefine PPC here. PPC may be predefined on some hosts.

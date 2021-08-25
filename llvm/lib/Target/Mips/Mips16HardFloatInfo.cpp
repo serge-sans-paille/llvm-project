@@ -14,7 +14,7 @@
 #include "Mips16HardFloatInfo.h"
 #include <string.h>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace Mips16HardFloatInfo {
 
@@ -46,4 +46,4 @@ extern FuncSignature const *findFuncSignature(const char *name) {
   return nullptr;
 }
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY

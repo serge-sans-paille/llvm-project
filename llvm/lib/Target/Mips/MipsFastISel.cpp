@@ -2147,11 +2147,11 @@ unsigned MipsFastISel::fastEmitInst_rr(unsigned MachineInstOpcode,
                                    Op1IsKill);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FastISel *Mips::createFastISel(FunctionLoweringInfo &funcInfo,
                                const TargetLibraryInfo *libInfo) {
   return new MipsFastISel(funcInfo, libInfo);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -15,7 +15,7 @@
 
 struct amd_kernel_code_t;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct Align;
 class Argument;
@@ -955,6 +955,6 @@ struct SIModeRegisterDefaults {
 raw_ostream &operator<<(raw_ostream &OS,
                         const AMDGPU::IsaInfo::TargetIDSetting S);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_UTILS_AMDGPUBASEINFO_H

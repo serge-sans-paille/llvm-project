@@ -18,77 +18,76 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
-  class FunctionPass;
-  class SparcTargetMachine;
-  class AsmPrinter;
-  class MCInst;
-  class MachineInstr;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class FunctionPass;
+class SparcTargetMachine;
+class AsmPrinter;
+class MCInst;
+class MachineInstr;
 
-  FunctionPass *createSparcISelDag(SparcTargetMachine &TM);
-  FunctionPass *createSparcDelaySlotFillerPass();
+FunctionPass *createSparcISelDag(SparcTargetMachine &TM);
+FunctionPass *createSparcDelaySlotFillerPass();
 
-  void LowerSparcMachineInstrToMCInst(const MachineInstr *MI,
-                                      MCInst &OutMI,
-                                      AsmPrinter &AP);
-} // end namespace llvm;
+void LowerSparcMachineInstrToMCInst(const MachineInstr *MI, MCInst &OutMI,
+                                    AsmPrinter &AP);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
-namespace llvm {
-  // Enums corresponding to Sparc condition codes, both icc's and fcc's.  These
-  // values must be kept in sync with the ones in the .td file.
-  namespace SPCC {
-    enum CondCodes {
-      ICC_A   =  8   ,  // Always
-      ICC_N   =  0   ,  // Never
-      ICC_NE  =  9   ,  // Not Equal
-      ICC_E   =  1   ,  // Equal
-      ICC_G   = 10   ,  // Greater
-      ICC_LE  =  2   ,  // Less or Equal
-      ICC_GE  = 11   ,  // Greater or Equal
-      ICC_L   =  3   ,  // Less
-      ICC_GU  = 12   ,  // Greater Unsigned
-      ICC_LEU =  4   ,  // Less or Equal Unsigned
-      ICC_CC  = 13   ,  // Carry Clear/Great or Equal Unsigned
-      ICC_CS  =  5   ,  // Carry Set/Less Unsigned
-      ICC_POS = 14   ,  // Positive
-      ICC_NEG =  6   ,  // Negative
-      ICC_VC  = 15   ,  // Overflow Clear
-      ICC_VS  =  7   ,  // Overflow Set
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+// Enums corresponding to Sparc condition codes, both icc's and fcc's.  These
+// values must be kept in sync with the ones in the .td file.
+namespace SPCC {
+enum CondCodes {
+  ICC_A = 8,    // Always
+  ICC_N = 0,    // Never
+  ICC_NE = 9,   // Not Equal
+  ICC_E = 1,    // Equal
+  ICC_G = 10,   // Greater
+  ICC_LE = 2,   // Less or Equal
+  ICC_GE = 11,  // Greater or Equal
+  ICC_L = 3,    // Less
+  ICC_GU = 12,  // Greater Unsigned
+  ICC_LEU = 4,  // Less or Equal Unsigned
+  ICC_CC = 13,  // Carry Clear/Great or Equal Unsigned
+  ICC_CS = 5,   // Carry Set/Less Unsigned
+  ICC_POS = 14, // Positive
+  ICC_NEG = 6,  // Negative
+  ICC_VC = 15,  // Overflow Clear
+  ICC_VS = 7,   // Overflow Set
 
-      FCC_A   =  8+16,  // Always
-      FCC_N   =  0+16,  // Never
-      FCC_U   =  7+16,  // Unordered
-      FCC_G   =  6+16,  // Greater
-      FCC_UG  =  5+16,  // Unordered or Greater
-      FCC_L   =  4+16,  // Less
-      FCC_UL  =  3+16,  // Unordered or Less
-      FCC_LG  =  2+16,  // Less or Greater
-      FCC_NE  =  1+16,  // Not Equal
-      FCC_E   =  9+16,  // Equal
-      FCC_UE  = 10+16,  // Unordered or Equal
-      FCC_GE  = 11+16,  // Greater or Equal
-      FCC_UGE = 12+16,  // Unordered or Greater or Equal
-      FCC_LE  = 13+16,  // Less or Equal
-      FCC_ULE = 14+16,  // Unordered or Less or Equal
-      FCC_O   = 15+16,  // Ordered
+  FCC_A = 8 + 16,    // Always
+  FCC_N = 0 + 16,    // Never
+  FCC_U = 7 + 16,    // Unordered
+  FCC_G = 6 + 16,    // Greater
+  FCC_UG = 5 + 16,   // Unordered or Greater
+  FCC_L = 4 + 16,    // Less
+  FCC_UL = 3 + 16,   // Unordered or Less
+  FCC_LG = 2 + 16,   // Less or Greater
+  FCC_NE = 1 + 16,   // Not Equal
+  FCC_E = 9 + 16,    // Equal
+  FCC_UE = 10 + 16,  // Unordered or Equal
+  FCC_GE = 11 + 16,  // Greater or Equal
+  FCC_UGE = 12 + 16, // Unordered or Greater or Equal
+  FCC_LE = 13 + 16,  // Less or Equal
+  FCC_ULE = 14 + 16, // Unordered or Less or Equal
+  FCC_O = 15 + 16,   // Ordered
 
-      CPCC_A   =  8+32,  // Always
-      CPCC_N   =  0+32,  // Never
-      CPCC_3   =  7+32,
-      CPCC_2   =  6+32,
-      CPCC_23  =  5+32,
-      CPCC_1   =  4+32,
-      CPCC_13  =  3+32,
-      CPCC_12  =  2+32,
-      CPCC_123 =  1+32,
-      CPCC_0   =  9+32,
-      CPCC_03  = 10+32,
-      CPCC_02  = 11+32,
-      CPCC_023 = 12+32,
-      CPCC_01  = 13+32,
-      CPCC_013 = 14+32,
-      CPCC_012 = 15+32
-    };
+  CPCC_A = 8 + 32, // Always
+  CPCC_N = 0 + 32, // Never
+  CPCC_3 = 7 + 32,
+  CPCC_2 = 6 + 32,
+  CPCC_23 = 5 + 32,
+  CPCC_1 = 4 + 32,
+  CPCC_13 = 3 + 32,
+  CPCC_12 = 2 + 32,
+  CPCC_123 = 1 + 32,
+  CPCC_0 = 9 + 32,
+  CPCC_03 = 10 + 32,
+  CPCC_02 = 11 + 32,
+  CPCC_023 = 12 + 32,
+  CPCC_01 = 13 + 32,
+  CPCC_013 = 14 + 32,
+  CPCC_012 = 15 + 32
+};
   }
 
   inline static const char *SPARCCondCodeToString(SPCC::CondCodes CC) {
@@ -161,5 +160,5 @@ namespace llvm {
     return ~LO10(~imm);
   }
 
-}  // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 #endif

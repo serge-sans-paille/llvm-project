@@ -37,12 +37,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonGenPredicatePass(PassRegistry& Registry);
-  FunctionPass *createHexagonGenPredicate();
+void initializeHexagonGenPredicatePass(PassRegistry &Registry);
+FunctionPass *createHexagonGenPredicate();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

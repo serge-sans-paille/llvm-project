@@ -16,7 +16,7 @@
 #define GET_REGINFO_HEADER
 #include "AArch64GenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class RegScavenger;
@@ -139,6 +139,6 @@ public:
                         SmallVectorImpl<uint64_t> &Ops) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

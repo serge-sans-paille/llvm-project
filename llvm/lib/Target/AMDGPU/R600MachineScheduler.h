@@ -19,7 +19,7 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600InstrInfo;
 struct R600RegisterInfo;
@@ -94,6 +94,6 @@ private:
   void MoveUnits(std::vector<SUnit *> &QSrc, std::vector<SUnit *> &QDst);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_R600MACHINESCHEDULER_H

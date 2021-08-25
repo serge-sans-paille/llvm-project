@@ -7,10 +7,11 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/CodeGen/ScheduleDAGMutation.h"
+#include "llvm/Support/Compiler.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<ScheduleDAGMutation> createAMDGPUExportClusteringDAGMutation();
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

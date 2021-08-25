@@ -16,7 +16,7 @@
 
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class NVPTXMachineFunctionInfo : public MachineFunctionInfo {
 private:
   /// Stores a mapping from index to symbol name for removing image handles
@@ -45,6 +45,6 @@ public:
     return ImageHandleList[Idx].c_str();
   }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

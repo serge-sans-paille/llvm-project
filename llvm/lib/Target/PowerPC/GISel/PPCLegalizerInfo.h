@@ -14,7 +14,7 @@
 
 #include "llvm/CodeGen/GlobalISel/LegalizerInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCSubtarget;
 
@@ -24,5 +24,5 @@ class PPCLegalizerInfo : public LegalizerInfo {
 public:
   PPCLegalizerInfo(const PPCSubtarget &ST);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

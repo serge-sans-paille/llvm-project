@@ -18,7 +18,7 @@ namespace {
   class X86MCInstLower;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCCodeEmitter;
 class MCStreamer;
 class X86Subtarget;
@@ -150,6 +150,6 @@ public:
   void emitFunctionBodyEnd() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

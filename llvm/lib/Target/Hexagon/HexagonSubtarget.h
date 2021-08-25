@@ -31,7 +31,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "HexagonGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstr;
 class SDep;
@@ -298,6 +298,6 @@ private:
       SmallSet<SUnit*, 4> &ExclSrc, SmallSet<SUnit*, 4> &ExclDst) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONSUBTARGET_H

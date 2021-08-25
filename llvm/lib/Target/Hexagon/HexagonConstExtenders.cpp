@@ -35,10 +35,10 @@ static cl::opt<unsigned> CountThreshold("hexagon-cext-threshold",
 static cl::opt<unsigned> ReplaceLimit("hexagon-cext-limit", cl::init(0),
   cl::Hidden, cl::ZeroOrMore, cl::desc("Maximum number of replacements"));
 
-namespace llvm {
-  void initializeHexagonConstExtendersPass(PassRegistry&);
-  FunctionPass *createHexagonConstExtenders();
-}
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeHexagonConstExtendersPass(PassRegistry &);
+FunctionPass *createHexagonConstExtenders();
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static int32_t adjustUp(int32_t V, uint8_t A, uint8_t O) {
   assert(isPowerOf2_32(A));

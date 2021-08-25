@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// This implementation is used for RISCV ELF targets.
 class RISCVELFTargetObjectFile : public TargetLoweringObjectFileELF {
@@ -42,6 +42,6 @@ public:
   bool isInSmallSection(uint64_t Size) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -26,7 +26,7 @@
 #define GET_INSTRINFO_HEADER
 #include "HexagonGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class HexagonSubtarget;
 class MachineBranchProbabilityInfo;
@@ -525,6 +525,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONINSTRINFO_H

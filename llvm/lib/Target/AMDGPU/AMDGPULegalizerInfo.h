@@ -18,7 +18,7 @@
 #include "AMDGPUArgumentUsageInfo.h"
 #include "SIInstrInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNTargetMachine;
 class LLVMContext;
@@ -189,5 +189,5 @@ public:
   bool legalizeIntrinsic(LegalizerHelper &Helper,
                          MachineInstr &MI) const override;
 };
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

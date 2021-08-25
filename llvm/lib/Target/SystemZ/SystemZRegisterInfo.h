@@ -15,7 +15,7 @@
 #define GET_REGINFO_HEADER
 #include "SystemZGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LiveIntervals;
 
@@ -90,6 +90,6 @@ public:
   Register getFrameRegister(const MachineFunction &MF) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

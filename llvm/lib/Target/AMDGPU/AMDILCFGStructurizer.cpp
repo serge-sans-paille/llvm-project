@@ -40,11 +40,11 @@ STATISTIC(numIfPatternMatch,        "CFGStructurizer number of if pattern "
 STATISTIC(numClonedBlock,           "CFGStructurizer cloned blocks");
 STATISTIC(numClonedInstr,           "CFGStructurizer cloned instructions");
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void initializeAMDGPUCFGStructurizerPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

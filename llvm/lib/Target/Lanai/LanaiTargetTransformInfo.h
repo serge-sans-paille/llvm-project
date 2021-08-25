@@ -24,7 +24,7 @@
 #include "llvm/CodeGen/TargetLowering.h"
 #include "llvm/Support/MathExtras.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class LanaiTTIImpl : public BasicTTIImplBase<LanaiTTIImpl> {
   typedef BasicTTIImplBase<LanaiTTIImpl> BaseT;
   typedef TargetTransformInfo TTI;
@@ -109,6 +109,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAITARGETTRANSFORMINFO_H

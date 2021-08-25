@@ -22,7 +22,7 @@
 #include <set>
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class MCInst;
@@ -129,6 +129,6 @@ public:
   void reportBranchErrors();
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_MCTARGETDESC_HEXAGONMCCHECKER_H

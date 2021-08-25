@@ -13,7 +13,7 @@
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCInst;
 class MCOperand;
 class MachineInstr;
@@ -38,6 +38,6 @@ public:
   const MCExpr *getExpr(const MachineOperand &MO,
                         MCSymbolRefExpr::VariantKind Kind) const;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

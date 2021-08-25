@@ -21,7 +21,7 @@
 #include "llvm/MC/SubtargetFeature.h"
 #include "MCTargetDesc/ARMMCTargetDesc.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Enums corresponding to ARM condition codes
 namespace ARMCC {
@@ -232,6 +232,6 @@ namespace ARMBankedReg {
   #include "ARMGenSystemRegister.inc"
 } // end namespace ARMBankedReg
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_UTILS_ARMBASEINFO_H

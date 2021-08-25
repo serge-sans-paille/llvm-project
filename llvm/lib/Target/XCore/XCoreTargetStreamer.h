@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class XCoreTargetStreamer : public MCTargetStreamer {
 public:
   XCoreTargetStreamer(MCStreamer &S);
@@ -21,6 +21,6 @@ public:
   virtual void emitCCBottomData(StringRef Name) = 0;
   virtual void emitCCBottomFunction(StringRef Name) = 0;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

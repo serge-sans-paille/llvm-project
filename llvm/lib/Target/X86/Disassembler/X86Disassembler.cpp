@@ -1649,7 +1649,7 @@ static int readOperands(struct InternalInstruction *insn) {
   return 0;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Fill-ins to make the compiler happy. These constants are never actually
 // assigned; they are just filler to make an automatically-generated switch
@@ -1665,7 +1665,7 @@ namespace X86 {
   };
 } // namespace X86
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static bool translateInstruction(MCInst &target,
                                 InternalInstruction &source,

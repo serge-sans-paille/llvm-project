@@ -17,7 +17,7 @@
 #include "VESubtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VETargetMachine : public LLVMTargetMachine {
   std::unique_ptr<TargetLoweringObjectFile> TLOF;
@@ -54,6 +54,6 @@ public:
   unsigned getSjLjDataSize() const override { return 64; }
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

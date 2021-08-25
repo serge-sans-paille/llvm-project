@@ -931,10 +931,10 @@ bool MipsInstructionSelector::select(MachineInstr &I) {
   return constrainSelectedInstRegOperands(*MI, TII, TRI, RBI);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 InstructionSelector *createMipsInstructionSelector(const MipsTargetMachine &TM,
                                                    MipsSubtarget &Subtarget,
                                                    MipsRegisterBankInfo &RBI) {
   return new MipsInstructionSelector(TM, Subtarget, RBI);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

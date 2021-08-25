@@ -15,7 +15,7 @@
 
 #include "ARMBaseRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMSubtarget;
 
@@ -25,6 +25,6 @@ public:
   ARMRegisterInfo();
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

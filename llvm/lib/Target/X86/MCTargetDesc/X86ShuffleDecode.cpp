@@ -20,7 +20,7 @@
 //  Vector Mask Decoding
 //===----------------------------------------------------------------------===//
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void DecodeINSERTPSMask(unsigned Imm, SmallVectorImpl<int> &ShuffleMask) {
   // Defaults the copying the dest value.
@@ -568,4 +568,4 @@ void DecodeVPERMV3Mask(ArrayRef<uint64_t> RawMask, const APInt &UndefElts,
   }
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

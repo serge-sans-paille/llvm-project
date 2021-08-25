@@ -17,19 +17,19 @@
 #include "MCTargetDesc/XCoreMCTargetDesc.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
-  class FunctionPass;
-  class ModulePass;
-  class TargetMachine;
-  class XCoreTargetMachine;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class FunctionPass;
+class ModulePass;
+class TargetMachine;
+class XCoreTargetMachine;
 
-  void initializeXCoreLowerThreadLocalPass(PassRegistry &p);
+void initializeXCoreLowerThreadLocalPass(PassRegistry &p);
 
-  FunctionPass *createXCoreFrameToArgsOffsetEliminationPass();
-  FunctionPass *createXCoreISelDag(XCoreTargetMachine &TM,
-                                   CodeGenOpt::Level OptLevel);
-  ModulePass *createXCoreLowerThreadLocalPass();
+FunctionPass *createXCoreFrameToArgsOffsetEliminationPass();
+FunctionPass *createXCoreISelDag(XCoreTargetMachine &TM,
+                                 CodeGenOpt::Level OptLevel);
+ModulePass *createXCoreLowerThreadLocalPass();
 
-} // end namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

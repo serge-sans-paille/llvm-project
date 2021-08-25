@@ -118,11 +118,11 @@ HexagonInstrInfo::HexagonInstrInfo(HexagonSubtarget &ST)
   : HexagonGenInstrInfo(Hexagon::ADJCALLSTACKDOWN, Hexagon::ADJCALLSTACKUP),
     Subtarget(ST) {}
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace HexagonFUnits {
   bool isSlot0Only(unsigned units);
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static bool isIntRegForSubInst(unsigned Reg) {
   return (Reg >= Hexagon::R0 && Reg <= Hexagon::R7) ||

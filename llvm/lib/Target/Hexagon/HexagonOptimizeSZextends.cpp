@@ -23,10 +23,10 @@
 
 using namespace llvm;
 
-namespace llvm {
-  FunctionPass *createHexagonOptimizeSZextends();
-  void initializeHexagonOptimizeSZextendsPass(PassRegistry&);
-}
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+FunctionPass *createHexagonOptimizeSZextends();
+void initializeHexagonOptimizeSZextendsPass(PassRegistry &);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
   struct HexagonOptimizeSZextends : public FunctionPass {

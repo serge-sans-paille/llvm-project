@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct BasicBlockInfo;
 using BBInfoVector = SmallVectorImpl<BasicBlockInfo>;
@@ -154,6 +154,6 @@ public:
 
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMBASICBLOCKINFO_H

@@ -16,7 +16,7 @@
 #include "llvm/MC/MCCodeEmitter.h"
 #include "llvm/MC/MCContext.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class CSKYMCCodeEmitter : public MCCodeEmitter {
   MCContext &Ctx;
@@ -56,6 +56,6 @@ public:
                           const MCSubtargetInfo &STI) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_CSKY_MCTARGETDESC_CSKYMCCODEEMITTER_H

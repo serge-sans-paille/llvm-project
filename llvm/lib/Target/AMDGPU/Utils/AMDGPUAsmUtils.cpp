@@ -10,7 +10,7 @@
 
 #include "llvm/ADT/StringRef.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AMDGPU {
 namespace SendMsg {
 
@@ -360,4 +360,4 @@ const char* const IdSymbolic[] = {
 } // namespace VGPRIndexMode
 
 } // namespace AMDGPU
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

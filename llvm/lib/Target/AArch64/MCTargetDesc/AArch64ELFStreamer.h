@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCELFStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCELFStreamer *createAArch64ELFStreamer(MCContext &Context,
                                         std::unique_ptr<MCAsmBackend> TAB,

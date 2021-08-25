@@ -21,7 +21,7 @@
 #include "llvm/CodeGen/BasicTTIImpl.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCTTIImpl : public BasicTTIImplBase<PPCTTIImpl> {
   typedef BasicTTIImplBase<PPCTTIImpl> BaseT;
@@ -135,6 +135,6 @@ public:
   /// @}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

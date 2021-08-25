@@ -31,12 +31,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void HexagonLowerToMC(const MCInstrInfo &MCII, const MachineInstr *MI,
                       MCInst &MCB, HexagonAsmPrinter &AP);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static MCOperand GetSymbolRef(const MachineOperand &MO, const MCSymbol *Symbol,
                               HexagonAsmPrinter &Printer, bool MustExtend) {

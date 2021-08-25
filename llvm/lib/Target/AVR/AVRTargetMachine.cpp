@@ -23,7 +23,7 @@
 #include "MCTargetDesc/AVRMCTargetDesc.h"
 #include "TargetInfo/AVRTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static const char *AVRDataLayout = "e-P1-p:16:8-i8:8-i16:8-i32:8-i64:8-f32:8-f64:8-n8-a:8";
 
@@ -121,4 +121,4 @@ void AVRPassConfig::addPreEmitPass() {
   addPass(&BranchRelaxationPassID);
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

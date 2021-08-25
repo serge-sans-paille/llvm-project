@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace WebAssembly {
 enum Fixups {
   fixup_sleb128_i32 = FirstTargetFixupKind, // 32-bit signed
@@ -24,6 +24,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 } // end namespace WebAssembly
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

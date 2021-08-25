@@ -22,7 +22,7 @@
 #include "MCTargetDesc/AMDGPUMCTargetDesc.h"
 #include "llvm/CodeGen/BasicTTIImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUTargetLowering;
 class GCNSubtarget;
@@ -256,6 +256,6 @@ public:
   int getVectorInstrCost(unsigned Opcode, Type *ValTy, unsigned Index);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUTARGETTRANSFORMINFO_H

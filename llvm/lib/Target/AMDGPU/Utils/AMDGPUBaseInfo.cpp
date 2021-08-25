@@ -83,7 +83,7 @@ unsigned getVmcntBitWidthHi() { return 2; }
 
 } // end namespace anonymous
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AMDGPU {
 
@@ -1796,4 +1796,4 @@ raw_ostream &operator<<(raw_ostream &OS,
   return OS;
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

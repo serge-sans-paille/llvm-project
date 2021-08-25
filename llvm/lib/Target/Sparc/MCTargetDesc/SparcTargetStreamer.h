@@ -12,7 +12,7 @@
 #include "llvm/MC/MCELFStreamer.h"
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class SparcTargetStreamer : public MCTargetStreamer {
   virtual void anchor();
 
@@ -42,6 +42,6 @@ public:
   void emitSparcRegisterIgnore(unsigned reg) override {}
   void emitSparcRegisterScratch(unsigned reg) override {}
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

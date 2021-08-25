@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AMDGPU {
 enum Fixups {
   /// 16-bit PC relative fixup for SOPP branch instructions.
@@ -22,6 +22,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

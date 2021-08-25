@@ -15,7 +15,7 @@
 #define LLVM_LIB_TARGET_AMDGPU_AMDGPUPALMETADATA_H
 #include "llvm/BinaryFormat/MsgPackDocument.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class Module;
@@ -142,6 +142,6 @@ private:
   void toMsgPackBlob(std::string &Blob);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUPALMETADATA_H

@@ -13,7 +13,9 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_TARGETINFO_AMDGPUTARGETINFO_H
 #define LLVM_LIB_TARGET_AMDGPU_TARGETINFO_AMDGPUTARGETINFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Target;
 
@@ -24,6 +26,6 @@ Target &getTheAMDGPUTarget();
 /// The target for GCN GPUs
 Target &getTheGCNTarget();
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_TARGETINFO_AMDGPUTARGETINFO_H

@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFSubtarget;
 
 class BPFFrameLowering : public TargetFrameLowering {
@@ -36,5 +36,5 @@ public:
     return MBB.erase(MI);
   }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

@@ -17,7 +17,7 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblySelectionDAGInfo final : public SelectionDAGTargetInfo {
 public:
@@ -40,6 +40,6 @@ public:
                                   MachinePointerInfo DstPtrInfo) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

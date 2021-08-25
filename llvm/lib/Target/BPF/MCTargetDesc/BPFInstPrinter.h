@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFInstPrinter : public MCInstPrinter {
 public:
   BPFInstPrinter(const MCAsmInfo &MAI, const MCInstrInfo &MII,
@@ -36,6 +36,6 @@ public:
   void printInstruction(const MCInst *MI, uint64_t Address, raw_ostream &O);
   static const char *getRegisterName(unsigned RegNo);
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

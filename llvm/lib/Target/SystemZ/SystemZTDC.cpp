@@ -61,8 +61,8 @@
 
 using namespace llvm;
 
-namespace llvm {
-  void initializeSystemZTDCPassPass(PassRegistry&);
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeSystemZTDCPassPass(PassRegistry &);
 }
 
 namespace {

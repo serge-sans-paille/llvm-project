@@ -21,7 +21,7 @@
 #include "llvm/Analysis/TargetTransformInfo.h"
 #include "llvm/CodeGen/BasicTTIImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VETTIImpl : public BasicTTIImplBase<VETTIImpl> {
   using BaseT = BasicTTIImplBase<VETTIImpl>;
@@ -64,6 +64,6 @@ public:
   }
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_VE_VETARGETTRANSFORMINFO_H

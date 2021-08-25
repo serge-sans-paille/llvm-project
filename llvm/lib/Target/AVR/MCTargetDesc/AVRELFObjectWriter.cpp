@@ -17,7 +17,7 @@
 #include "llvm/MC/MCValue.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Writes AVR machine code into an ELF32 object file.
 class AVRELFObjectWriter : public MCELFObjectTargetWriter {
@@ -155,5 +155,4 @@ std::unique_ptr<MCObjectTargetWriter> createAVRELFObjectWriter(uint8_t OSABI) {
   return std::make_unique<AVRELFObjectWriter>(OSABI);
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

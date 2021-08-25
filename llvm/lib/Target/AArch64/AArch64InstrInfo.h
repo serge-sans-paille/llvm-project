@@ -23,7 +23,7 @@
 #define GET_INSTRINFO_HEADER
 #include "AArch64GenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64Subtarget;
 class AArch64TargetMachine;
@@ -489,6 +489,6 @@ int getSVERevInstr(uint16_t Opcode);
 int getSVENonRevInstr(uint16_t Opcode);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

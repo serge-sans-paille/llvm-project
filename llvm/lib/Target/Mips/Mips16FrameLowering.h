@@ -15,7 +15,7 @@
 
 #include "MipsFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Mips16FrameLowering : public MipsFrameLowering {
 public:
   explicit Mips16FrameLowering(const MipsSubtarget &STI);
@@ -42,6 +42,6 @@ public:
                             RegScavenger *RS) const override;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

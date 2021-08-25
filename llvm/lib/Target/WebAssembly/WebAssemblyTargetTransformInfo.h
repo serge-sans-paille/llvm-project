@@ -23,7 +23,7 @@
 #include "llvm/CodeGen/BasicTTIImpl.h"
 #include <algorithm>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblyTTIImpl final : public BasicTTIImplBase<WebAssemblyTTIImpl> {
   typedef BasicTTIImplBase<WebAssemblyTTIImpl> BaseT;
@@ -72,6 +72,6 @@ public:
                            const Function *Callee) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

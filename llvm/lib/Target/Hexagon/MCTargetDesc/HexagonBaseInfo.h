@@ -19,7 +19,7 @@
 #include "HexagonDepITypes.h"
 #include "MCTargetDesc/HexagonMCTargetDesc.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// HexagonII - This namespace holds all of the target specific flags that
 /// instruction info tracks.
@@ -279,6 +279,6 @@ namespace HexagonII {
   }
 } // end namespace HexagonII
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_MCTARGETDESC_HEXAGONBASEINFO_H

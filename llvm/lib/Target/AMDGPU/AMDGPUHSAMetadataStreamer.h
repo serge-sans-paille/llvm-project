@@ -19,7 +19,7 @@
 #include "llvm/Support/AMDGPUMetadata.h"
 #include "llvm/Support/Alignment.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUTargetStreamer;
 class Argument;
@@ -182,6 +182,6 @@ public:
 
 } // end namespace HSAMD
 } // end namespace AMDGPU
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUHSAMETADATASTREAMER_H

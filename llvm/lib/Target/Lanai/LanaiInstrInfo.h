@@ -20,7 +20,7 @@
 #define GET_INSTRINFO_HEADER
 #include "LanaiGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiInstrInfo : public LanaiGenInstrInfo {
   const LanaiRegisterInfo RegisterInfo;
@@ -184,6 +184,6 @@ static inline bool isRRMOpcode(unsigned Opcode) {
   }
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAIINSTRINFO_H

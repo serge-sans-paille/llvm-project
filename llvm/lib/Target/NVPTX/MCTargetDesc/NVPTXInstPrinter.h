@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCSubtargetInfo;
 
@@ -49,6 +49,6 @@ public:
                        raw_ostream &O, const char *Modifier = nullptr);
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

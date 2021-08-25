@@ -17,37 +17,38 @@
 #include "Sparc.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
-  class SparcSubtarget;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class SparcSubtarget;
 
-  namespace SPISD {
-    enum NodeType : unsigned {
-      FIRST_NUMBER = ISD::BUILTIN_OP_END,
-      CMPICC,      // Compare two GPR operands, set icc+xcc.
-      CMPFCC,      // Compare two FP operands, set fcc.
-      BRICC,       // Branch to dest on icc condition
-      BRXCC,       // Branch to dest on xcc condition (64-bit only).
-      BRFCC,       // Branch to dest on fcc condition
-      SELECT_ICC,  // Select between two values using the current ICC flags.
-      SELECT_XCC,  // Select between two values using the current XCC flags.
-      SELECT_FCC,  // Select between two values using the current FCC flags.
+namespace SPISD {
+enum NodeType : unsigned {
+  FIRST_NUMBER = ISD::BUILTIN_OP_END,
+  CMPICC,     // Compare two GPR operands, set icc+xcc.
+  CMPFCC,     // Compare two FP operands, set fcc.
+  BRICC,      // Branch to dest on icc condition
+  BRXCC,      // Branch to dest on xcc condition (64-bit only).
+  BRFCC,      // Branch to dest on fcc condition
+  SELECT_ICC, // Select between two values using the current ICC flags.
+  SELECT_XCC, // Select between two values using the current XCC flags.
+  SELECT_FCC, // Select between two values using the current FCC flags.
 
-      Hi, Lo,      // Hi/Lo operations, typically on a global address.
+  Hi,
+  Lo, // Hi/Lo operations, typically on a global address.
 
-      FTOI,        // FP to Int within a FP register.
-      ITOF,        // Int to FP within a FP register.
-      FTOX,        // FP to Int64 within a FP register.
-      XTOF,        // Int64 to FP within a FP register.
+  FTOI, // FP to Int within a FP register.
+  ITOF, // Int to FP within a FP register.
+  FTOX, // FP to Int64 within a FP register.
+  XTOF, // Int64 to FP within a FP register.
 
-      CALL,        // A call instruction.
-      RET_FLAG,    // Return with a flag operand.
-      GLOBAL_BASE_REG, // Global base reg for PIC.
-      FLUSHW,      // FLUSH register windows to stack.
+  CALL,            // A call instruction.
+  RET_FLAG,        // Return with a flag operand.
+  GLOBAL_BASE_REG, // Global base reg for PIC.
+  FLUSHW,          // FLUSH register windows to stack.
 
-      TLS_ADD,     // For Thread Local Storage (TLS).
-      TLS_LD,
-      TLS_CALL
-    };
+  TLS_ADD, // For Thread Local Storage (TLS).
+  TLS_LD,
+  TLS_CALL
+};
   }
 
   class SparcTargetLowering : public TargetLowering {
@@ -211,6 +212,6 @@ namespace llvm {
     MachineBasicBlock *expandSelectCC(MachineInstr &MI, MachineBasicBlock *BB,
                                       unsigned BROpcode) const;
   };
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif    // SPARC_ISELLOWERING_H

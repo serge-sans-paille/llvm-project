@@ -42,7 +42,7 @@ public:
 
 char NVPTXAssignValidGlobalNames::ID = 0;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeNVPTXAssignValidGlobalNamesPass(PassRegistry &);
 }
 

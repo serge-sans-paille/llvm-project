@@ -58,12 +58,12 @@ static cl::opt<int> HexagonVLCRIterationLim("hexagon-vlcr-iteration-lim",
     cl::desc("Maximum distance of loop carried dependences that are handled"),
     cl::init(2), cl::ZeroOrMore);
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void initializeHexagonVectorLoopCarriedReuseLegacyPassPass(PassRegistry &);
 Pass *createHexagonVectorLoopCarriedReuseLegacyPass();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

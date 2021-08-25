@@ -14,7 +14,7 @@
 #include "AArch64ExpandImm.h"
 #include "MCTargetDesc/AArch64AddressingModes.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AArch64_IMM {
 
@@ -408,4 +408,4 @@ void expandMOVImm(uint64_t Imm, unsigned BitSize,
 
 } // end namespace AArch64_AM
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

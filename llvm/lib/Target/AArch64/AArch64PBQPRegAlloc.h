@@ -12,7 +12,7 @@
 #include "llvm/ADT/SetVector.h"
 #include "llvm/CodeGen/PBQPRAConstraint.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetRegisterInfo;
 
@@ -35,6 +35,6 @@ private:
   void addInterChainConstraint(PBQPRAGraph &G, unsigned Rd, unsigned Ra);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_AARCH64PBQPREGALOC_H

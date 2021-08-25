@@ -13,7 +13,7 @@
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNSubtarget;
 
@@ -100,5 +100,5 @@ public:
   void setDynLDSAlign(const DataLayout &DL, const GlobalVariable &GV);
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

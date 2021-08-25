@@ -20,7 +20,7 @@
 #define GET_REGINFO_HEADER
 #include "NVPTXGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class NVPTXRegisterInfo : public NVPTXGenRegisterInfo {
 private:
   // Hold Strings that can be free'd all together with NVPTXRegisterInfo
@@ -59,6 +59,6 @@ public:
 std::string getNVPTXRegClassName(const TargetRegisterClass *RC);
 std::string getNVPTXRegClassStr(const TargetRegisterClass *RC);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

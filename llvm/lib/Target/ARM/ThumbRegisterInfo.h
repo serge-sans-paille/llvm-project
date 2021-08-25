@@ -18,9 +18,9 @@
 #include "ARMBaseRegisterInfo.h"
 #include "llvm/CodeGen/TargetRegisterInfo.h"
 
-namespace llvm {
-  class ARMSubtarget;
-  class ARMBaseInstrInfo;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class ARMSubtarget;
+class ARMBaseInstrInfo;
 
 struct ThumbRegisterInfo : public ARMBaseRegisterInfo {
 public:
@@ -56,6 +56,6 @@ public:
                            RegScavenger *RS = nullptr) const override;
   bool useFPForScavengingIndex(const MachineFunction &MF) const override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

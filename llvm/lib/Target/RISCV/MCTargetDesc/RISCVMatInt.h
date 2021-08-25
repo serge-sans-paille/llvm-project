@@ -12,7 +12,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class APInt;
 
 namespace RISCVMatInt {
@@ -39,5 +39,5 @@ void generateInstSeq(int64_t Val, bool IsRV64, InstSeq &Res);
 // `Size`-bit immediate. `IsRV64` should match the target architecture.
 int getIntMatCost(const APInt &Val, unsigned Size, bool IsRV64);
 } // namespace RISCVMatInt
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

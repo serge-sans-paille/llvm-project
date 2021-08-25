@@ -26,12 +26,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void initializeARCBranchFinalizePass(PassRegistry &Registry);
 FunctionPass *createARCBranchFinalizePass();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

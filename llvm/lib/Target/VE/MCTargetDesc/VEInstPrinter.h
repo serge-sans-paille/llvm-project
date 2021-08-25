@@ -16,7 +16,7 @@
 #include "VEMCTargetDesc.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VEInstPrinter : public MCInstPrinter {
 public:
@@ -58,6 +58,6 @@ public:
   void printRDOperand(const MCInst *MI, int OpNum, const MCSubtargetInfo &STI,
                       raw_ostream &OS);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -24,7 +24,7 @@
 #include "llvm/MC/SubtargetFeature.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 inline static unsigned getWRegFromXReg(unsigned Reg) {
   switch (Reg) {
@@ -677,6 +677,6 @@ static constexpr unsigned SVEBitsPerBlock = 128;
 static constexpr unsigned SVEMaxBitsPerVector = 2048;
 const unsigned NeonBitsPerVector = 128;
 } // end namespace AArch64
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

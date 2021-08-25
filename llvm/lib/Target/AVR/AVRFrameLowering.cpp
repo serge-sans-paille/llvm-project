@@ -27,7 +27,7 @@
 
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRFrameLowering::AVRFrameLowering()
     : TargetFrameLowering(TargetFrameLowering::StackGrowsDown, Align(1), -2) {}
@@ -530,5 +530,4 @@ char AVRDynAllocaSR::ID = 0;
 /// pointer save/restore pass.
 FunctionPass *createAVRDynAllocaSRPass() { return new AVRDynAllocaSR(); }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

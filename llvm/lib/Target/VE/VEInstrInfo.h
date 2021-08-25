@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "VEGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VESubtarget;
 
@@ -116,6 +116,6 @@ public:
   bool expandGetStackTopPseudo(MachineInstr &MI) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -14,9 +14,11 @@
 #define LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCCODEEMITTER_H
 
 #include "llvm/MC/MCCodeEmitter.h"
+#include "llvm/Support/Compiler.h"
+
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class MCExpr;
@@ -270,6 +272,6 @@ private:
   void LowerCompactBranch(MCInst& Inst) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCCODEEMITTER_H

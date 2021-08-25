@@ -24,7 +24,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "LanaiGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiSubtarget : public LanaiGenSubtargetInfo {
 public:
@@ -69,6 +69,6 @@ private:
   LanaiTargetLowering TLInfo;
   LanaiSelectionDAGInfo TSInfo;
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAISUBTARGET_H

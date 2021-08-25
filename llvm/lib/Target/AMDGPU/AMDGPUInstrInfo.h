@@ -17,7 +17,7 @@
 
 #include "Utils/AMDGPUBaseInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GCNSubtarget;
 class MachineFunction;
@@ -80,6 +80,6 @@ const ImageDimIntrinsicInfo *getImageDimInstrinsicByBaseOpcode(unsigned BaseOpco
                                                                unsigned Dim);
 
 } // end AMDGPU namespace
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

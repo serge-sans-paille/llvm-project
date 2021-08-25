@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// X86 target streamer implementing x86-only assembly directives.
 class X86TargetStreamer : public MCTargetStreamer {
@@ -29,6 +29,6 @@ public:
   virtual bool emitFPOSetFrame(unsigned Reg, SMLoc L = {}) = 0;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

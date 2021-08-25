@@ -13,7 +13,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/CallingConvLower.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCCCState : public CCState {
 public:
@@ -36,6 +36,6 @@ public:
   bool WasOriginalArgPPCF128(unsigned ValNo) { return OriginalArgWasPPCF128[ValNo]; }
   void clearWasPPCF128() { OriginalArgWasPPCF128.clear(); }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

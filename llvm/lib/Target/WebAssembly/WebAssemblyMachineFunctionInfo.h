@@ -21,7 +21,7 @@
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/MC/MCSymbolWasm.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace yaml {
 struct WebAssemblyFunctionInfo;
@@ -190,6 +190,6 @@ template <> struct MappingTraits<WebAssemblyFunctionInfo> {
 
 } // end namespace yaml
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

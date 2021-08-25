@@ -18,7 +18,7 @@
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Common code between 32-bit and 64-bit PowerPC targets.
 ///
@@ -64,6 +64,6 @@ public:
     return true;
   }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -20,7 +20,7 @@
 #include "llvm/Support/DataTypes.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// MipsII - This namespace holds all of the target specific flags that
 /// instruction info tracks.
@@ -135,6 +135,6 @@ namespace MipsII {
     OPERAND_LAST_MIPS_MEM_IMM = OPERAND_MEM_SIMM9
   };
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

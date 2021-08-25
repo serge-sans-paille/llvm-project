@@ -18,7 +18,7 @@
 #include "llvm/ADT/SetVector.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineDominatorTree;
 class MachineDominanceFrontier;
@@ -165,6 +165,6 @@ public:
   void print(raw_ostream &OS, const Module *M = nullptr) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

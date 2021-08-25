@@ -11,7 +11,7 @@
 
 #include "llvm/Support/MathExtras.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 inline bool isImmSExti16i8Value(uint64_t Value) {
   return isInt<8>(Value) ||
@@ -39,6 +39,6 @@ inline bool isImmUnsignedi4Value(uint64_t Value) {
   return isUInt<4>(Value);
 }
 
-} // End of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

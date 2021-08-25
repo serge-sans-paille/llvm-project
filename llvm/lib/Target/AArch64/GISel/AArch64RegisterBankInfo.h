@@ -18,7 +18,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "AArch64GenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetRegisterInfo;
 
@@ -144,5 +144,5 @@ public:
   const InstructionMapping &
   getInstrMapping(const MachineInstr &MI) const override;
 };
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

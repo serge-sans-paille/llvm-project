@@ -14,7 +14,7 @@
 
 #include "llvm/MC/MCDisassembler/MCDisassembler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64Disassembler : public MCDisassembler {
 public:
@@ -28,6 +28,6 @@ public:
                  uint64_t Address, raw_ostream &CStream) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_DISASSEMBLER_AARCH64DISASSEMBLER_H

@@ -20,7 +20,7 @@
 #include "llvm/Support/MathExtras.h"
 #include <cassert>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// ARM_AM - ARM Addressing Mode Stuff
 namespace ARM_AM {
@@ -756,7 +756,7 @@ namespace ARM_AM {
   }
 
 } // end namespace ARM_AM
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif
 

@@ -20,7 +20,7 @@
 #define GET_REGINFO_HEADER
 #include "MipsGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetRegisterClass;
 
@@ -78,6 +78,6 @@ private:
                            int64_t SPOffset) const = 0;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSREGISTERINFO_H

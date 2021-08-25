@@ -12,7 +12,7 @@
 #include "llvm/MC/MCAsmInfoELF.h"
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class SystemZMCAsmInfo : public MCAsmInfoELF {
@@ -20,6 +20,6 @@ public:
   explicit SystemZMCAsmInfo(const Triple &TT);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

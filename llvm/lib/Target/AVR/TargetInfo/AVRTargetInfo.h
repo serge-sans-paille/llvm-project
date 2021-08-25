@@ -9,10 +9,12 @@
 #ifndef LLVM_AVR_TARGET_INFO_H
 #define LLVM_AVR_TARGET_INFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Target;
 
 Target &getTheAVRTarget();
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_TARGET_INFO_H

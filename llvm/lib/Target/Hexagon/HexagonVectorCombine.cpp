@@ -1432,10 +1432,10 @@ auto HexagonVectorCombine::getElementRange(IRBuilder<> &Builder, Value *Lo,
 
 // Pass management.
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeHexagonVectorCombineLegacyPass(PassRegistry &);
 FunctionPass *createHexagonVectorCombineLegacyPass();
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 class HexagonVectorCombineLegacy : public FunctionPass {

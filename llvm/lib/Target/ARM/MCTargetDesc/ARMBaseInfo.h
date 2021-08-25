@@ -20,7 +20,7 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "Utils/ARMBaseInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace ARM_PROC {
   enum IMod {
@@ -450,6 +450,6 @@ namespace ARMII {
 
 } // end namespace ARMII
 
-} // end namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

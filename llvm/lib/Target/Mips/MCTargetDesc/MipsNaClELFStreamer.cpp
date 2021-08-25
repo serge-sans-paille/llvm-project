@@ -205,7 +205,7 @@ public:
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 bool isBasePlusOffsetMemoryAccess(unsigned Opcode, unsigned *AddrIdx,
                                   bool *IsStore) {
@@ -275,4 +275,4 @@ MCELFStreamer *createMipsNaClELFStreamer(MCContext &Context,
   return S;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

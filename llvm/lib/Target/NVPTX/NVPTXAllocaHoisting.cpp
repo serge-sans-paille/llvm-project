@@ -57,7 +57,7 @@ bool NVPTXAllocaHoisting::runOnFunction(Function &function) {
 
 char NVPTXAllocaHoisting::ID = 0;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeNVPTXAllocaHoistingPass(PassRegistry &);
 }
 

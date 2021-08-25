@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Triple;
 
@@ -26,6 +26,6 @@ public:
   explicit ARCMCAsmInfo(const Triple &TT);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_MCTARGETDESC_ARCMCASMINFO_H

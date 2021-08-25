@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCSection;
 
 /// Implments NVPTX-specific streamer.
@@ -50,6 +50,6 @@ public:
   void emitRawBytes(StringRef Data) override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

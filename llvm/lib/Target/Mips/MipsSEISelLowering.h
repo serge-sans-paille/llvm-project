@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/SelectionDAGNodes.h"
 #include "llvm/Support/MachineValueType.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineBasicBlock;
 class MachineInstr;
@@ -138,6 +138,6 @@ class TargetRegisterClass;
                                           bool IsFGR64) const;
   };
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSSEISELLOWERING_H

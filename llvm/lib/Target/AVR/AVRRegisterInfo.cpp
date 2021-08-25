@@ -29,7 +29,7 @@
 #define GET_REGINFO_TARGET_DESC
 #include "AVRGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRRegisterInfo::AVRRegisterInfo() : AVRGenRegisterInfo(0) {}
 
@@ -290,4 +290,4 @@ bool AVRRegisterInfo::shouldCoalesce(MachineInstr *MI,
   return TargetRegisterInfo::shouldCoalesce(MI, SrcRC, SubReg, DstRC, DstSubReg, NewRC, LIS);
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

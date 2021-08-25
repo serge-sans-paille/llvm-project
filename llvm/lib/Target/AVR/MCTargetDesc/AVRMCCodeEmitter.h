@@ -22,7 +22,7 @@
 #define GET_INSTRINFO_OPERAND_TYPES_ENUM
 #include "AVRGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class MCExpr;
@@ -109,7 +109,7 @@ private:
   MCContext &Ctx;
 };
 
-} // end namespace of llvm.
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_CODE_EMITTER_H
 

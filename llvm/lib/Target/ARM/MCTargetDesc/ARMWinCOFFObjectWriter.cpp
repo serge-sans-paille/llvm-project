@@ -88,11 +88,11 @@ bool ARMWinCOFFObjectWriter::recordRelocation(const MCFixup &Fixup) const {
   return static_cast<unsigned>(Fixup.getKind()) != ARM::fixup_t2_movt_hi16;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<MCObjectTargetWriter>
 createARMWinCOFFObjectWriter(bool Is64Bit) {
   return std::make_unique<ARMWinCOFFObjectWriter>(Is64Bit);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -36,12 +36,12 @@ using namespace llvm;
 static cl::opt<uint32_t> BranchRelaxSafetyBuffer("branch-relax-safety-buffer",
   cl::init(200), cl::Hidden, cl::ZeroOrMore, cl::desc("safety buffer size"));
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonBranchRelaxation();
-  void initializeHexagonBranchRelaxationPass(PassRegistry&);
+FunctionPass *createHexagonBranchRelaxation();
+void initializeHexagonBranchRelaxationPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

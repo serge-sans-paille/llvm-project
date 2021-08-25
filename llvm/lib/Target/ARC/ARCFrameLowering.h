@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class ARCSubtarget;
@@ -72,6 +72,6 @@ private:
   const ARCSubtarget &ST;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCFRAMELOWERING_H

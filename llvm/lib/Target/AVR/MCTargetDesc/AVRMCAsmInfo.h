@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Triple;
 
@@ -25,6 +25,6 @@ public:
   explicit AVRMCAsmInfo(const Triple &TT, const MCTargetOptions &Options);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_ASM_INFO_H

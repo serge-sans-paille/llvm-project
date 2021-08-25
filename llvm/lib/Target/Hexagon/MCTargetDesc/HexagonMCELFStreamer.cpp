@@ -147,8 +147,7 @@ void HexagonMCELFStreamer::HexagonMCEmitLocalCommonSymbol(MCSymbol *Symbol,
   HexagonMCEmitCommonSymbol(Symbol, Size, ByteAlignment, AccessSize);
 }
 
-
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 MCStreamer *createHexagonELFStreamer(Triple const &TT, MCContext &Context,
                                      std::unique_ptr<MCAsmBackend> MAB,
                                      std::unique_ptr<MCObjectWriter> OW,
@@ -157,4 +156,4 @@ MCStreamer *createHexagonELFStreamer(Triple const &TT, MCContext &Context,
                                   std::move(CE));
   }
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY

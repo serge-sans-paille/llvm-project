@@ -21,7 +21,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "PPCGenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class TargetRegisterInfo;
 
 class PPCGenRegisterBankInfo : public RegisterBankInfo {
@@ -34,6 +34,6 @@ class PPCRegisterBankInfo final : public PPCGenRegisterBankInfo {
 public:
   PPCRegisterBankInfo(const TargetRegisterInfo &TRI);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

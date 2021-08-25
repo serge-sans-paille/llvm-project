@@ -88,11 +88,11 @@ INITIALIZE_PASS_END(AMDGPUPrintfRuntimeBinding, "amdgpu-printf-runtime-binding",
 
 char &llvm::AMDGPUPrintfRuntimeBindingID = AMDGPUPrintfRuntimeBinding::ID;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 ModulePass *createAMDGPUPrintfRuntimeBinding() {
   return new AMDGPUPrintfRuntimeBinding();
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 AMDGPUPrintfRuntimeBinding::AMDGPUPrintfRuntimeBinding() : ModulePass(ID) {
   initializeAMDGPUPrintfRuntimeBindingPass(*PassRegistry::getPassRegistry());

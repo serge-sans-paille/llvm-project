@@ -37,7 +37,7 @@
 #include <utility>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Argument;
 class FastISel;
@@ -713,6 +713,6 @@ FastISel *createFastISel(FunctionLoweringInfo &funcInfo,
 
 } // end namespace Mips
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSISELLOWERING_H

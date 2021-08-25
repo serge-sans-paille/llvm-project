@@ -145,8 +145,8 @@ INITIALIZE_PASS_END(AMDGPURegBankCombiner, DEBUG_TYPE,
                     "Combine AMDGPU machine instrs after regbankselect", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createAMDGPURegBankCombiner(bool IsOptNone) {
   return new AMDGPURegBankCombiner(IsOptNone);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

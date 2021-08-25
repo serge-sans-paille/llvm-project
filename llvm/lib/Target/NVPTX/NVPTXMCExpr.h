@@ -15,7 +15,7 @@
 #include "llvm/MC/MCExpr.h"
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXFloatMCExpr : public MCTargetExpr {
 public:
@@ -125,6 +125,6 @@ public:
     return E->getKind() == MCExpr::Target;
   }
   };
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

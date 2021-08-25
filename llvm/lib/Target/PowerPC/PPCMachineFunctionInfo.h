@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/TargetCallingConv.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// PPCFunctionInfo - This class is derived from MachineFunction private
 /// PowerPC target-specific information for each MachineFunction.
@@ -254,6 +254,6 @@ public:
   MCSymbol *getTOCOffsetSymbol(MachineFunction &MF) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_POWERPC_PPCMACHINEFUNCTIONINFO_H

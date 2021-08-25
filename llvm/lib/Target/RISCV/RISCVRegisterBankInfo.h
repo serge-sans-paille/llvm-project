@@ -18,7 +18,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "RISCVGenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class TargetRegisterInfo;
 
@@ -33,5 +33,5 @@ class RISCVRegisterBankInfo final : public RISCVGenRegisterBankInfo {
 public:
   RISCVRegisterBankInfo(const TargetRegisterInfo &TRI);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

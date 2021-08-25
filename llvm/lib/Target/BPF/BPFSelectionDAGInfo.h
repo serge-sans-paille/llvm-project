@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BPFSelectionDAGInfo : public SelectionDAGTargetInfo {
 public:
@@ -30,6 +30,6 @@ public:
 
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

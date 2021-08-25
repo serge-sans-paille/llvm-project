@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "XCoreGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 class XCoreSubtarget : public XCoreGenSubtargetInfo {
@@ -60,6 +60,6 @@ public:
     return &InstrInfo.getRegisterInfo();
   }
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

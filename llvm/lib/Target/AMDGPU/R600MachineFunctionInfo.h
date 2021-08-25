@@ -14,7 +14,7 @@
 
 #include "AMDGPUMachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600MachineFunctionInfo final : public AMDGPUMachineFunction {
 public:
@@ -22,6 +22,6 @@ public:
   unsigned CFStackSize;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

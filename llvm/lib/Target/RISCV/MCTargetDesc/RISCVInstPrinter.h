@@ -16,7 +16,7 @@
 #include "MCTargetDesc/RISCVMCTargetDesc.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class RISCVInstPrinter : public MCInstPrinter {
 public:
@@ -59,6 +59,6 @@ public:
   static const char *getRegisterName(unsigned RegNo);
   static const char *getRegisterName(unsigned RegNo, unsigned AltIdx);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

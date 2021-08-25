@@ -14,7 +14,7 @@
 
 #include "llvm/MC/MCContext.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRTargetStreamer::AVRTargetStreamer(MCStreamer &S) : MCTargetStreamer(S) {}
 
@@ -39,5 +39,4 @@ void AVRTargetStreamer::finish() {
   OS.emitSymbolAttribute(DoClearBss, MCSA_Global);
 }
 
-} // end namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

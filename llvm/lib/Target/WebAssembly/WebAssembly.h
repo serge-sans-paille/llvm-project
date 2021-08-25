@@ -18,7 +18,7 @@
 #include "llvm/PassRegistry.h"
 #include "llvm/Support/CodeGen.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblyTargetMachine;
 class ModulePass;
@@ -94,6 +94,6 @@ enum TargetIndex {
 };
 } // end namespace WebAssembly
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -36,7 +36,7 @@ static std::pair<Type *, Align> getArgumentTypeAlign(const Argument &Arg,
   return std::make_pair(Ty, *ArgAlign);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static cl::opt<bool> DumpHSAMetadata(
     "amdgpu-dump-hsa-metadata",
@@ -923,4 +923,4 @@ void MetadataStreamerV3::emitKernel(const MachineFunction &MF,
 
 } // end namespace HSAMD
 } // end namespace AMDGPU
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

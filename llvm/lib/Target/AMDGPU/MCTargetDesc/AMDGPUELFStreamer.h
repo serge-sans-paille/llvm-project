@@ -14,8 +14,10 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUELFSTREAMER_H
 #define LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUELFSTREAMER_H
 
+#include "llvm/Support/Compiler.h"
+
 #include <memory>
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -29,6 +31,6 @@ MCELFStreamer *createAMDGPUELFStreamer(const Triple &T, MCContext &Context,
                                        std::unique_ptr<MCObjectWriter> OW,
                                        std::unique_ptr<MCCodeEmitter> Emitter,
                                        bool RelaxAll);
-} // namespace llvm.
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -3074,14 +3074,14 @@ bool ARMFastISel::fastLowerArguments() {
   return true;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FastISel *ARM::createFastISel(FunctionLoweringInfo &funcInfo,
-                                const TargetLibraryInfo *libInfo) {
-    if (funcInfo.MF->getSubtarget<ARMSubtarget>().useFastISel())
-      return new ARMFastISel(funcInfo, libInfo);
+FastISel *ARM::createFastISel(FunctionLoweringInfo &funcInfo,
+                              const TargetLibraryInfo *libInfo) {
+  if (funcInfo.MF->getSubtarget<ARMSubtarget>().useFastISel())
+    return new ARMFastISel(funcInfo, libInfo);
 
-    return nullptr;
+  return nullptr;
   }
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY

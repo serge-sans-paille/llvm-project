@@ -17,7 +17,7 @@
 
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace WebAssemblyISD {
 
@@ -131,6 +131,6 @@ FastISel *createFastISel(FunctionLoweringInfo &funcInfo,
                          const TargetLibraryInfo *libInfo);
 } // end namespace WebAssembly
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

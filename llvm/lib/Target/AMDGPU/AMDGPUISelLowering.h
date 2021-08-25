@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/CallingConvLower.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUMachineFunction;
 class AMDGPUSubtarget;
@@ -530,6 +530,6 @@ enum NodeType : unsigned {
 
 } // End namespace AMDGPUISD
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

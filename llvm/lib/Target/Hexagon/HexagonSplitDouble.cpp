@@ -44,12 +44,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonSplitDoubleRegs();
-  void initializeHexagonSplitDoubleRegsPass(PassRegistry&);
+FunctionPass *createHexagonSplitDoubleRegs();
+void initializeHexagonSplitDoubleRegsPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static cl::opt<int> MaxHSDR("max-hsdr", cl::Hidden, cl::init(-1),
     cl::desc("Maximum number of split partitions"));

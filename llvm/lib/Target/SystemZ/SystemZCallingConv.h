@@ -13,7 +13,7 @@
 #include "llvm/CodeGen/CallingConvLower.h"
 #include "llvm/MC/MCRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace SystemZ {
   const unsigned NumArgGPRs = 5;
   extern const MCPhysReg ArgGPRs[NumArgGPRs];
@@ -131,6 +131,6 @@ inline bool CC_SystemZ_GHC_Error(unsigned &, MVT &, MVT &,
   return false;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

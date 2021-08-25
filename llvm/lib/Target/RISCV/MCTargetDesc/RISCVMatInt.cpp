@@ -11,7 +11,7 @@
 #include "llvm/ADT/APInt.h"
 #include "llvm/Support/MathExtras.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace RISCVMatInt {
 void generateInstSeq(int64_t Val, bool IsRV64, InstSeq &Res) {
@@ -88,4 +88,4 @@ int getIntMatCost(const APInt &Val, unsigned Size, bool IsRV64) {
   return std::max(1, Cost);
 }
 } // namespace RISCVMatInt
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

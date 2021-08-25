@@ -17,7 +17,7 @@
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -44,7 +44,7 @@ MCAsmBackend *createAVRAsmBackend(const Target &T, const MCSubtargetInfo &STI,
 /// Creates an ELF object writer for AVR.
 std::unique_ptr<MCObjectTargetWriter> createAVRELFObjectWriter(uint8_t OSABI);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_REGINFO_ENUM
 #include "AVRGenRegisterInfo.inc"

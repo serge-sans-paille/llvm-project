@@ -15,7 +15,7 @@
 #include "llvm/CodeGen/StackMaps.h"
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCStreamer;
 class MachineBasicBlock;
 class MachineInstr;
@@ -50,6 +50,6 @@ private:
   void LowerSTACKMAP(const MachineInstr &MI);
   void LowerPATCHPOINT(const MachineInstr &MI, SystemZMCInstLower &Lower);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

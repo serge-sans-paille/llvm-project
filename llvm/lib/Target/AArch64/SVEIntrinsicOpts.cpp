@@ -39,7 +39,7 @@ using namespace llvm::PatternMatch;
 
 #define DEBUG_TYPE "aarch64-sve-intrinsic-opts"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeSVEIntrinsicOptsPass(PassRegistry &);
 }
 
@@ -78,9 +78,9 @@ INITIALIZE_PASS_BEGIN(SVEIntrinsicOpts, DEBUG_TYPE, name, false, false)
 INITIALIZE_PASS_DEPENDENCY(DominatorTreeWrapperPass);
 INITIALIZE_PASS_END(SVEIntrinsicOpts, DEBUG_TYPE, name, false, false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 ModulePass *createSVEIntrinsicOptsPass() { return new SVEIntrinsicOpts(); }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 /// Returns V if it's a cast from <n x 16 x i1> (aka svbool_t), nullptr
 /// otherwise.

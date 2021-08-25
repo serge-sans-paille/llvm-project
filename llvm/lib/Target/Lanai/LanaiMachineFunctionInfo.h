@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // LanaiMachineFunctionInfo - This class is derived from MachineFunction and
 // contains private Lanai target-specific information for each MachineFunction.
@@ -48,6 +48,6 @@ public:
   void setVarArgsFrameIndex(int Index) { VarArgsFrameIndex = Index; }
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAIMACHINEFUNCTIONINFO_H

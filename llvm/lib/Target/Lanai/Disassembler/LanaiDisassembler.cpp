@@ -26,7 +26,7 @@ using namespace llvm;
 
 typedef MCDisassembler::DecodeStatus DecodeStatus;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 Target &getTheLanaiTarget();
 }
 

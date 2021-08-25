@@ -5,7 +5,7 @@
 
 #include "llvm/ADT/StringSwitch.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace LPCC {
 enum CondCode {
   ICC_T = 0,   //  true
@@ -95,6 +95,6 @@ inline static CondCode suffixToLanaiCondCode(StringRef S) {
       .Default(LPCC::UNKNOWN);
 }
 } // namespace LPCC
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAICONDCODE_H

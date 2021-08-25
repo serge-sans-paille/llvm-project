@@ -22,7 +22,7 @@
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LLVM_LIBRARY_VISIBILITY NVPTXDAGToDAGISel : public SelectionDAGISel {
   const NVPTXTargetMachine &TM;
@@ -99,6 +99,6 @@ private:
 
   static unsigned GetConvertOpcode(MVT DestTy, MVT SrcTy, bool IsSigned);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

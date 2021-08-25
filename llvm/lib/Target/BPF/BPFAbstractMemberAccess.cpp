@@ -93,7 +93,7 @@
 
 #define DEBUG_TYPE "bpf-abstract-member-access"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 constexpr StringRef BPFCoreSharedInfo::AmaAttr;
 uint32_t BPFCoreSharedInfo::SeqNum;
 
@@ -109,7 +109,7 @@ Instruction *BPFCoreSharedInfo::insertPassThrough(Module *M, BasicBlock *BB,
   BB->getInstList().insert(Before->getIterator(), NewInst);
   return NewInst;
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 using namespace llvm;
 

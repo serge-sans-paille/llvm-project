@@ -13,7 +13,7 @@
 #include "llvm/IR/CallingConv.h"
 #include "llvm/MC/MCRegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <typename T> class ArrayRef;
 class MCTargetOptions;
@@ -75,6 +75,6 @@ public:
 
   unsigned GetEhDataReg(unsigned I) const;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

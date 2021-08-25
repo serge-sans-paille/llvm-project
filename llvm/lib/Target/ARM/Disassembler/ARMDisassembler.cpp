@@ -682,11 +682,11 @@ DecodeStatus ARMDisassembler::getARMInstruction(MCInst &MI, uint64_t &Size,
   return MCDisassembler::Fail;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 extern const MCInstrDesc ARMInsts[];
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 /// tryAddingSymbolicOperand - trys to add a symbolic operand in place of the
 /// immediate Value in the MCInst.  The immediate Value has had any PC

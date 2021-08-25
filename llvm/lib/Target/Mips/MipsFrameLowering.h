@@ -16,8 +16,8 @@
 #include "Mips.h"
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
-  class MipsSubtarget;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class MipsSubtarget;
 
 class MipsFrameLowering : public TargetFrameLowering {
 protected:
@@ -53,6 +53,6 @@ protected:
 const MipsFrameLowering *createMips16FrameLowering(const MipsSubtarget &ST);
 const MipsFrameLowering *createMipsSEFrameLowering(const MipsSubtarget &ST);
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

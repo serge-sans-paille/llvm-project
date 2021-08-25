@@ -20,7 +20,7 @@
 #include <cstdint>
 #include <functional>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMTargetLowering;
 class MachineFunction;
@@ -55,6 +55,6 @@ private:
                          MachineFunction &MF) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMCALLLOWERING_H

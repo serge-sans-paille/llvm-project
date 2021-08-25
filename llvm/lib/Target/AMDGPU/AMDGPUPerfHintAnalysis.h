@@ -18,7 +18,7 @@
 #include "llvm/Analysis/CallGraphSCCPass.h"
 #include "llvm/IR/ValueMap.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct AMDGPUPerfHintAnalysis : public CallGraphSCCPass {
   static char ID;
@@ -51,5 +51,5 @@ private:
 
   FuncInfoMap FIM;
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif // LLVM_LIB_TARGET_AMDGPU_MDGPUPERFHINTANALYSIS_H

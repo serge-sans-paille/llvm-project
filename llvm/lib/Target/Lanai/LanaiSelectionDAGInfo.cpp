@@ -16,7 +16,7 @@
 
 #define DEBUG_TYPE "lanai-selectiondag-info"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 SDValue LanaiSelectionDAGInfo::EmitTargetCodeForMemcpy(
     SelectionDAG & /*DAG*/, const SDLoc & /*dl*/, SDValue /*Chain*/,
@@ -31,4 +31,4 @@ SDValue LanaiSelectionDAGInfo::EmitTargetCodeForMemcpy(
   return SDValue();
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

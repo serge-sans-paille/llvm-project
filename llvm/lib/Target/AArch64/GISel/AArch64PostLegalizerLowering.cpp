@@ -697,8 +697,8 @@ INITIALIZE_PASS_END(AArch64PostLegalizerLowering, DEBUG_TYPE,
                     "Lower AArch64 MachineInstrs after legalization", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createAArch64PostLegalizerLowering() {
   return new AArch64PostLegalizerLowering();
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

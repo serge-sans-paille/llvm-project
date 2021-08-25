@@ -30,7 +30,7 @@
 #define GET_INSTRINFO_HEADER
 #include "MipsGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstr;
 class MachineOperand;
@@ -192,6 +192,6 @@ private:
 const MipsInstrInfo *createMips16InstrInfo(const MipsSubtarget &STI);
 const MipsInstrInfo *createMipsSEInstrInfo(const MipsSubtarget &STI);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSINSTRINFO_H

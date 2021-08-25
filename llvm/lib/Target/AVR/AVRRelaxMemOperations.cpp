@@ -141,8 +141,8 @@ bool AVRRelaxMem::runOnInstruction(Block &MBB, BlockIt MBBI) {
 INITIALIZE_PASS(AVRRelaxMem, "avr-relax-mem",
                 AVR_RELAX_MEM_OPS_NAME, false, false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createAVRRelaxMemPass() { return new AVRRelaxMem(); }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

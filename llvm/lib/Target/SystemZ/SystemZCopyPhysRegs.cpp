@@ -27,8 +27,8 @@ using namespace llvm;
 
 #define SYSTEMZ_COPYPHYSREGS_NAME "SystemZ Copy Physregs"
 
-namespace llvm {
-  void initializeSystemZCopyPhysRegsPass(PassRegistry&);
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeSystemZCopyPhysRegsPass(PassRegistry &);
 }
 
 namespace {

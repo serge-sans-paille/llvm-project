@@ -19,7 +19,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/MC/MCAsmBackend.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAssembler;
 class MCContext;
@@ -64,7 +64,7 @@ private:
   Triple::OSType OSType;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_ASM_BACKEND_H
 

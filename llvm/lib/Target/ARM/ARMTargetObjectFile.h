@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 #include "llvm/MC/MCExpr.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMElfTargetObjectFile : public TargetLoweringObjectFileELF {
 public:
@@ -39,6 +39,6 @@ public:
                                     const TargetMachine &TM) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMTARGETOBJECTFILE_H

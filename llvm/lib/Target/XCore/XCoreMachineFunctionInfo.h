@@ -20,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// XCoreFunctionInfo - This class is derived from MachineFunction private
 /// XCore target-specific information for each MachineFunction.
@@ -90,6 +90,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_XCORE_XCOREMACHINEFUNCTIONINFO_H

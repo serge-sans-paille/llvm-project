@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/MacroFusion.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Fuse AES crypto encoding or decoding.
 static bool isAESPair(const MachineInstr *FirstMI,
@@ -66,4 +66,4 @@ std::unique_ptr<ScheduleDAGMutation> createARMMacroFusionDAGMutation () {
   return createMacroFusionDAGMutation(shouldScheduleAdjacent);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

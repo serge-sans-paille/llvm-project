@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCELFStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCStreamer;
 
 /// A generic AVR target output stream.
@@ -28,6 +28,6 @@ public:
   explicit AVRTargetAsmStreamer(MCStreamer &S);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_TARGET_STREAMER_H

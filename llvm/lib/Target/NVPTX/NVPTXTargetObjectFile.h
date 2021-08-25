@@ -13,7 +13,7 @@
 #include "llvm/MC/SectionKind.h"
 #include "llvm/Target/TargetLoweringObjectFile.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXTargetObjectFile : public TargetLoweringObjectFile {
 public:
@@ -40,6 +40,6 @@ public:
                                     const TargetMachine &TM) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_NVPTX_NVPTXTARGETOBJECTFILE_H

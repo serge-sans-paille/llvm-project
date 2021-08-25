@@ -15,7 +15,7 @@
 
 #include "X86InstPrinterCommon.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class X86ATTInstPrinter final : public X86InstPrinterCommon {
 public:
@@ -114,6 +114,6 @@ private:
   bool HasCustomInstComment;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_MCTARGETDESC_X86ATTINSTPRINTER_H

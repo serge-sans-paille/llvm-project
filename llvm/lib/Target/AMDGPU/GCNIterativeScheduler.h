@@ -20,7 +20,7 @@
 #include "GCNRegPressure.h"
 #include "llvm/CodeGen/MachineScheduler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstr;
 class SUnit;
@@ -121,6 +121,6 @@ protected:
                     const GCNRegPressure &After) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_GCNITERATIVESCHEDULER_H

@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "XCoreGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class XCoreInstrInfo : public XCoreGenInstrInfo {
   const XCoreRegisterInfo RI;
@@ -88,6 +88,6 @@ public:
                                             unsigned Reg, uint64_t Value) const;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

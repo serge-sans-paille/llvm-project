@@ -17,7 +17,7 @@
 #include "VEFixupKinds.h"
 #include "llvm/MC/MCExpr.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringRef;
 class VEMCExpr : public MCTargetExpr {
@@ -90,6 +90,6 @@ public:
   static VE::Fixups getFixupKind(VariantKind Kind);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

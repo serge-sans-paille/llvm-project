@@ -20,7 +20,7 @@
 #define GET_REGINFO_HEADER
 #include "PPCGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class PPCTargetMachine;
 
 inline static unsigned getCRFromCRBit(unsigned SrcReg) {
@@ -174,6 +174,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

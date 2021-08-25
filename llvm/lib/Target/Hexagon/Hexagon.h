@@ -14,12 +14,15 @@
 #ifndef LLVM_LIB_TARGET_HEXAGON_HEXAGON_H
 #define LLVM_LIB_TARGET_HEXAGON_HEXAGON_H
 
-namespace llvm {
-  class HexagonTargetMachine;
-  class ImmutablePass;
+#include "llvm/Support/Compiler.h"
 
-  /// Creates a Hexagon-specific Target Transformation Info pass.
-  ImmutablePass *createHexagonTargetTransformInfoPass(const HexagonTargetMachine *TM);
-} // end namespace llvm;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class HexagonTargetMachine;
+class ImmutablePass;
+
+/// Creates a Hexagon-specific Target Transformation Info pass.
+ImmutablePass *
+createHexagonTargetTransformInfoPass(const HexagonTargetMachine *TM);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

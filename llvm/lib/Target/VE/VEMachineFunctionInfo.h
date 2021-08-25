@@ -14,7 +14,7 @@
 
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VEMachineFunctionInfo : public MachineFunctionInfo {
   virtual void anchor();
@@ -43,6 +43,6 @@ public:
   void setLeafProc(bool rhs) { IsLeafProc = rhs; }
   bool isLeafProc() const { return IsLeafProc; }
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

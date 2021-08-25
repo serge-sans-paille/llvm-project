@@ -27,7 +27,7 @@
 #include "llvm/IR/Function.h"
 #include "llvm/MC/SubtargetFeature.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class APInt;
 class ARMTargetLowering;
@@ -285,6 +285,6 @@ public:
   /// @}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMTARGETTRANSFORMINFO_H

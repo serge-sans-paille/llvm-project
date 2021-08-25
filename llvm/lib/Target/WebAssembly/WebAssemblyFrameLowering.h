@@ -17,7 +17,7 @@
 
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblyFrameLowering final : public TargetFrameLowering {
 public:
@@ -69,6 +69,6 @@ private:
   bool needsSPWriteback(const MachineFunction &MF) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

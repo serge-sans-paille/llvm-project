@@ -21,7 +21,7 @@
 #include "llvm/IR/CallingConv.h"
 #include "llvm/IR/Instruction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AArch64ISD {
 
@@ -1045,6 +1045,6 @@ FastISel *createFastISel(FunctionLoweringInfo &funcInfo,
                          const TargetLibraryInfo *libInfo);
 } // end namespace AArch64
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

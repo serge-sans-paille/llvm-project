@@ -19,7 +19,7 @@
 #include "llvm/Support/DataTypes.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // LanaiII - This namespace holds all of the target specific flags that
 // instruction info tracks.
@@ -114,5 +114,5 @@ static inline unsigned getLanaiRegisterNumbering(unsigned Reg) {
     llvm_unreachable("Unknown register number!");
   }
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif // LLVM_LIB_TARGET_LANAI_MCTARGETDESC_LANAIBASEINFO_H

@@ -12,7 +12,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCExpr;
 class MCSymbol;
@@ -29,6 +29,6 @@ public:
   virtual void emitLocalEntry(MCSymbolELF *S, const MCExpr *LocalOffset) = 0;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_POWERPC_PPCTARGETSTREAMER_H

@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_CTOR
 #include "AVRGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRSubtarget::AVRSubtarget(const Triple &TT, const std::string &CPU,
                            const std::string &FS, const AVRTargetMachine &TM)
@@ -54,4 +54,4 @@ AVRSubtarget::initializeSubtargetDependencies(StringRef CPU, StringRef FS,
   return *this;
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

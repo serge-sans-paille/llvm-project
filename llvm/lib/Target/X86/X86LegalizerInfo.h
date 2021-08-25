@@ -16,7 +16,7 @@
 
 #include "llvm/CodeGen/GlobalISel/LegalizerInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class X86Subtarget;
 class X86TargetMachine;
@@ -47,5 +47,5 @@ private:
   void setLegalizerInfoAVX512DQ();
   void setLegalizerInfoAVX512BW();
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

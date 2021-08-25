@@ -807,68 +807,68 @@ static const HexagonSubtarget &getHexagonSubtarget(SelectionDAG &G) {
   return static_cast<const HexagonSubtarget&>(G.getSubtarget());
 }
 
-namespace llvm {
-  struct HvxSelector {
-    const HexagonTargetLowering &Lower;
-    HexagonDAGToDAGISel &ISel;
-    SelectionDAG &DAG;
-    const HexagonSubtarget &HST;
-    const unsigned HwLen;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+struct HvxSelector {
+  const HexagonTargetLowering &Lower;
+  HexagonDAGToDAGISel &ISel;
+  SelectionDAG &DAG;
+  const HexagonSubtarget &HST;
+  const unsigned HwLen;
 
-    HvxSelector(HexagonDAGToDAGISel &HS, SelectionDAG &G)
-      : Lower(getHexagonLowering(G)),  ISel(HS), DAG(G),
+  HvxSelector(HexagonDAGToDAGISel &HS, SelectionDAG &G)
+      : Lower(getHexagonLowering(G)), ISel(HS), DAG(G),
         HST(getHexagonSubtarget(G)), HwLen(HST.getVectorLength()) {}
 
-    MVT getSingleVT(MVT ElemTy) const {
-      unsigned NumElems = HwLen / (ElemTy.getSizeInBits()/8);
-      return MVT::getVectorVT(ElemTy, NumElems);
-    }
+  MVT getSingleVT(MVT ElemTy) const {
+    unsigned NumElems = HwLen / (ElemTy.getSizeInBits() / 8);
+    return MVT::getVectorVT(ElemTy, NumElems);
+  }
 
-    MVT getPairVT(MVT ElemTy) const {
-      unsigned NumElems = (2*HwLen) / (ElemTy.getSizeInBits()/8);
-      return MVT::getVectorVT(ElemTy, NumElems);
-    }
+  MVT getPairVT(MVT ElemTy) const {
+    unsigned NumElems = (2 * HwLen) / (ElemTy.getSizeInBits() / 8);
+    return MVT::getVectorVT(ElemTy, NumElems);
+  }
 
-    void selectShuffle(SDNode *N);
-    void selectRor(SDNode *N);
-    void selectVAlign(SDNode *N);
+  void selectShuffle(SDNode *N);
+  void selectRor(SDNode *N);
+  void selectVAlign(SDNode *N);
 
-  private:
-    void select(SDNode *ISelN);
-    void materialize(const ResultStack &Results);
+private:
+  void select(SDNode *ISelN);
+  void materialize(const ResultStack &Results);
 
-    SDValue getVectorConstant(ArrayRef<uint8_t> Data, const SDLoc &dl);
+  SDValue getVectorConstant(ArrayRef<uint8_t> Data, const SDLoc &dl);
 
-    enum : unsigned {
-      None,
-      PackMux,
-    };
-    OpRef concat(OpRef Va, OpRef Vb, ResultStack &Results);
-    OpRef packs(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results,
-                MutableArrayRef<int> NewMask, unsigned Options = None);
-    OpRef packp(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results,
-                MutableArrayRef<int> NewMask);
-    OpRef vmuxs(ArrayRef<uint8_t> Bytes, OpRef Va, OpRef Vb,
-                ResultStack &Results);
-    OpRef vmuxp(ArrayRef<uint8_t> Bytes, OpRef Va, OpRef Vb,
-                ResultStack &Results);
+  enum : unsigned {
+    None,
+    PackMux,
+  };
+  OpRef concat(OpRef Va, OpRef Vb, ResultStack &Results);
+  OpRef packs(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results,
+              MutableArrayRef<int> NewMask, unsigned Options = None);
+  OpRef packp(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results,
+              MutableArrayRef<int> NewMask);
+  OpRef vmuxs(ArrayRef<uint8_t> Bytes, OpRef Va, OpRef Vb,
+              ResultStack &Results);
+  OpRef vmuxp(ArrayRef<uint8_t> Bytes, OpRef Va, OpRef Vb,
+              ResultStack &Results);
 
-    OpRef shuffs1(ShuffleMask SM, OpRef Va, ResultStack &Results);
-    OpRef shuffs2(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
-    OpRef shuffp1(ShuffleMask SM, OpRef Va, ResultStack &Results);
-    OpRef shuffp2(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
+  OpRef shuffs1(ShuffleMask SM, OpRef Va, ResultStack &Results);
+  OpRef shuffs2(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
+  OpRef shuffp1(ShuffleMask SM, OpRef Va, ResultStack &Results);
+  OpRef shuffp2(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
 
-    OpRef butterfly(ShuffleMask SM, OpRef Va, ResultStack &Results);
-    OpRef contracting(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
-    OpRef expanding(ShuffleMask SM, OpRef Va, ResultStack &Results);
-    OpRef perfect(ShuffleMask SM, OpRef Va, ResultStack &Results);
+  OpRef butterfly(ShuffleMask SM, OpRef Va, ResultStack &Results);
+  OpRef contracting(ShuffleMask SM, OpRef Va, OpRef Vb, ResultStack &Results);
+  OpRef expanding(ShuffleMask SM, OpRef Va, ResultStack &Results);
+  OpRef perfect(ShuffleMask SM, OpRef Va, ResultStack &Results);
 
-    bool selectVectorConstants(SDNode *N);
-    bool scalarizeShuffle(ArrayRef<int> Mask, const SDLoc &dl, MVT ResTy,
-                          SDValue Va, SDValue Vb, SDNode *N);
+  bool selectVectorConstants(SDNode *N);
+  bool scalarizeShuffle(ArrayRef<int> Mask, const SDLoc &dl, MVT ResTy,
+                        SDValue Va, SDValue Vb, SDNode *N);
 
   };
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 static void splitMask(ArrayRef<int> Mask, MutableArrayRef<int> MaskL,
                       MutableArrayRef<int> MaskR) {

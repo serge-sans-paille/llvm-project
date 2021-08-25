@@ -13,13 +13,14 @@
 #ifndef LLVM_LIB_TARGET_ARC_MCTARGETDESC_ARCMCTARGETDESC_H
 #define LLVM_LIB_TARGET_ARC_MCTARGETDESC_ARCMCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Target;
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for ARC registers.  This defines a mapping from
 // register name to register number.

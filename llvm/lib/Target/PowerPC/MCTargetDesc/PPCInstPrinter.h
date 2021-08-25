@@ -16,7 +16,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCInstPrinter : public MCInstPrinter {
   Triple TT;
@@ -104,6 +104,6 @@ public:
   void printMemRegReg(const MCInst *MI, unsigned OpNo,
                       const MCSubtargetInfo &STI, raw_ostream &O);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

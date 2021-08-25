@@ -33,15 +33,15 @@ namespace MSP430CC {
   };
 }
 
-namespace llvm {
-  class MSP430TargetMachine;
-  class FunctionPass;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class MSP430TargetMachine;
+class FunctionPass;
 
-  FunctionPass *createMSP430ISelDag(MSP430TargetMachine &TM,
-                                    CodeGenOpt::Level OptLevel);
+FunctionPass *createMSP430ISelDag(MSP430TargetMachine &TM,
+                                  CodeGenOpt::Level OptLevel);
 
-  FunctionPass *createMSP430BranchSelectionPass();
+FunctionPass *createMSP430BranchSelectionPass();
 
-} // end namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

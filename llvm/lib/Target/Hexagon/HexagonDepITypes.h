@@ -7,8 +7,10 @@
 //===----------------------------------------------------------------------===//
 // Automatically generated file, do not edit!
 //===----------------------------------------------------------------------===//
+//
+#include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace HexagonII {
 enum Type {
   TypeALU32_2op = 0,
@@ -60,4 +62,4 @@ enum Type {
   TypeV4LDST = 50,
 };
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY

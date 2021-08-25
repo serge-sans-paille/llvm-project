@@ -59,7 +59,7 @@ void AArch64WinCOFFStreamer::finishImpl() {
 }
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Helper function to common out unwind code setup for those codes that can
 // belong to both prolog and epilog.
@@ -233,4 +233,4 @@ MCWinCOFFStreamer *createAArch64WinCOFFStreamer(
   return S;
 }
 
-} // end llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY

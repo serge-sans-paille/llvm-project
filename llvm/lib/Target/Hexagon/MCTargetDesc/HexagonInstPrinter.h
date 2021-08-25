@@ -14,7 +14,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 /// Prints bundles as a newline separated list of individual instructions
 /// Duplexes are separated by a vertical tab \v character
 /// A trailing line includes bundle properties such as endloop0/1
@@ -47,6 +47,6 @@ private:
   bool HasExtender = false;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

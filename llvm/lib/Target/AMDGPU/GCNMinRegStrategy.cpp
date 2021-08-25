@@ -266,7 +266,7 @@ GCNMinRegScheduler::schedule(ArrayRef<const SUnit*> TopRoots,
   return Schedule;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::vector<const SUnit*> makeMinRegSchedule(ArrayRef<const SUnit*> TopRoots,
                                              const ScheduleDAG &DAG) {
@@ -274,4 +274,4 @@ std::vector<const SUnit*> makeMinRegSchedule(ArrayRef<const SUnit*> TopRoots,
   return S.schedule(TopRoots, DAG);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

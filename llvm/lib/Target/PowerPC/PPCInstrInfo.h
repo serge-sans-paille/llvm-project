@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "PPCGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// PPCII - This namespace holds all of the PowerPC target-specific
 /// per-instruction flags.  These must match the corresponding definitions in
@@ -694,6 +694,6 @@ public:
   analyzeLoopForPipelining(MachineBasicBlock *LoopBB) const override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

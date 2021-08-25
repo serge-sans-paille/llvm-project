@@ -16,7 +16,7 @@
 #include "llvm/MC/MCFixupKindInfo.h"
 #include "llvm/MC/MCSubtargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAssembler;
 class MCObjectTargetWriter;
 class raw_ostream;
@@ -113,6 +113,6 @@ public:
   const MCTargetOptions &getTargetOptions() const { return TargetOptions; }
   RISCVABI::ABI getTargetABI() const { return TargetABI; }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

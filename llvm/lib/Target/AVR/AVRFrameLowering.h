@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Utilities for creating function call frames.
 class AVRFrameLowering : public TargetFrameLowering {
@@ -40,6 +40,6 @@ public:
                                 MachineBasicBlock::iterator MI) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_FRAME_LOWERING_H

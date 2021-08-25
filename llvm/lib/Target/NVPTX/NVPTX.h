@@ -18,7 +18,7 @@
 #include "llvm/Pass.h"
 #include "llvm/Support/CodeGen.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class NVPTXTargetMachine;
 class FunctionPass;
 class MachineFunctionPass;
@@ -172,7 +172,7 @@ enum CmpMode {
 };
 }
 }
-} // end namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for NVPTX registers.  This defines a mapping from
 // register name to register number.

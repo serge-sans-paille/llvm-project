@@ -91,12 +91,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonEarlyIfConversion();
-  void initializeHexagonEarlyIfConversionPass(PassRegistry& Registry);
+FunctionPass *createHexagonEarlyIfConversion();
+void initializeHexagonEarlyIfConversionPass(PassRegistry &Registry);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static cl::opt<bool> EnableHexagonBP("enable-hexagon-br-prob", cl::Hidden,
   cl::init(true), cl::desc("Enable branch probability info"));

@@ -113,7 +113,7 @@ public:
 } // end anonymous namespace
 
 /// Provide DenseMapInfo for MemOpKey.
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <> struct DenseMapInfo<MemOpKey> {
   using PtrInfo = DenseMapInfo<const MachineOperand *>;
@@ -184,7 +184,7 @@ template <> struct DenseMapInfo<MemOpKey> {
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 /// Returns a hash table key based on memory operands of \p MI. The
 /// number of the first memory operand of \p MI is specified through \p N.

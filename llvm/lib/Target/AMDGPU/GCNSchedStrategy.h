@@ -16,7 +16,7 @@
 #include "GCNRegPressure.h"
 #include "llvm/CodeGen/MachineScheduler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SIMachineFunctionInfo;
 class SIRegisterInfo;
@@ -124,6 +124,6 @@ public:
   void finalizeSchedule() override;
 };
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // GCNSCHEDSTRATEGY_H

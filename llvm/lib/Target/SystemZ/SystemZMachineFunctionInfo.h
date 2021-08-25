@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/MachineFunction.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace SystemZ {
 // A struct to hold the low and high GPR registers to be saved/restored as
@@ -95,6 +95,6 @@ public:
   void incNumLocalDynamicTLSAccesses() { ++NumLocalDynamics; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

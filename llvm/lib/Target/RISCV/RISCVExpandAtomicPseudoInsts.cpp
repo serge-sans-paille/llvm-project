@@ -609,10 +609,10 @@ bool RISCVExpandAtomicPseudo::expandAtomicCmpXchg(
 INITIALIZE_PASS(RISCVExpandAtomicPseudo, "riscv-expand-atomic-pseudo",
                 RISCV_EXPAND_ATOMIC_PSEUDO_NAME, false, false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createRISCVExpandAtomicPseudoPass() {
   return new RISCVExpandAtomicPseudo();
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

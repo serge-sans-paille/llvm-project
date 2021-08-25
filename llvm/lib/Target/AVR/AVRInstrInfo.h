@@ -21,7 +21,7 @@
 #include "AVRGenInstrInfo.inc"
 #undef GET_INSTRINFO_HEADER
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace AVRCC {
 
@@ -116,6 +116,6 @@ private:
   const AVRRegisterInfo RI;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_INSTR_INFO_H

@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class NVPTXMCAsmInfo : public MCAsmInfo {
@@ -36,6 +36,6 @@ public:
     return true;
   }
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

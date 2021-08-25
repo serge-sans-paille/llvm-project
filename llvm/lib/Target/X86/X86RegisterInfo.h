@@ -18,8 +18,8 @@
 #define GET_REGINFO_HEADER
 #include "X86GenRegisterInfo.inc"
 
-namespace llvm {
-  class Triple;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class Triple;
 
 class X86RegisterInfo final : public X86GenRegisterInfo {
 private:
@@ -151,6 +151,6 @@ public:
                              const LiveRegMatrix *Matrix) const override;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

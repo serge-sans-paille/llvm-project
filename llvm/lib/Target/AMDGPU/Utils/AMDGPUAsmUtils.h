@@ -9,7 +9,9 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_UTILS_AMDGPUASMUTILS_H
 #define LLVM_LIB_TARGET_AMDGPU_UTILS_AMDGPUASMUTILS_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringLiteral;
 
@@ -53,6 +55,6 @@ extern const char* const IdSymbolic[];
 } // namespace VGPRIndexMode
 
 } // namespace AMDGPU
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

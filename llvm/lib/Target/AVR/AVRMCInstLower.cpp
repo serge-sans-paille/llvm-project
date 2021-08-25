@@ -21,7 +21,7 @@
 #include "llvm/MC/MCInst.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCOperand AVRMCInstLower::lowerSymbolOperand(const MachineOperand &MO,
                                              MCSymbol *Sym) const {
@@ -107,5 +107,4 @@ void AVRMCInstLower::lowerInstruction(const MachineInstr &MI, MCInst &OutMI) con
   }
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

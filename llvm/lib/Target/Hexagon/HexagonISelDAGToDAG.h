@@ -21,7 +21,7 @@
 
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MachineFunction;
 class HexagonInstrInfo;
 class HexagonRegisterInfo;
@@ -157,6 +157,6 @@ private:
   SDValue balanceSubTree(SDNode *N, bool Factorize = false);
   void rebalanceAddressTrees();
 }; // end HexagonDAGToDAGISel
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONISELDAGTODAG_H

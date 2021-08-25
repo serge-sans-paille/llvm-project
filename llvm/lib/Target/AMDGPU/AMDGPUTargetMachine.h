@@ -18,7 +18,7 @@
 #include "R600Subtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 //===----------------------------------------------------------------------===//
 // AMDGPU Target Machine (R600+)
@@ -121,6 +121,6 @@ public:
                                 SMRange &SourceRange) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUTARGETMACHINE_H

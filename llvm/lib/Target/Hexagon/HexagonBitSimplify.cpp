@@ -62,12 +62,12 @@ static cl::opt<unsigned> MaxBitSplit("hexbit-max-bitsplit", cl::Hidden,
   cl::init(std::numeric_limits<unsigned>::max()));
 static unsigned CountBitSplit = 0;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonBitSimplifyPass(PassRegistry& Registry);
-  FunctionPass *createHexagonBitSimplify();
+void initializeHexagonBitSimplifyPass(PassRegistry &Registry);
+FunctionPass *createHexagonBitSimplify();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 
@@ -2887,12 +2887,12 @@ bool HexagonBitSimplify::runOnMachineFunction(MachineFunction &MF) {
 //   r5:4 = memd(r0++#8)
 // }:endloop0
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonLoopRescheduling();
-  void initializeHexagonLoopReschedulingPass(PassRegistry&);
+FunctionPass *createHexagonLoopRescheduling();
+void initializeHexagonLoopReschedulingPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

@@ -24,7 +24,7 @@ using namespace llvm;
 
 #define DEBUG_TYPE "nvptx-reg-info"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 std::string getNVPTXRegClassName(TargetRegisterClass const *RC) {
   if (RC == &NVPTX::Float32RegsRegClass)
     return ".f32";
@@ -90,7 +90,7 @@ std::string getNVPTXRegClassStr(TargetRegisterClass const *RC) {
     return "!Special!";
   return "INTERNAL";
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 NVPTXRegisterInfo::NVPTXRegisterInfo() : NVPTXGenRegisterInfo(0) {}
 

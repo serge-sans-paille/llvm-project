@@ -45,9 +45,9 @@ static llvm::cl::opt<bool> DisableMemAluCombiner(
     llvm::cl::desc("Do not combine ALU and memory operators"),
     llvm::cl::Hidden);
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeLanaiMemAluCombinerPass(PassRegistry &);
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 typedef MachineBasicBlock::iterator MbbIterator;

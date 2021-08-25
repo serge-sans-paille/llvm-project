@@ -20,11 +20,11 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeR600EmitClauseMarkersPass(PassRegistry&);
+void initializeR600EmitClauseMarkersPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

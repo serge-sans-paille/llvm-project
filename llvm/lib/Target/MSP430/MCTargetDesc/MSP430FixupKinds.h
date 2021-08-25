@@ -13,7 +13,7 @@
 
 #undef MSP430
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace MSP430 {
 
 // This table must be in the same order of
@@ -47,6 +47,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 } // end namespace MSP430
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

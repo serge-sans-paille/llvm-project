@@ -16,7 +16,7 @@
 
 #include "llvm/CodeGen/AsmPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600AsmPrinter final : public AsmPrinter {
 
@@ -40,6 +40,6 @@ AsmPrinter *
 createR600AsmPrinterPass(TargetMachine &TM,
                          std::unique_ptr<MCStreamer> &&Streamer);
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_R600ASMPRINTER_H

@@ -26,7 +26,7 @@
 #include "llvm/IR/Intrinsics.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class APInt;
 class Instruction;
@@ -261,6 +261,6 @@ public:
   /// @}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_AARCH64TARGETTRANSFORMINFO_H

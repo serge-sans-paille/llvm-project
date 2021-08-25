@@ -16,8 +16,8 @@
 #include "ARMBaseInstrInfo.h"
 #include "ThumbRegisterInfo.h"
 
-namespace llvm {
-  class ARMSubtarget;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class ARMSubtarget;
 
 class Thumb1InstrInfo : public ARMBaseInstrInfo {
   ThumbRegisterInfo RI;
@@ -56,6 +56,6 @@ public:
 private:
   void expandLoadStackGuard(MachineBasicBlock::iterator MI) const override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -12,7 +12,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class AsmPrinter;
 class MCAsmInfo;
 class MCContext;
@@ -48,6 +48,6 @@ public:
   MCSymbol *GetGlobalAddressSymbol(const MachineOperand &MO) const;
   MCSymbol *GetExternalSymbolSymbol(const MachineOperand &MO) const;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -20,7 +20,7 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MSP430TargetELFStreamer : public MCTargetStreamer {
 public:
@@ -77,4 +77,4 @@ createMSP430ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
   return nullptr;
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

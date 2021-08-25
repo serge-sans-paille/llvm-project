@@ -17,7 +17,7 @@
 #include "NVPTXSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// NVPTXTargetMachine
 ///
@@ -90,6 +90,6 @@ public:
                        CodeGenOpt::Level OL, bool JIT);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

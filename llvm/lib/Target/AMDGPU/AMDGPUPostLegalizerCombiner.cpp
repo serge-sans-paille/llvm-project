@@ -386,8 +386,8 @@ INITIALIZE_PASS_END(AMDGPUPostLegalizerCombiner, DEBUG_TYPE,
                     "Combine AMDGPU machine instrs after legalization", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createAMDGPUPostLegalizeCombiner(bool IsOptNone) {
   return new AMDGPUPostLegalizerCombiner(IsOptNone);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -17,7 +17,7 @@
 #include "MCTargetDesc/ARCMCTargetDesc.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class FunctionPass;
 class ARCTargetMachine;
@@ -28,6 +28,6 @@ FunctionPass *createARCExpandPseudosPass();
 FunctionPass *createARCOptAddrMode();
 FunctionPass *createARCBranchFinalizePass();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARC_H

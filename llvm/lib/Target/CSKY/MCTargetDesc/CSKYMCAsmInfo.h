@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class CSKYMCAsmInfo : public MCAsmInfoELF {
@@ -24,6 +24,6 @@ class CSKYMCAsmInfo : public MCAsmInfoELF {
 public:
   explicit CSKYMCAsmInfo(const Triple &TargetTriple);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_CSKY_MCTARGETDESC_CSKYMCASMINFO_H

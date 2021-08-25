@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "ARCGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARCSubtarget;
 
@@ -98,6 +98,6 @@ public:
                                             unsigned Reg, uint64_t Value) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCINSTRINFO_H

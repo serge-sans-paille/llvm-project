@@ -49,12 +49,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonGenMux();
-  void initializeHexagonGenMuxPass(PassRegistry& Registry);
+FunctionPass *createHexagonGenMux();
+void initializeHexagonGenMuxPass(PassRegistry &Registry);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Initialize this to 0 to always prefer generating mux by default.
 static cl::opt<unsigned> MinPredDist("hexagon-gen-mux-threshold", cl::Hidden,

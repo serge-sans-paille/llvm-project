@@ -26,7 +26,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "WebAssemblyGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Defined in WebAssemblyGenSubtargetInfo.inc.
 extern const SubtargetFeatureKV
@@ -108,6 +108,6 @@ public:
   void ParseSubtargetFeatures(StringRef CPU, StringRef TuneCPU, StringRef FS);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

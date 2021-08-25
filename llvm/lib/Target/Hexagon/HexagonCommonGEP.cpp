@@ -59,11 +59,11 @@ static cl::opt<bool> OptEnableInv("commgep-inv", cl::init(true), cl::Hidden,
 static cl::opt<bool> OptEnableConst("commgep-const", cl::init(true),
   cl::Hidden, cl::ZeroOrMore);
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonCommonGEPPass(PassRegistry&);
+void initializeHexagonCommonGEPPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 
@@ -1298,10 +1298,8 @@ bool HexagonCommonGEP::runOnFunction(Function &F) {
   return true;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonCommonGEP() {
-    return new HexagonCommonGEP();
-  }
+FunctionPass *createHexagonCommonGEP() { return new HexagonCommonGEP(); }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

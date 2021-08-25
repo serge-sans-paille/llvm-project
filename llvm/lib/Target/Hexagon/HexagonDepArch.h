@@ -16,7 +16,7 @@
 #include "llvm/ADT/StringRef.h"
 #include <map>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace Hexagon {
 enum class ArchEnum { NoArch, Generic, V5, V55, V60, V62, V65, V66, V67 };
 
@@ -44,5 +44,5 @@ static const std::map<std::string, ArchEnum> CpuTable{
     {"hexagonv67t", Hexagon::ArchEnum::V67},
 };
 } // namespace Hexagon
-} // namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif  // LLVM_LIB_TARGET_HEXAGON_HEXAGONDEPARCH_H

@@ -20,7 +20,7 @@
 #include "llvm/CodeGen/BasicTTIImpl.h"
 #include "llvm/Transforms/Utils/ScalarEvolutionExpander.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFTTIImpl : public BasicTTIImplBase<BPFTTIImpl> {
   typedef BasicTTIImplBase<BPFTTIImpl> BaseT;
   typedef TargetTransformInfo TTI;
@@ -56,6 +56,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_BPF_BPFTARGETTRANSFORMINFO_H

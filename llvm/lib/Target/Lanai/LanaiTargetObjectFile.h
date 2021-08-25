@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class LanaiTargetObjectFile : public TargetLoweringObjectFileELF {
   MCSection *SmallDataSection;
   MCSection *SmallBSSSection;
@@ -39,6 +39,6 @@ public:
                                    const Constant *C,
                                    Align &Alignment) const override;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAITARGETOBJECTFILE_H

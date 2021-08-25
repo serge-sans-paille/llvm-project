@@ -14,7 +14,7 @@
 #define LLVM_LIB_TARGET_AMDGPU_MCTARGETDESC_AMDGPUMCASMINFO_H
 
 #include "llvm/MC/MCAsmInfoELF.h"
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Triple;
 
@@ -29,5 +29,5 @@ public:
   bool shouldOmitSectionDirective(StringRef SectionName) const override;
   unsigned getMaxInstLength(const MCSubtargetInfo *STI) const override;
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

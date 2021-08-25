@@ -14,7 +14,7 @@
 #include "llvm/ADT/SmallVector.h"
 
 using namespace llvm;
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 ARM::PredBlockMask expandPredBlockMask(ARM::PredBlockMask BlockMask,
                                        ARMVCC::VPTCodes Kind) {
   using PredBlockMask = ARM::PredBlockMask;
@@ -74,4 +74,4 @@ namespace ARMBankedReg {
 #define GET_BANKEDREG_IMPL
 #include "ARMGenSystemRegister.inc"
 } // end namespce ARMSysReg
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

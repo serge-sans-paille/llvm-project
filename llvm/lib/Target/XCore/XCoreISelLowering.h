@@ -18,71 +18,71 @@
 #include "llvm/CodeGen/SelectionDAG.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  // Forward delcarations
-  class XCoreSubtarget;
+// Forward delcarations
+class XCoreSubtarget;
 
-  namespace XCoreISD {
-    enum NodeType : unsigned {
-      // Start the numbering where the builtin ops and target ops leave off.
-      FIRST_NUMBER = ISD::BUILTIN_OP_END,
+namespace XCoreISD {
+enum NodeType : unsigned {
+  // Start the numbering where the builtin ops and target ops leave off.
+  FIRST_NUMBER = ISD::BUILTIN_OP_END,
 
-      // Branch and link (call)
-      BL,
+  // Branch and link (call)
+  BL,
 
-      // pc relative address
-      PCRelativeWrapper,
+  // pc relative address
+  PCRelativeWrapper,
 
-      // dp relative address
-      DPRelativeWrapper,
+  // dp relative address
+  DPRelativeWrapper,
 
-      // cp relative address
-      CPRelativeWrapper,
+  // cp relative address
+  CPRelativeWrapper,
 
-      // Load word from stack
-      LDWSP,
+  // Load word from stack
+  LDWSP,
 
-      // Store word to stack
-      STWSP,
+  // Store word to stack
+  STWSP,
 
-      // Corresponds to retsp instruction
-      RETSP,
+  // Corresponds to retsp instruction
+  RETSP,
 
-      // Corresponds to LADD instruction
-      LADD,
+  // Corresponds to LADD instruction
+  LADD,
 
-      // Corresponds to LSUB instruction
-      LSUB,
+  // Corresponds to LSUB instruction
+  LSUB,
 
-      // Corresponds to LMUL instruction
-      LMUL,
+  // Corresponds to LMUL instruction
+  LMUL,
 
-      // Corresponds to MACCU instruction
-      MACCU,
+  // Corresponds to MACCU instruction
+  MACCU,
 
-      // Corresponds to MACCS instruction
-      MACCS,
+  // Corresponds to MACCS instruction
+  MACCS,
 
-      // Corresponds to CRC8 instruction
-      CRC8,
+  // Corresponds to CRC8 instruction
+  CRC8,
 
-      // Jumptable branch.
-      BR_JT,
+  // Jumptable branch.
+  BR_JT,
 
-      // Jumptable branch using long branches for each entry.
-      BR_JT32,
+  // Jumptable branch using long branches for each entry.
+  BR_JT32,
 
-      // Offset from frame pointer to the first (possible) on-stack argument
-      FRAME_TO_ARGS_OFFSET,
+  // Offset from frame pointer to the first (possible) on-stack argument
+  FRAME_TO_ARGS_OFFSET,
 
-      // Exception handler return. The stack is restored to the first
-      // followed by a jump to the second argument.
-      EH_RETURN,
+  // Exception handler return. The stack is restored to the first
+  // followed by a jump to the second argument.
+  EH_RETURN,
 
-      // Memory barrier.
-      MEMBARRIER
-    };
+  // Memory barrier.
+  MEMBARRIER
+};
   }
 
   //===--------------------------------------------------------------------===//
@@ -231,6 +231,6 @@ namespace llvm {
       return true;
     }
   };
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

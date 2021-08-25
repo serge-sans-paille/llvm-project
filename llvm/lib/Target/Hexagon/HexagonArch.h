@@ -15,7 +15,7 @@
 #include "HexagonDepArch.h"
 #include <algorithm>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace Hexagon {
 
 template <class ArchCont, typename Val>
@@ -33,5 +33,5 @@ llvm::Optional<ArchEnum> GetCpu(ArchCont const &ArchList, Val CPUString) {
   return Res;
 }
 } // namespace Hexagon
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif  // LLVM_LIB_TARGET_HEXAGON_HEXAGONARCH_H

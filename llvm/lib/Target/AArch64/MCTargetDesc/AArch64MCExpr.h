@@ -17,7 +17,7 @@
 #include "llvm/MC/MCExpr.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64MCExpr : public MCTargetExpr {
 public:
@@ -173,6 +173,6 @@ public:
 
   static bool classof(const AArch64MCExpr *) { return true; }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

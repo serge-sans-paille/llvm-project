@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/MachineFunction.h"
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// ARCFunctionInfo - This class is derived from MachineFunction private
 /// ARC target-specific information for each MachineFunction.
@@ -54,6 +54,6 @@ public:
   unsigned MaxCallStackReq;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCMACHINEFUNCTIONINFO_H

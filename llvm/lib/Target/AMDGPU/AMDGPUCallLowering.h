@@ -16,7 +16,7 @@
 
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUTargetLowering;
 class MachineInstrBuilder;
@@ -74,5 +74,5 @@ public:
   static CCAssignFn *CCAssignFnForCall(CallingConv::ID CC, bool IsVarArg);
   static CCAssignFn *CCAssignFnForReturn(CallingConv::ID CC, bool IsVarArg);
 };
-} // End of namespace llvm;
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

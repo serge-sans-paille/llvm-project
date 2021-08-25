@@ -13,7 +13,7 @@
 #include "llvm/BinaryFormat/MachO.h"
 #include "llvm/MC/MCObjectWriter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class ARMAsmBackendDarwin : public ARMAsmBackend {
   const MCRegisterInfo &MRI;
   Triple TT;
@@ -35,6 +35,6 @@ public:
   uint32_t generateCompactUnwindEncoding(
       ArrayRef<MCCFIInstruction> Instrs) const override;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

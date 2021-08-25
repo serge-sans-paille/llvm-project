@@ -110,8 +110,8 @@ INITIALIZE_PASS_END(MipsPreLegalizerCombiner, DEBUG_TYPE,
                     "Combine Mips machine instrs before legalization", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createMipsPreLegalizeCombiner() {
   return new MipsPreLegalizerCombiner();
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

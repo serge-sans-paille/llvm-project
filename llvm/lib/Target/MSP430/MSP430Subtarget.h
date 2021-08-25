@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "MSP430GenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 class MSP430Subtarget : public MSP430GenSubtargetInfo {
@@ -74,6 +74,6 @@ public:
     return &TSInfo;
   }
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif  // LLVM_TARGET_MSP430_SUBTARGET_H

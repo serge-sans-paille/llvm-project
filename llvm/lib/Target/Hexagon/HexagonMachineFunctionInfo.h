@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/MachineFunction.h"
 #include <map>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace Hexagon {
 
@@ -85,6 +85,6 @@ public:
   unsigned getStackAlignBasePhysReg() const { return StackAlignBasePhysReg; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONMACHINEFUNCTIONINFO_H

@@ -15,8 +15,9 @@
 #define LLVM_LIB_TARGET_X86_X86_H
 
 #include "llvm/Support/CodeGen.h"
+#include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class FunctionPass;
 class InstructionSelector;
@@ -181,6 +182,6 @@ enum : unsigned {
 };
 } // End X86AS namespace
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

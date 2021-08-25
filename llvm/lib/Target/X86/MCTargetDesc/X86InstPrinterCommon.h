@@ -16,7 +16,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class X86InstPrinterCommon : public MCInstPrinter {
 public:
@@ -38,6 +38,6 @@ protected:
   void printVKPair(const MCInst *MI, unsigned OpNo, raw_ostream &OS);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_MCTARGETDESC_X86ATTINSTPRINTER_H

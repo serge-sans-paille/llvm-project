@@ -54,7 +54,7 @@
 // A better approach is to clone the MCAsmStreamer to a MCPTXAsmStreamer
 // (subclass of MCStreamer).
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCOperand;
 
@@ -306,6 +306,6 @@ public:
   const MCSymbol *getFunctionFrameSymbol() const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_NVPTX_NVPTXASMPRINTER_H

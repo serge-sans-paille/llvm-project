@@ -30,7 +30,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "AArch64GenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class GlobalValue;
 class StringRef;
 class Triple;
@@ -583,6 +583,6 @@ public:
   unsigned getMinSVEVectorSizeInBits() const;
   bool useSVEForFixedLengthVectors() const;
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

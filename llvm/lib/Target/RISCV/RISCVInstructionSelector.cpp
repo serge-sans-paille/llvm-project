@@ -94,11 +94,11 @@ bool RISCVInstructionSelector::select(MachineInstr &I) {
   return false;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 InstructionSelector *
 createRISCVInstructionSelector(const RISCVTargetMachine &TM,
                                RISCVSubtarget &Subtarget,
                                RISCVRegisterBankInfo &RBI) {
   return new RISCVInstructionSelector(TM, Subtarget, RBI);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

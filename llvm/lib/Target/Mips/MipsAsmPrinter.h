@@ -23,7 +23,7 @@
 #include <map>
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCOperand;
 class MCSubtargetInfo;
@@ -160,6 +160,6 @@ public:
   void emitDebugValue(const MCExpr *Value, unsigned Size) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSASMPRINTER_H

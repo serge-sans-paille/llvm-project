@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace ARM {
 enum Fixups {
   // 12-bit PC relative relocation for symbol addresses
@@ -117,6 +117,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

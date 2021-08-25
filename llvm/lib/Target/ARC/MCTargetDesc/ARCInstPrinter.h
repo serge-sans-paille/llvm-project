@@ -17,7 +17,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARCInstPrinter : public MCInstPrinter {
 public:
@@ -45,6 +45,6 @@ private:
   void printBRCCPredicateOperand(const MCInst *MI, unsigned OpNum,
                                  raw_ostream &O);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_INSTPRINTER_ARCINSTPRINTER_H

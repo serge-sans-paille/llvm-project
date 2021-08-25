@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class VESubtarget;
 class VEFrameLowering : public TargetFrameLowering {
@@ -83,6 +83,6 @@ private:
                     MachineBasicBlock::iterator MBBI) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

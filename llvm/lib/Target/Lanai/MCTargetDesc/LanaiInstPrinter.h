@@ -16,7 +16,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiInstPrinter : public MCInstPrinter {
 public:
@@ -62,6 +62,6 @@ private:
                                  StringRef Opcode, int AddOffset);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_MCTARGETDESC_LANAIINSTPRINTER_H

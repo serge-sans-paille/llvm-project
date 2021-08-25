@@ -22,7 +22,7 @@
 #include <unordered_map>
 #include "BTF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AsmPrinter;
 class BTFDebug;
@@ -371,6 +371,6 @@ public:
   void endModule() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

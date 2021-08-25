@@ -27,8 +27,8 @@
 #include "llvm/CodeGen/RDFLiveness.h"
 #include "llvm/ADT/SetVector.h"
 
-namespace llvm {
-  class MachineRegisterInfo;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+class MachineRegisterInfo;
 
 namespace rdf {
   struct DeadCodeElimination {
@@ -61,6 +61,6 @@ namespace rdf {
     void processUse(NodeAddr<UseNode*> UA, SetQueue<NodeId> &WorkQ);
   };
 } // namespace rdf
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

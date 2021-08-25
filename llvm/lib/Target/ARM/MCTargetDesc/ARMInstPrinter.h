@@ -16,7 +16,7 @@
 #include "MCTargetDesc/ARMMCTargetDesc.h"
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMInstPrinter : public MCInstPrinter {
 public:
@@ -282,6 +282,6 @@ private:
   unsigned DefaultAltIdx = ARM::NoRegAltName;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_MCTARGETDESC_ARMINSTPRINTER_H

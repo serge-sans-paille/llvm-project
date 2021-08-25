@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BitVector;
 class HexagonInstrInfo;
@@ -179,6 +179,6 @@ private:
   bool mayOverflowFrameOffset(MachineFunction &MF) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONFRAMELOWERING_H

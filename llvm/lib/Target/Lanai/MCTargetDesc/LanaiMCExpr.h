@@ -12,7 +12,7 @@
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCValue.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiMCExpr : public MCTargetExpr {
 public:
@@ -50,6 +50,6 @@ public:
     return E->getKind() == MCExpr::Target;
   }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

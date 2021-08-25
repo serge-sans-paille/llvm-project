@@ -135,7 +135,7 @@ static const char *getReasonStr(SIScheduleCandReason Reason) {
 
 #endif
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace SISched {
 static bool tryLess(int TryVal, int CandVal,
                     SISchedulerCandidate &TryCand,
@@ -171,7 +171,7 @@ static bool tryGreater(int TryVal, int CandVal,
   return false;
 }
 } // end namespace SISched
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // SIScheduleBlock //
 

@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class X86SelectionDAGInfo : public SelectionDAGTargetInfo {
   /// Returns true if it is possible for the base register to conflict with the
@@ -40,6 +40,6 @@ public:
                                   MachinePointerInfo SrcPtrInfo) const override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

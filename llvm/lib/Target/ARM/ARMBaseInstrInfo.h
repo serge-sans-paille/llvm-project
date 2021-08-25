@@ -29,7 +29,7 @@
 #define GET_INSTRINFO_HEADER
 #include "ARMGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMBaseRegisterInfo;
 class ARMSubtarget;
@@ -934,6 +934,6 @@ unsigned getBLXOpcode(const MachineFunction &MF);
 unsigned gettBLXrOpcode(const MachineFunction &MF);
 unsigned getBLXpredOpcode(const MachineFunction &MF);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMBASEINSTRINFO_H

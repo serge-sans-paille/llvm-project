@@ -14,11 +14,12 @@
 #define LLVM_LIB_TARGET_BPF_MCTARGETDESC_BPFMCTARGETDESC_H
 
 #include "llvm/Config/config.h"
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -44,7 +45,7 @@ MCAsmBackend *createBPFbeAsmBackend(const Target &T, const MCSubtargetInfo &STI,
                                     const MCTargetOptions &Options);
 
 std::unique_ptr<MCObjectTargetWriter> createBPFELFObjectWriter(uint8_t OSABI);
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for BPF registers.  This defines a mapping from
 // register name to register number.

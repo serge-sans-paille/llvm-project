@@ -76,12 +76,12 @@ static cl::opt<bool> DisableVecDblNVStores("disable-vecdbl-nv-stores",
 
 extern cl::opt<bool> ScheduleInlineAsm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createHexagonPacketizer(bool Minimal);
 void initializeHexagonPacketizerPass(PassRegistry&);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

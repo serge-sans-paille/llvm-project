@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class HexagonSubtarget;
 class MachineBasicBlock;
@@ -244,6 +244,6 @@ raw_ostream &operator<< (raw_ostream &OS,
 raw_ostream &operator<< (raw_ostream &OS,
       const HexagonBlockRanges::PrintRangeMap &P);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONBLOCKRANGES_H

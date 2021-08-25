@@ -20,7 +20,7 @@
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCInst.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCMCCodeEmitter : public MCCodeEmitter {
   const MCInstrInfo &MCII;
@@ -126,6 +126,6 @@ private:
                               const FeatureBitset &AvailableFeatures) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_PPC_MCCODEEMITTER_PPCCODEEMITTER_H

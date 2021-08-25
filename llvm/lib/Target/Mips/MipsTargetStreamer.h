@@ -17,7 +17,7 @@
 #include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsTargetStreamer : public MCTargetStreamer {
 public:
@@ -357,5 +357,5 @@ public:
 
   void emitMipsAbiFlags();
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

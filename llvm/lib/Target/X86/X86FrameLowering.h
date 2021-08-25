@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstrBuilder;
 class MCCFIInstruction;
@@ -252,6 +252,6 @@ private:
                                MachineInstr *CatchRet) const;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

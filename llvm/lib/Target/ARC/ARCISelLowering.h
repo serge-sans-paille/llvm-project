@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/SelectionDAG.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Forward delcarations
 class ARCSubtarget;
@@ -114,6 +114,6 @@ private:
   bool mayBeEmittedAsTailCall(const CallInst *CI) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCISELLOWERING_H

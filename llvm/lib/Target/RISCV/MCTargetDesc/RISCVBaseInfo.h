@@ -20,7 +20,7 @@
 #include "llvm/MC/SubtargetFeature.h"
 #include "llvm/Support/MachineValueType.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // RISCVII - This namespace holds all of the target specific flags that
 // instruction info tracks. All definitions must match RISCVInstrFormats.td.
@@ -401,6 +401,6 @@ using namespace RISCV;
 
 } // end namespace RISCVVPseudosTable
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

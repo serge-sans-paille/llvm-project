@@ -24,7 +24,7 @@
 #include "llvm/MC/MCRegisterInfo.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsELFStreamer;
 
@@ -77,6 +77,6 @@ private:
   int64_t ri_gp_value;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSOPTIONRECORD_H

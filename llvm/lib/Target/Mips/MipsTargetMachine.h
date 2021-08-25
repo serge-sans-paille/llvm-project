@@ -22,7 +22,7 @@
 #include "llvm/Target/TargetMachine.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsTargetMachine : public LLVMTargetMachine {
   bool isLittle;
@@ -99,6 +99,6 @@ public:
                       CodeGenOpt::Level OL, bool JIT);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSTARGETMACHINE_H

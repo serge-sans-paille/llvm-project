@@ -22,7 +22,7 @@
 #include <cassert>
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// X86Operand - Instances of this class represent a parsed X86 machine
 /// instruction.
@@ -713,6 +713,6 @@ struct X86Operand final : public MCParsedAsmOperand {
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_ASMPARSER_X86OPERAND_H

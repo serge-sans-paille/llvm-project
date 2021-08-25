@@ -64,12 +64,12 @@ static cl::opt<bool> DisableNewValueJumps("disable-nvjump", cl::Hidden,
     cl::ZeroOrMore, cl::init(false),
     cl::desc("Disable New Value Jumps"));
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createHexagonNewValueJump();
 void initializeHexagonNewValueJumpPass(PassRegistry&);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

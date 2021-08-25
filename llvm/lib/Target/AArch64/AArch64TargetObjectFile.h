@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 #include "llvm/Target/TargetLoweringObjectFile.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class AArch64TargetMachine;
 
 /// This implementation is used for AArch64 ELF targets (Linux in particular).
@@ -53,6 +53,6 @@ public:
 /// This implementation is used for AArch64 COFF targets.
 class AArch64_COFFTargetObjectFile : public TargetLoweringObjectFileCOFF {};
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

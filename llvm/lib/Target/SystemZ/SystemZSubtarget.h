@@ -26,7 +26,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "SystemZGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class GlobalValue;
 class StringRef;
 
@@ -249,6 +249,6 @@ public:
 
   bool isTargetELF() const { return TargetTriple.isOSBinFormatELF(); }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -50,9 +50,11 @@ static cl::opt<bool> DisableVSXFMAMutate(
 
 #define DEBUG_TYPE "ppc-vsx-fma-mutate"
 
-namespace llvm { namespace PPC {
-  int getAltVSXFMAOpcode(uint16_t Opcode);
-} }
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+namespace PPC {
+int getAltVSXFMAOpcode(uint16_t Opcode);
+}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
   // PPCVSXFMAMutate pass - For copies between VSX registers and non-VSX registers

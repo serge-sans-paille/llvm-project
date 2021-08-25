@@ -13,7 +13,7 @@
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCValue.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsMCExpr : public MCTargetExpr {
 public:
@@ -88,6 +88,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCEXPR_H

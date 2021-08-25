@@ -26,7 +26,7 @@
 // MipsDAGToDAGISel - MIPS specific code to select MIPS machine
 // instructions for SelectionDAG operations.
 //===----------------------------------------------------------------------===//
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsDAGToDAGISel : public SelectionDAGISel {
 public:
@@ -145,6 +145,6 @@ private:
                                     unsigned ConstraintID,
                                     std::vector<SDValue> &OutOps) override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -16,7 +16,7 @@
 #include "MipsInstrInfo.h"
 #include "MipsSERegisterInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsSEInstrInfo : public MipsInstrInfo {
   const MipsSERegisterInfo RI;
@@ -124,6 +124,6 @@ private:
                       MachineBasicBlock::iterator I) const;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

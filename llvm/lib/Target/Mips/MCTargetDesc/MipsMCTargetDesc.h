@@ -13,11 +13,12 @@
 #ifndef LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCTARGETDESC_H
 #define LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -48,7 +49,7 @@ namespace MIPS_MC {
 StringRef selectMipsCPU(const Triple &TT, StringRef CPU);
 }
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for Mips registers.  This defines a mapping from
 // register name to register number.

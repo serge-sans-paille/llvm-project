@@ -33,7 +33,7 @@
 #include <utility>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <typename NodeValueT, typename EdgeValueT> class ImmutableGraph {
   using Traits = GraphTraits<ImmutableGraph<NodeValueT, EdgeValueT> *>;
@@ -440,6 +440,6 @@ struct GraphTraits<ImmutableGraph<NodeValueT, EdgeValueT> *> {
   static typename GraphT::size_type size(GraphT *G) { return G->nodes_size(); }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_IMMUTABLEGRAPH_H

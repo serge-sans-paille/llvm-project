@@ -2469,14 +2469,14 @@ unsigned PPCFastISel::fastEmitInst_rr(unsigned MachineInstOpcode,
                                    Op1, Op1IsKill);
 }
 
-namespace llvm {
-  // Create the fast instruction selector for PowerPC64 ELF.
-  FastISel *PPC::createFastISel(FunctionLoweringInfo &FuncInfo,
-                                const TargetLibraryInfo *LibInfo) {
-    // Only available on 64-bit ELF for now.
-    const PPCSubtarget &Subtarget = FuncInfo.MF->getSubtarget<PPCSubtarget>();
-    if (Subtarget.is64BitELFABI())
-      return new PPCFastISel(FuncInfo, LibInfo);
-    return nullptr;
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+// Create the fast instruction selector for PowerPC64 ELF.
+FastISel *PPC::createFastISel(FunctionLoweringInfo &FuncInfo,
+                              const TargetLibraryInfo *LibInfo) {
+  // Only available on 64-bit ELF for now.
+  const PPCSubtarget &Subtarget = FuncInfo.MF->getSubtarget<PPCSubtarget>();
+  if (Subtarget.is64BitELFABI())
+    return new PPCFastISel(FuncInfo, LibInfo);
+  return nullptr;
   }
-}
+  } // namespace LLVM_LIBRARY_VISIBILITY

@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class MipsMCAsmInfo : public MCAsmInfoELF {
@@ -26,6 +26,6 @@ public:
                          const MCTargetOptions &Options);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

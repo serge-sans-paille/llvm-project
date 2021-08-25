@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "AVRGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// A specific AVR target MCU.
 class AVRSubtarget : public AVRGenSubtargetInfo {
@@ -120,6 +120,6 @@ private:
   AVRSelectionDAGInfo TSInfo;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_SUBTARGET_H

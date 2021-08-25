@@ -1818,8 +1818,8 @@ bool AVRExpandPseudo::expandMI(Block &MBB, BlockIt MBBI) {
 
 INITIALIZE_PASS(AVRExpandPseudo, "avr-expand-pseudo",
                 AVR_EXPAND_PSEUDO_NAME, false, false)
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createAVRExpandPseudoPass() { return new AVRExpandPseudo(); }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

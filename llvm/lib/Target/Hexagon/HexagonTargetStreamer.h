@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class HexagonTargetStreamer : public MCTargetStreamer {
 public:
   HexagonTargetStreamer(MCStreamer &S) : MCTargetStreamer(S) {}
@@ -25,6 +25,6 @@ public:
                                            unsigned ByteAlign,
                                            unsigned AccessGranularity){};
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

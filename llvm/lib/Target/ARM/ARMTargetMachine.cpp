@@ -75,8 +75,8 @@ static cl::opt<cl::boolOrDefault>
 EnableGlobalMerge("arm-global-merge", cl::Hidden,
                   cl::desc("Enable the global merge pass"));
 
-namespace llvm {
-  void initializeARMExecutionDomainFixPass(PassRegistry&);
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeARMExecutionDomainFixPass(PassRegistry &);
 }
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeARMTarget() {

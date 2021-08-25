@@ -22,7 +22,7 @@
 #include <string>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void clearAnnotationCache(const Module *);
 
@@ -59,6 +59,6 @@ bool isKernelFunction(const Function &);
 bool getAlign(const Function &, unsigned index, unsigned &);
 bool getAlign(const CallInst &, unsigned index, unsigned &);
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

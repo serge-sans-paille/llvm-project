@@ -20,7 +20,7 @@
 #define GET_INSTRINFO_HEADER
 #include "R600GenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace R600InstrFlags {
 enum : uint64_t {
@@ -332,6 +332,6 @@ int getLDSNoRetOp(uint16_t Opcode);
 
 } //End namespace AMDGPU
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

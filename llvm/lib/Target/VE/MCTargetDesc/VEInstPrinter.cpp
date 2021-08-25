@@ -25,11 +25,11 @@ using namespace llvm;
 
 // The generated AsmMatcher VEGenAsmWriter uses "VE" as the target
 // namespace.
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace VE {
 using namespace VE;
 }
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_INSTRUCTION_NAME
 #define PRINT_ALIAS_INSTR

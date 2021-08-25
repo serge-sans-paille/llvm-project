@@ -16,7 +16,7 @@
 #include "MSP430.h"
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MSP430FrameLowering : public TargetFrameLowering {
 protected:
 
@@ -50,6 +50,6 @@ public:
                                      RegScavenger *RS = nullptr) const override;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

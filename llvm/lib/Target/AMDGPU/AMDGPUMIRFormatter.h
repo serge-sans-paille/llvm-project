@@ -22,7 +22,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class MachineInstr;
@@ -42,6 +42,6 @@ public:
                                ErrorCallbackType ErrorCallback) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -17,7 +17,7 @@
 
 #include "MCTargetDesc/AVRMCTargetDesc.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Prints AVR instructions to a textual stream.
 class AVRInstPrinter : public MCInstPrinter {
@@ -53,7 +53,7 @@ private:
                                raw_ostream &O);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_INST_PRINTER_H
 

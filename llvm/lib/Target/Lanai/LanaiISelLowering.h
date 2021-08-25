@@ -19,7 +19,7 @@
 #include "llvm/CodeGen/SelectionDAG.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace LanaiISD {
 enum {
   FIRST_NUMBER = ISD::BUILTIN_OP_END,
@@ -147,6 +147,6 @@ private:
 
   const LanaiRegisterInfo *TRI;
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAIISELLOWERING_H

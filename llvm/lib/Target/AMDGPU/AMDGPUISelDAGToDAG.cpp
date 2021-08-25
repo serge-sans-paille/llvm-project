@@ -32,11 +32,11 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600InstrInfo;
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 //===----------------------------------------------------------------------===//
 // Instruction Selector Implementation

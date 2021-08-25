@@ -18,7 +18,7 @@
 #include "llvm/IR/CallingConv.h"
 #include "llvm/Support/Alignment.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 enum AMDGPUDwarfFlavour : unsigned;
 class Function;
@@ -237,6 +237,6 @@ public:
   virtual ~AMDGPUSubtarget() {}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUSUBTARGET_H

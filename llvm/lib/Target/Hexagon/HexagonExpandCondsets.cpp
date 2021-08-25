@@ -127,12 +127,12 @@ static cl::opt<unsigned> OptTfrLimit("expand-condsets-tfr-limit",
 static cl::opt<unsigned> OptCoaLimit("expand-condsets-coa-limit",
   cl::init(~0U), cl::Hidden, cl::desc("Max number of segment coalescings"));
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonExpandCondsetsPass(PassRegistry&);
-  FunctionPass *createHexagonExpandCondsets();
+void initializeHexagonExpandCondsetsPass(PassRegistry &);
+FunctionPass *createHexagonExpandCondsets();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 
@@ -244,11 +244,11 @@ namespace {
 
 char HexagonExpandCondsets::ID = 0;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  char &HexagonExpandCondsetsID = HexagonExpandCondsets::ID;
+char &HexagonExpandCondsetsID = HexagonExpandCondsets::ID;
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 INITIALIZE_PASS_BEGIN(HexagonExpandCondsets, "expand-condsets",
   "Hexagon Expand Condsets", false, false)

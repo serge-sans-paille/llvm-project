@@ -16,7 +16,7 @@
 #include <map>
 #include <vector>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineBasicBlock;
 class MachineDominatorTree;
@@ -56,6 +56,6 @@ namespace rdf {
 
 } // end namespace rdf
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_RDFCOPY_H

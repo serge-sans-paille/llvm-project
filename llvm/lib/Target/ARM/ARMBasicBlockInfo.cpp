@@ -22,7 +22,7 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // mayOptimizeThumb2Instruction - Returns true if optimizeThumb2Instructions
 // below may shrink MI.
@@ -145,4 +145,4 @@ void ARMBasicBlockUtils::adjustBBOffsetsAfter(MachineBasicBlock *BB) {
   }
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

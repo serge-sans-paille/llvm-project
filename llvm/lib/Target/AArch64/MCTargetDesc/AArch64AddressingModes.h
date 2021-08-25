@@ -20,7 +20,7 @@
 #include "llvm/Support/MathExtras.h"
 #include <cassert>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// AArch64_AM - AArch64 Addressing Mode Stuff
 namespace AArch64_AM {
@@ -844,6 +844,6 @@ inline static bool isAnyMOVWMovAlias(uint64_t Value, int RegWidth) {
 
 } // end namespace AArch64_AM
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

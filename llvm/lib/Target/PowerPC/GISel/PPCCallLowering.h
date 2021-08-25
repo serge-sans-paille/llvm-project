@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 #include "llvm/IR/CallingConv.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class PPCTargetLowering;
 
@@ -35,6 +35,6 @@ public:
   bool lowerCall(MachineIRBuilder &MIRBuilder,
                  CallLoweringInfo &Info) const override;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

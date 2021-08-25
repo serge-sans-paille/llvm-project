@@ -87,12 +87,12 @@ static cl::opt<bool> SpecPreheader("hwloop-spec-preheader", cl::init(false),
 
 STATISTIC(NumHWLoops, "Number of loops converted to hardware loops");
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  FunctionPass *createHexagonHardwareLoops();
-  void initializeHexagonHardwareLoopsPass(PassRegistry&);
+FunctionPass *createHexagonHardwareLoops();
+void initializeHexagonHardwareLoopsPass(PassRegistry &);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

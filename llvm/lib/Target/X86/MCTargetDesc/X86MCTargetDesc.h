@@ -13,10 +13,12 @@
 #ifndef LLVM_LIB_TARGET_X86_MCTARGETDESC_X86MCTARGETDESC_H
 #define LLVM_LIB_TARGET_X86_MCTARGETDESC_X86MCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
+
 #include <memory>
 #include <string>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class formatted_raw_ostream;
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -124,8 +126,7 @@ MCRegister getX86SubSuperRegister(MCRegister, unsigned, bool High=false);
 MCRegister getX86SubSuperRegisterOrZero(MCRegister, unsigned,
                                         bool High = false);
 
-} // End llvm namespace
-
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for X86 registers.  This defines a mapping from
 // register name to register number.

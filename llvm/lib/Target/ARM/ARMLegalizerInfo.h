@@ -19,7 +19,7 @@
 #include "llvm/CodeGen/RuntimeLibcalls.h"
 #include "llvm/IR/Instructions.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMSubtarget;
 
@@ -60,5 +60,5 @@ private:
   // bits.
   FCmpLibcallsList getFCmpLibcalls(CmpInst::Predicate, unsigned Size) const;
 };
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

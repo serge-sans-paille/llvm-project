@@ -13,7 +13,7 @@
 
 #include "MCTargetDesc/AVRFixupKinds.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// A expression in AVR machine code.
 class AVRMCExpr : public MCTargetExpr {
@@ -86,6 +86,6 @@ private:
   ~AVRMCExpr() {}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_MCEXPR_H

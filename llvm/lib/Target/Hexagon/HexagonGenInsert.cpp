@@ -494,12 +494,12 @@ namespace {
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonGenInsertPass(PassRegistry&);
-  FunctionPass *createHexagonGenInsert();
+void initializeHexagonGenInsertPass(PassRegistry &);
+FunctionPass *createHexagonGenInsert();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

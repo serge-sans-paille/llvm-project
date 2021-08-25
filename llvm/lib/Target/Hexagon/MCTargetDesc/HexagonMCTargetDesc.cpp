@@ -183,14 +183,13 @@ unsigned llvm::HexagonConvertUnits(unsigned ItinUnits, unsigned *Lanes) {
   return (*Lanes = 0, CVI_NONE);
 }
 
-
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace HexagonFUnits {
 bool isSlot0Only(unsigned units) {
   return HexagonItinerariesV62FU::SLOT0 == units;
 }
 } // namespace HexagonFUnits
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

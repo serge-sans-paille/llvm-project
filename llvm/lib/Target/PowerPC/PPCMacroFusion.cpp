@@ -194,10 +194,10 @@ static bool shouldScheduleAdjacent(const TargetInstrInfo &TII,
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<ScheduleDAGMutation> createPowerPCMacroFusionDAGMutation () {
   return createMacroFusionDAGMutation(shouldScheduleAdjacent);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

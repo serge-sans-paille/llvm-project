@@ -19,7 +19,7 @@
 #include "llvm/CodeGen/TargetSchedule.h"
 #include <list>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class MachineInstr;
@@ -112,6 +112,6 @@ public:
   void Reset() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif //LLVM_LIB_TARGET_AMDGPUHAZARDRECOGNIZERS_H

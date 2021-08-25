@@ -9,12 +9,14 @@
 #ifndef LLVM_LIB_TARGET_XCORE_TARGETINFO_XCORETARGETINFO_H
 #define LLVM_LIB_TARGET_XCORE_TARGETINFO_XCORETARGETINFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Target;
 
 Target &getTheXCoreTarget();
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_XCORE_TARGETINFO_XCORETARGETINFO_H

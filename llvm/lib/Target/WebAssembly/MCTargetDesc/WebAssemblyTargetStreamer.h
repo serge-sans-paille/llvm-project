@@ -19,7 +19,7 @@
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/Support/MachineValueType.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCSymbolWasm;
 
@@ -114,6 +114,6 @@ public:
   void emitExportName(const MCSymbolWasm *, StringRef) override {}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

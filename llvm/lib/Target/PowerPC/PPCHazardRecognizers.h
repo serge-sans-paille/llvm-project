@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/ScoreboardHazardRecognizer.h"
 #include "llvm/CodeGen/SelectionDAGNodes.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// PPCDispatchGroupSBHazardRecognizer - This class implements a scoreboard-based
 /// hazard recognizer for PPC ooo processors with dispatch-group hazards.
@@ -95,7 +95,7 @@ private:
                              const Value *LoadValue) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif
 

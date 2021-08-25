@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "SparcGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 struct SparcRegisterInfo : public SparcGenRegisterInfo {
   SparcRegisterInfo();
 
@@ -44,6 +44,6 @@ struct SparcRegisterInfo : public SparcGenRegisterInfo {
 
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

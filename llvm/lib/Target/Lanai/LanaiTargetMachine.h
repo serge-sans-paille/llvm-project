@@ -19,7 +19,7 @@
 #include "LanaiSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LanaiTargetMachine : public LLVMTargetMachine {
   LanaiSubtarget Subtarget;
@@ -51,6 +51,6 @@ public:
     return false;
   }
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAITARGETMACHINE_H

@@ -17,7 +17,7 @@
 
 #include "llvm/ADT/SmallVector.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineInstr;
 
@@ -33,6 +33,6 @@ public:
   void replaceWithLocal(unsigned LocalId);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

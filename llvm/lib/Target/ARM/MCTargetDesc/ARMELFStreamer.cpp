@@ -1477,7 +1477,7 @@ void ARMELFStreamer::emitUnwindRaw(int64_t Offset,
   UnwindOpAsm.EmitRaw(Opcodes);
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCTargetStreamer *createARMTargetAsmStreamer(MCStreamer &S,
                                              formatted_raw_ostream &OS,
@@ -1517,4 +1517,4 @@ MCELFStreamer *createARMELFStreamer(MCContext &Context,
   return S;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

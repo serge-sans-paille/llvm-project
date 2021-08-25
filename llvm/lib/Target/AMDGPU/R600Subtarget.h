@@ -21,17 +21,17 @@
 #include "Utils/AMDGPUBaseInfo.h"
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCInst;
 class MCInstrInfo;
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_SUBTARGETINFO_HEADER
 #include "R600GenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class R600Subtarget final : public R600GenSubtargetInfo,
                             public AMDGPUSubtarget {
@@ -169,6 +169,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_R600SUBTARGET_H

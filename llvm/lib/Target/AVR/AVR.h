@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/SelectionDAGNodes.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AVRTargetMachine;
 class FunctionPass;
@@ -52,6 +52,6 @@ inline bool isProgramMemoryAccess(MemSDNode const *N) {
 
 } // end of namespace AVR
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_H

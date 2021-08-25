@@ -243,7 +243,7 @@ private:
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AArch64ELFStreamer &AArch64TargetELFStreamer::getStreamer() {
   return static_cast<AArch64ELFStreamer &>(Streamer);
@@ -276,4 +276,4 @@ MCELFStreamer *createAArch64ELFStreamer(MCContext &Context,
   return S;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

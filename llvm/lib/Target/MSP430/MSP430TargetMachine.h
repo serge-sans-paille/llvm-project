@@ -17,7 +17,7 @@
 #include "MSP430Subtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 /// MSP430TargetMachine
@@ -43,6 +43,6 @@ public:
   }
 }; // MSP430TargetMachine.
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

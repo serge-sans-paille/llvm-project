@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineMemOperand.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Add a BDX memory reference for frame object FI to MIB.
 static inline const MachineInstrBuilder &
@@ -39,6 +39,6 @@ addFrameReference(const MachineInstrBuilder &MIB, int FI) {
   return MIB.addFrameIndex(FI).addImm(Offset).addReg(0).addMemOperand(MMO);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

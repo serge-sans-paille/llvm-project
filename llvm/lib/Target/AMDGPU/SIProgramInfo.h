@@ -17,9 +17,10 @@
 #define LLVM_LIB_TARGET_AMDGPU_SIPROGRAMINFO_H
 
 #include "llvm/IR/CallingConv.h"
+#include "llvm/Support/Compiler.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Track resource usage for kernels / entry functions.
 struct SIProgramInfo {
@@ -72,6 +73,6 @@ struct SIProgramInfo {
     uint64_t getPGMRSrc1(CallingConv::ID CC) const;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_SIPROGRAMINFO_H

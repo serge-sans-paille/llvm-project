@@ -347,8 +347,8 @@ INITIALIZE_PASS_END(AArch64PostLegalizerCombiner, DEBUG_TYPE,
                     "Combine AArch64 MachineInstrs after legalization", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createAArch64PostLegalizerCombiner(bool IsOptNone) {
   return new AArch64PostLegalizerCombiner(IsOptNone);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

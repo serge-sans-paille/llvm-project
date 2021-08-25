@@ -24,7 +24,7 @@
 #define GET_INSTRINFO_HEADER
 #include "AMDGPUGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class APInt;
 class GCNSubtarget;
@@ -1212,6 +1212,6 @@ enum Offsets {
 } // end namespace KernelInputOffsets
 } // end namespace SI
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_SIINSTRINFO_H

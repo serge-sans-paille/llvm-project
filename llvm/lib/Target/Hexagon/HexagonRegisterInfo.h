@@ -19,7 +19,7 @@
 #define GET_REGINFO_HEADER
 #include "HexagonGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace Hexagon {
   // Generic (pseudo) subreg indices for use with getHexagonSubRegIndex.
@@ -81,6 +81,6 @@ public:
   bool isEHReturnCalleeSaveReg(unsigned Reg) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

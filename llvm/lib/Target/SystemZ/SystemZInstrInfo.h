@@ -25,7 +25,7 @@
 #define GET_INSTRINFO_HEADER
 #include "SystemZGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SystemZSubtarget;
 
@@ -357,6 +357,6 @@ public:
                                   const MachineInstr &MIb) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_SYSTEMZ_SYSTEMZINSTRINFO_H

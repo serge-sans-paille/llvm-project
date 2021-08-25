@@ -180,8 +180,8 @@ INITIALIZE_PASS_END(AArch64PostSelectOptimize, DEBUG_TYPE,
                     "Optimize AArch64 selected instructions", false,
                     false)
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createAArch64PostSelectOptimize() {
   return new AArch64PostSelectOptimize();
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

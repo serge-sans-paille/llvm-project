@@ -26,7 +26,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "X86GenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class CallLowering;
 class GlobalValue;
@@ -944,6 +944,6 @@ public:
   bool enableAdvancedRASplitCost() const override { return true; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_X86SUBTARGET_H

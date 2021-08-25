@@ -25,7 +25,7 @@
 #define GET_INSTRINFO_OPERAND_ENUM
 #include "WebAssemblyGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace WebAssembly {
 
@@ -70,6 +70,6 @@ public:
   getSerializableTargetIndices() const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

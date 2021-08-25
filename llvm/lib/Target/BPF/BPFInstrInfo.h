@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "BPFGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BPFInstrInfo : public BPFGenInstrInfo {
   const BPFRegisterInfo RI;
@@ -60,6 +60,6 @@ private:
   void expandMEMCPY(MachineBasicBlock::iterator) const;
 
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

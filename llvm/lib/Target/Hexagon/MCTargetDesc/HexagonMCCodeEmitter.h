@@ -22,7 +22,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class MCInst;
@@ -88,6 +88,6 @@ private:
                               const FeatureBitset &AvailableFeatures) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_MCTARGETDESC_HEXAGONMCCODEEMITTER_H

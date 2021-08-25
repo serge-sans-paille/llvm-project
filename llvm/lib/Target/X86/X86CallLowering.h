@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 #include <functional>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <typename T> class ArrayRef;
 class DataLayout;
@@ -49,6 +49,6 @@ private:
                          SplitArgTy SplitArg) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_X86CALLLOWERING_H

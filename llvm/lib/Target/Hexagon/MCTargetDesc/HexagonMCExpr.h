@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCExpr.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class HexagonMCExpr : public MCTargetExpr {
 public:
   static HexagonMCExpr *create(MCExpr const *Expr, MCContext &Ctx);
@@ -40,6 +40,6 @@ private:
   bool S27_2_reloc;
   bool SignMismatch;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONMCEXPR_H

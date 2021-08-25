@@ -22,9 +22,7 @@ add_llvm_component_library(LLVMTarget
 # When building shared objects for each target there are some internal APIs
 # that are used across shared objects which we can't hide.
 if (NOT BUILD_SHARED_LIBS AND NOT APPLE)
-  # Set default visibility to hidden, so we don't export all the Target classes
-  # in libLLVM.so.
-  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+    #add_compile_definitions(LLVM_LIBRARY_VISIBILITY)
 endif()
 
 foreach(t ${LLVM_TARGETS_TO_BUILD})

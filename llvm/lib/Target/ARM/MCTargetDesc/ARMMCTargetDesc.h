@@ -18,7 +18,7 @@
 #include <memory>
 #include <string>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class formatted_raw_ostream;
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -127,7 +127,7 @@ bool isCDECoproc(size_t Coproc, const MCSubtargetInfo &STI);
 
 } // end namespace ARM
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for ARM registers.  This defines a mapping from
 // register name to register number.

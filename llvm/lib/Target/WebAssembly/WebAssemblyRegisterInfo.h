@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "WebAssemblyGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineFunction;
 class RegScavenger;
@@ -48,6 +48,6 @@ public:
   const uint32_t *getNoPreservedMask() const override { return nullptr; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

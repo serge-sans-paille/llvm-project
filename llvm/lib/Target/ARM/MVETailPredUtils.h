@@ -20,7 +20,7 @@
 #include "llvm/CodeGen/MachineOperand.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static inline unsigned VCTPOpcodeToLSTP(unsigned Opcode, bool IsDoLoop) {
   switch (Opcode) {
@@ -152,6 +152,6 @@ inline void RevertLoopEnd(MachineInstr *MI, const TargetInstrInfo *TII,
   MI->eraseFromParent();
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_MVETAILPREDUTILS_H

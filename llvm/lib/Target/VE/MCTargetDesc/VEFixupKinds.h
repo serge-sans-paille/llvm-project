@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace VE {
 enum Fixups {
   /// fixup_ve_reflong - 32-bit fixup corresponding to foo
@@ -56,6 +56,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 } // namespace VE
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SparcSubtarget;
 class SparcFrameLowering : public TargetFrameLowering {
@@ -63,6 +63,6 @@ private:
 
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

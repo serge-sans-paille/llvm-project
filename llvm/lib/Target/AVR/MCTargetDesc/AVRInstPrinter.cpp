@@ -26,7 +26,7 @@
 
 #define DEBUG_TYPE "asm-printer"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Include the auto-generated portion of the assembly writer.
 #define PRINT_ALIAS_INSTR
@@ -194,5 +194,4 @@ void AVRInstPrinter::printMemri(const MCInst *MI, unsigned OpNo,
   }
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

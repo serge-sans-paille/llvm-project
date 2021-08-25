@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 #include "llvm/CodeGen/ValueTypes.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class RISCVTargetLowering;
 
@@ -39,6 +39,6 @@ public:
                  CallLoweringInfo &Info) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_RISCV_RISCVCALLLOWERING_H

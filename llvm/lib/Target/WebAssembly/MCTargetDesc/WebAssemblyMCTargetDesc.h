@@ -20,7 +20,7 @@
 #include "llvm/Support/DataTypes.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -113,7 +113,7 @@ enum TOF {
 
 } // end namespace WebAssemblyII
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for WebAssembly registers. This defines a mapping from
 // register name to register number.
@@ -126,7 +126,7 @@ enum TOF {
 #define GET_INSTRINFO_ENUM
 #include "WebAssemblyGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace WebAssembly {
 
 /// Used as immediate MachineOperands for block signatures
@@ -446,6 +446,6 @@ inline bool isCatch(unsigned Opc) {
 }
 
 } // end namespace WebAssembly
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

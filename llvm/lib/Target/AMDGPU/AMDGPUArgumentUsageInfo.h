@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/Register.h"
 #include "llvm/Pass.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Function;
 class LLT;
@@ -182,6 +182,6 @@ public:
   const AMDGPUFunctionArgInfo &lookupFuncArgInfo(const Function &F) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

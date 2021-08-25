@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/MachineScheduler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// A MachineSchedStrategy implementation for PowerPC pre RA scheduling.
 class PPCPreRASchedStrategy : public GenericScheduler {
@@ -47,6 +47,6 @@ protected:
   bool biasAddiCandidate(SchedCandidate &Cand, SchedCandidate &TryCand) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_POWERPC_POWERPCMACHINESCHEDULER_H

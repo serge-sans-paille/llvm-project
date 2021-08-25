@@ -18,7 +18,7 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/MC/MCAsmBackend.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAssembler;
 struct MCFixupKindInfo;
@@ -71,6 +71,6 @@ public:
   bool isMicroMips(const MCSymbol *Sym) const override;
 }; // class MipsAsmBackend
 
-} // namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

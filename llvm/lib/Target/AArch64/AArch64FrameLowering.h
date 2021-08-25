@@ -16,7 +16,7 @@
 #include "llvm/Support/TypeSize.h"
 #include "llvm/CodeGen/TargetFrameLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCCFIInstruction;
 
@@ -140,6 +140,6 @@ private:
                                                 unsigned StackBumpBytes) const;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

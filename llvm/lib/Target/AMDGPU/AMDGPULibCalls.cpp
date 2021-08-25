@@ -39,7 +39,7 @@ static cl::list<std::string> UseNative("amdgpu-use-native",
 #define MATH_SQRT2   numbers::sqrt2
 #define MATH_SQRT1_2 numbers::inv_sqrt2
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPULibCalls {
 private:
@@ -148,7 +148,7 @@ public:
   bool useNative(CallInst *CI);
 };
 
-} // end llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 
@@ -837,7 +837,7 @@ bool AMDGPULibCalls::fold_divide(CallInst *CI, IRBuilder<> &B,
   return false;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 static double log2(double V) {
 #if _XOPEN_SOURCE >= 600 || defined(_ISOC99_SOURCE) || _POSIX_C_SOURCE >= 200112L
   return ::log2(V);
@@ -845,7 +845,7 @@ static double log2(double V) {
   return log(V) / numbers::ln2;
 #endif
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 bool AMDGPULibCalls::fold_pow(CallInst *CI, IRBuilder<> &B,
                               const FuncInfo &FInfo) {

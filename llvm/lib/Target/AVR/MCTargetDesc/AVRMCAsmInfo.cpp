@@ -14,7 +14,7 @@
 
 #include "llvm/ADT/Triple.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRMCAsmInfo::AVRMCAsmInfo(const Triple &TT, const MCTargetOptions &Options) {
   CodePointerSize = 2;
@@ -26,4 +26,4 @@ AVRMCAsmInfo::AVRMCAsmInfo(const Triple &TT, const MCTargetOptions &Options) {
   SupportsDebugInformation = true;
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

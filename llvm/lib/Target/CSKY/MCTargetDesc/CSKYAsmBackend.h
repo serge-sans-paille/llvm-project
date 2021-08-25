@@ -12,7 +12,7 @@
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCTargetOptions.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class CSKYAsmBackend : public MCAsmBackend {
 
@@ -34,6 +34,6 @@ public:
   std::unique_ptr<MCObjectTargetWriter>
   createObjectTargetWriter() const override;
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_CSKY_MCTARGETDESC_CSKYASMBACKEND_H

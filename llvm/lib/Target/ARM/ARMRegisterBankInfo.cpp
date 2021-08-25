@@ -26,7 +26,7 @@ using namespace llvm;
 // FIXME: TableGen this.
 // If it grows too much and TableGen still isn't ready to do the job, extract it
 // into an ARMGenRegisterBankInfo.def (similar to AArch64).
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace ARM {
 enum PartialMappingIdx {
   PMI_GPR,
@@ -127,7 +127,7 @@ static void checkValueMappings() {
 }
 #endif
 } // end namespace arm
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 ARMRegisterBankInfo::ARMRegisterBankInfo(const TargetRegisterInfo &TRI)
     : ARMGenRegisterBankInfo() {

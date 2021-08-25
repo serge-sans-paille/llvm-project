@@ -16,7 +16,7 @@
 #include "X86InstPrinterCommon.h"
 #include "llvm/Support/raw_ostream.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class X86IntelInstPrinter final : public X86InstPrinterCommon {
 public:
@@ -133,6 +133,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_MCTARGETDESC_X86INTELINSTPRINTER_H

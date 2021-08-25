@@ -6795,7 +6795,7 @@ static bool getTargetConstantBitsFromNode(SDValue Op, unsigned EltSizeInBits,
   return false;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace X86 {
 bool isConstantSplat(SDValue Op, APInt &SplatVal, bool AllowPartialUndefs) {
   APInt UndefElts;
@@ -6822,7 +6822,7 @@ bool isConstantSplat(SDValue Op, APInt &SplatVal, bool AllowPartialUndefs) {
   return false;
 }
 } // namespace X86
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static bool getTargetShuffleMaskIndices(SDValue MaskNode,
                                         unsigned MaskEltSizeInBits,
@@ -36316,13 +36316,11 @@ static SDValue combineX86ShufflesConstants(ArrayRef<SDValue> Ops,
   return DAG.getBitcast(VT, CstOp);
 }
 
-namespace llvm {
-  namespace X86 {
-    enum {
-      MaxShuffleCombineDepth = 8
-    };
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+namespace X86 {
+enum { MaxShuffleCombineDepth = 8 };
   }
-} // namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 /// Fully generic combining of x86 shuffle instructions.
 ///

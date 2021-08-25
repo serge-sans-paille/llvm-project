@@ -19,7 +19,7 @@
 #define GET_INSTRINFO_HEADER
 #include "SparcGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SparcSubtarget;
 
@@ -102,6 +102,6 @@ public:
   bool expandPostRAPseudo(MachineInstr &MI) const override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

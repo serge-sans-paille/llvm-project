@@ -14,7 +14,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUInstPrinter : public MCInstPrinter {
 public:
@@ -274,6 +274,6 @@ public:
   void printWrite(const MCInst *MI, unsigned OpNo, raw_ostream &O);
 };
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

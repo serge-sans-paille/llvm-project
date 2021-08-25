@@ -13,7 +13,7 @@
 
 #undef PPC
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace PPC {
 enum Fixups {
   // 24-bit PC relative relocation for direct branches like 'b' and 'bl'.
@@ -56,6 +56,6 @@ enum Fixups {
   NumTargetFixupKinds = LastTargetFixupKind - FirstTargetFixupKind
 };
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

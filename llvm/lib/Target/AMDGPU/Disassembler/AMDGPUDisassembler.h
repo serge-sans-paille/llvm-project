@@ -20,7 +20,7 @@
 #include "llvm/Support/DataExtractor.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCInst;
 class MCOperand;
@@ -189,6 +189,6 @@ public:
                                        uint64_t Address) override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_DISASSEMBLER_AMDGPUDISASSEMBLER_H

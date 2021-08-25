@@ -13,7 +13,7 @@
 #include "llvm/Analysis/TargetTransformInfo.h"
 #include "llvm/CodeGen/BasicTTIImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SystemZTTIImpl : public BasicTTIImplBase<SystemZTTIImpl> {
   typedef BasicTTIImplBase<SystemZTTIImpl> BaseT;
@@ -117,6 +117,6 @@ public:
   /// @}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

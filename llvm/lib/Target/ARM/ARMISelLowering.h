@@ -32,7 +32,7 @@
 #include "llvm/Support/MachineValueType.h"
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMSubtarget;
 class DataLayout;
@@ -931,6 +931,6 @@ class VectorType;
 
   } // end namespace ARM
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARM_ARMISELLOWERING_H

@@ -38,12 +38,12 @@
 using namespace llvm;
 using namespace rdf;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  void initializeHexagonRDFOptPass(PassRegistry&);
-  FunctionPass *createHexagonRDFOpt();
+void initializeHexagonRDFOptPass(PassRegistry &);
+FunctionPass *createHexagonRDFOpt();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static unsigned RDFCount = 0;
 

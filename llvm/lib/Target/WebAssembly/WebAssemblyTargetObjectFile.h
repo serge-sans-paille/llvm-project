@@ -17,13 +17,13 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblyTargetObjectFile final : public TargetLoweringObjectFileWasm {
 public:
   void Initialize(MCContext &Ctx, const TargetMachine &TM) override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

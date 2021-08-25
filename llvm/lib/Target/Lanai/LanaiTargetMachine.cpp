@@ -26,9 +26,9 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeLanaiMemAluCombinerPass(PassRegistry &);
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeLanaiTarget() {
   // Register the target.

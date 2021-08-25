@@ -39,7 +39,7 @@
 #include "llvm/Support/raw_ostream.h"
 #include <string>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// SystemZHazardRecognizer maintains the state for one MBB during scheduling.
 class SystemZHazardRecognizer : public ScheduleHazardRecognizer {
@@ -156,6 +156,6 @@ public:
   void copyState(SystemZHazardRecognizer *Incoming);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif /* LLVM_LIB_TARGET_SYSTEMZ_SYSTEMZHAZARDRECOGNIZER_H */

@@ -9,7 +9,9 @@
 #ifndef LLVM_LIB_TARGET_BPF_TARGETINFO_BPFTARGETINFO_H
 #define LLVM_LIB_TARGET_BPF_TARGETINFO_BPFTARGETINFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Target;
 
@@ -17,6 +19,6 @@ Target &getTheBPFleTarget();
 Target &getTheBPFbeTarget();
 Target &getTheBPFTarget();
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_BPF_TARGETINFO_BPFTARGETINFO_H

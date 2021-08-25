@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "BPFGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 class BPFSubtarget : public BPFGenSubtargetInfo {
@@ -87,6 +87,6 @@ public:
     return &InstrInfo.getRegisterInfo();
   }
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

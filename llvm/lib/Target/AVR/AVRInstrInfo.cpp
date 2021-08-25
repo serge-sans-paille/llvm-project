@@ -33,7 +33,7 @@
 #define GET_INSTRINFO_CTOR_DTOR
 #include "AVRGenInstrInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AVRInstrInfo::AVRInstrInfo()
     : AVRGenInstrInfo(AVR::ADJCALLSTACKDOWN, AVR::ADJCALLSTACKUP), RI() {}
@@ -570,5 +570,4 @@ unsigned AVRInstrInfo::insertIndirectBranch(MachineBasicBlock &MBB,
     return getInstSizeInBytes(MI);
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -72,10 +72,10 @@ static cl::opt<bool> DisableOptExtTo64("disable-hexagon-opt-ext-to-64",
     cl::Hidden, cl::ZeroOrMore, cl::init(true),
     cl::desc("Disable Optimization of extensions to i64."));
 
-namespace llvm {
-  FunctionPass *createHexagonPeephole();
-  void initializeHexagonPeepholePass(PassRegistry&);
-}
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+FunctionPass *createHexagonPeephole();
+void initializeHexagonPeepholePass(PassRegistry &);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
   struct HexagonPeephole : public MachineFunctionPass {

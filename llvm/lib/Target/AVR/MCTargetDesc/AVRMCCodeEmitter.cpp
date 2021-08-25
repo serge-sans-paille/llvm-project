@@ -34,7 +34,7 @@
 #include "AVRGenInstrInfo.inc"
 #undef GET_INSTRMAP_INFO
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Performs a post-encoding step on a `LD` or `ST` instruction.
 ///
@@ -299,4 +299,4 @@ MCCodeEmitter *createAVRMCCodeEmitter(const MCInstrInfo &MCII,
 
 #include "AVRGenMCCodeEmitter.inc"
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

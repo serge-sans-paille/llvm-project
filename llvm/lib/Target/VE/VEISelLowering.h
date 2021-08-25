@@ -17,7 +17,7 @@
 #include "VE.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class VESubtarget;
 
 namespace VEISD {
@@ -214,6 +214,6 @@ public:
 
   /// } Target Optimization
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // VE_ISELLOWERING_H

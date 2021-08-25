@@ -21,7 +21,7 @@
 #include <array>
 #include <initializer_list>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class DataLayout;
 class MachineFunction;
@@ -64,6 +64,6 @@ private:
   inline HazardType CheckOffsets(unsigned O0, unsigned O1);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

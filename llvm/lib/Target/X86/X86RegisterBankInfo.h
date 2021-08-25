@@ -18,7 +18,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "X86GenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LLT;
 
@@ -77,5 +77,5 @@ public:
   getInstrMapping(const MachineInstr &MI) const override;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

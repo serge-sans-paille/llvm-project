@@ -14,7 +14,7 @@
 
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AArch64GISelUtils {
 
 /// \returns true if \p C is a legal immediate operand for an arithmetic
@@ -24,6 +24,6 @@ constexpr bool isLegalArithImmed(const uint64_t C) {
 }
 
 } // namespace AArch64GISelUtils
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -17,7 +17,7 @@
 
 #include "AVR.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void AVRTargetObjectFile::Initialize(MCContext &Ctx, const TargetMachine &TM) {
   Base::Initialize(Ctx, TM);
   ProgmemDataSection =
@@ -36,5 +36,4 @@ AVRTargetObjectFile::SelectSectionForGlobal(const GlobalObject *GO,
   // Otherwise, we work the same way as ELF.
   return Base::SelectSectionForGlobal(GO, Kind, TM);
 }
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

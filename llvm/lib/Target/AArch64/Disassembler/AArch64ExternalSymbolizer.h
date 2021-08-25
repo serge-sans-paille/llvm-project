@@ -14,8 +14,9 @@
 #define LLVM_LIB_TARGET_AARCH64_DISASSEMBLER_AARCH64EXTERNALSYMBOLIZER_H
 
 #include "llvm/MC/MCDisassembler/MCExternalSymbolizer.h"
+#include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64ExternalSymbolizer : public MCExternalSymbolizer {
 public:
@@ -32,6 +33,6 @@ public:
                                 uint64_t Offset, uint64_t InstSize) override;
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

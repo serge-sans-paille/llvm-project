@@ -14,7 +14,7 @@
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/MCValue.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace {
 
@@ -212,5 +212,4 @@ AVRMCExpr::VariantKind AVRMCExpr::getKindByName(StringRef Name) {
   return VK_AVR_None;
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -15,7 +15,7 @@ namespace {
 class AArch64ELFStreamer;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64TargetStreamer : public MCTargetStreamer {
 public:
@@ -127,6 +127,6 @@ private:
 MCTargetStreamer *
 createAArch64ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

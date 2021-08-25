@@ -13,7 +13,7 @@
 #include "llvm/IR/PassManager.h"
 #include "llvm/Support/CodeGen.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUTargetMachine;
 class FunctionPass;
@@ -414,6 +414,6 @@ inline bool isFlatGlobalAddrSpace(unsigned AS) {
 }
 }
 
-} // End namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

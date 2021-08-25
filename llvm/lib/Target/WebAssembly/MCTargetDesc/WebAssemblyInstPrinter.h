@@ -19,7 +19,7 @@
 #include "llvm/MC/MCInstPrinter.h"
 #include "llvm/Support/MachineValueType.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCSubtargetInfo;
 
@@ -63,6 +63,6 @@ std::string signatureToString(const wasm::WasmSignature *Sig);
 
 } // end namespace WebAssembly
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

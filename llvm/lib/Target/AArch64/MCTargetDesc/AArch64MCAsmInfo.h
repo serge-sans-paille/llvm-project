@@ -17,7 +17,7 @@
 #include "llvm/MC/MCAsmInfoDarwin.h"
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCStreamer;
 class Target;
 class Triple;
@@ -41,6 +41,6 @@ struct AArch64MCAsmInfoGNUCOFF : public MCAsmInfoGNUCOFF {
   explicit AArch64MCAsmInfoGNUCOFF();
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

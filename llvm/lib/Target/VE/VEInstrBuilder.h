@@ -21,7 +21,7 @@
 
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// addFrameReference - This function is used to add a reference to the base of
 /// an abstract object on the stack frame of the current function.  This
@@ -36,6 +36,6 @@ addFrameReference(const MachineInstrBuilder &MIB, int FI, int Offset = 0,
   return MIB.addFrameIndex(FI).addImm(Offset);
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

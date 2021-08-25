@@ -139,7 +139,7 @@ bool NVPTXLowerAggrCopies::runOnFunction(Function &F) {
 
 } // namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeNVPTXLowerAggrCopiesPass(PassRegistry &);
 }
 

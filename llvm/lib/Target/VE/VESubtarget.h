@@ -25,7 +25,7 @@
 #define GET_SUBTARGETINFO_HEADER
 #include "VEGenSubtargetInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 class VESubtarget : public VEGenSubtargetInfo {
@@ -81,6 +81,6 @@ public:
   bool isTargetLinux() const { return TargetTriple.isOSLinux(); }
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

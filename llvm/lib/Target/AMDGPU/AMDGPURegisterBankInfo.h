@@ -21,7 +21,7 @@
 #define GET_REGBANK_DECLARATIONS
 #include "AMDGPUGenRegisterBank.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class LLT;
 class GCNSubtarget;
@@ -190,5 +190,5 @@ private:
                                 MachineRegisterInfo &MRI,
                                 const OperandsMapper &OpdMapper) const;
 };
-} // End llvm namespace.
+} // namespace LLVM_LIBRARY_VISIBILITY
 #endif

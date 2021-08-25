@@ -13,10 +13,12 @@
 #ifndef LLVM_LIB_TARGET_MSP430_MCTARGETDESC_MSP430MCTARGETDESC_H
 #define LLVM_LIB_TARGET_MSP430_MCTARGETDESC_MSP430MCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
+
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Target;
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -45,7 +47,7 @@ createMSP430ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI);
 std::unique_ptr<MCObjectTargetWriter>
 createMSP430ELFObjectWriter(uint8_t OSABI);
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for MSP430 registers.
 // This defines a mapping from register name to register number.

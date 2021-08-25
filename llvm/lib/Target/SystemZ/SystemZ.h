@@ -17,7 +17,7 @@
 #include "MCTargetDesc/SystemZMCTargetDesc.h"
 #include "llvm/Support/CodeGen.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class SystemZTargetMachine;
 class FunctionPass;
 
@@ -196,6 +196,6 @@ FunctionPass *createSystemZLDCleanupPass(SystemZTargetMachine &TM);
 FunctionPass *createSystemZCopyPhysRegsPass(SystemZTargetMachine &TM);
 FunctionPass *createSystemZPostRewritePass(SystemZTargetMachine &TM);
 FunctionPass *createSystemZTDCPass();
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

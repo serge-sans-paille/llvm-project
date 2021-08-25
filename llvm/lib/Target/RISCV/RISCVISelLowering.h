@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/SelectionDAG.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class RISCVSubtarget;
 namespace RISCVISD {
 enum NodeType : unsigned {
@@ -354,6 +354,6 @@ using namespace RISCV;
 #include "RISCVGenSearchableTables.inc"
 
 } // namespace RISCVZvlssegTable
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

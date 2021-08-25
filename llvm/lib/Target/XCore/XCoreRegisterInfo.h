@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "XCoreGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct XCoreRegisterInfo : public XCoreGenRegisterInfo {
 public:
@@ -45,6 +45,6 @@ public:
   static bool needsFrameMoves(const MachineFunction &MF);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

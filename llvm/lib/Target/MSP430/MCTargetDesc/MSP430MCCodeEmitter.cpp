@@ -30,7 +30,7 @@
 
 #define DEBUG_TYPE "mccodeemitter"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MSP430MCCodeEmitter : public MCCodeEmitter {
   MCContext &Ctx;
@@ -207,4 +207,4 @@ MCCodeEmitter *createMSP430MCCodeEmitter(const MCInstrInfo &MCII,
 
 #include "MSP430GenMCCodeEmitter.inc"
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

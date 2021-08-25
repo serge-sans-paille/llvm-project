@@ -15,7 +15,7 @@
 #include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/Support/TargetRegistry.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARMAsmBackend : public MCAsmBackend {
   // The STI from the target triple the MCAsmBackend was instantiated with
@@ -77,6 +77,6 @@ public:
   bool isThumb() const { return isThumbMode; }
   void setIsThumb(bool it) { isThumbMode = it; }
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

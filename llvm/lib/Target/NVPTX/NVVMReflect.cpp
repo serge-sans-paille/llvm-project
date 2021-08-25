@@ -45,7 +45,9 @@ using namespace llvm;
 
 #define DEBUG_TYPE "nvptx-reflect"
 
-namespace llvm { void initializeNVVMReflectPass(PassRegistry &); }
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeNVVMReflectPass(PassRegistry &);
+}
 
 namespace {
 class NVVMReflect : public FunctionPass {

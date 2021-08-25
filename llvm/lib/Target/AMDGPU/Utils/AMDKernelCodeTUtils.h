@@ -13,9 +13,11 @@
 #ifndef LLVM_LIB_TARGET_AMDGPU_UTILS_AMDKERNELCODETUTILS_H
 #define LLVM_LIB_TARGET_AMDGPU_UTILS_AMDKERNELCODETUTILS_H
 
+#include "llvm/Support/Compiler.h"
+
 struct amd_kernel_code_t;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAsmParser;
 class raw_ostream;
@@ -30,6 +32,6 @@ void dumpAmdKernelCode(const amd_kernel_code_t *C, raw_ostream &OS,
 bool parseAmdKernelCodeField(StringRef ID, MCAsmParser &Parser,
                              amd_kernel_code_t &C, raw_ostream &Err);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_UTILS_AMDKERNELCODETUTILS_H

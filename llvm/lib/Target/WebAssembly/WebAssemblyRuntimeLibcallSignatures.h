@@ -18,7 +18,7 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/RuntimeLibcalls.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class WebAssemblySubtarget;
 
@@ -32,6 +32,6 @@ extern void getLibcallSignature(const WebAssemblySubtarget &Subtarget,
                                 SmallVectorImpl<wasm::ValType> &Rets,
                                 SmallVectorImpl<wasm::ValType> &Params);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

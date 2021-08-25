@@ -19,7 +19,7 @@
 
 // RISCV-specific code to select RISCV machine instructions for
 // SelectionDAG operations.
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class RISCVDAGToDAGISel : public SelectionDAGISel {
   const RISCVSubtarget *Subtarget = nullptr;
 
@@ -71,6 +71,6 @@ public:
 private:
   void doPeepholeLoadStoreADDI();
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

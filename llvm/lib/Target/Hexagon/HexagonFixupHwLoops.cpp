@@ -28,10 +28,10 @@ static cl::opt<unsigned> MaxLoopRange(
     "hexagon-loop-range", cl::Hidden, cl::init(200),
     cl::desc("Restrict range of loopN instructions (testing only)"));
 
-namespace llvm {
-  FunctionPass *createHexagonFixupHwLoops();
-  void initializeHexagonFixupHwLoopsPass(PassRegistry&);
-}
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+FunctionPass *createHexagonFixupHwLoops();
+void initializeHexagonFixupHwLoopsPass(PassRegistry &);
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
   struct HexagonFixupHwLoops : public MachineFunctionPass {

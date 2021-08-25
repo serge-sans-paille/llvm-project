@@ -13,7 +13,7 @@
 #include "llvm/IR/PassManager.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFTargetMachine;
 
 ModulePass *createBPFAdjustOpt();
@@ -61,6 +61,6 @@ class BPFAdjustOptPass : public PassInfoMixin<BPFAdjustOptPass> {
 public:
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

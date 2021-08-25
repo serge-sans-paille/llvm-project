@@ -17,7 +17,7 @@
 #include "SparcFixupKinds.h"
 #include "llvm/MC/MCExpr.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringRef;
 class SparcMCExpr : public MCTargetExpr {
@@ -109,6 +109,6 @@ public:
   static Sparc::Fixups getFixupKind(VariantKind Kind);
 };
 
-} // end namespace llvm.
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

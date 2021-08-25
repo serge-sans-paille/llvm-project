@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class XCoreMCAsmInfo : public MCAsmInfoELF {
@@ -25,6 +25,6 @@ public:
   explicit XCoreMCAsmInfo(const Triple &TT);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

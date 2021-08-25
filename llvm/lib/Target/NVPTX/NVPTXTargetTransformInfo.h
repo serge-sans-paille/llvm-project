@@ -22,7 +22,7 @@
 #include "llvm/CodeGen/BasicTTIImpl.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXTTIImpl : public BasicTTIImplBase<NVPTXTTIImpl> {
   typedef BasicTTIImplBase<NVPTXTTIImpl> BaseT;
@@ -120,6 +120,6 @@ public:
   }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

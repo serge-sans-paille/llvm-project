@@ -353,10 +353,10 @@ GCNILPScheduler::schedule(ArrayRef<const SUnit*> BotRoots,
   return Schedule;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 std::vector<const SUnit*> makeGCNILPScheduler(ArrayRef<const SUnit*> BotRoots,
                                               const ScheduleDAG &DAG) {
   GCNILPScheduler S;
   return S.schedule(BotRoots, DAG);
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY

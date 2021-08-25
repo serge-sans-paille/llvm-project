@@ -16,7 +16,7 @@
 #include "BPFSubtarget.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFTargetMachine : public LLVMTargetMachine {
   std::unique_ptr<TargetLoweringObjectFile> TLOF;
   BPFSubtarget Subtarget;
@@ -44,6 +44,6 @@ public:
   void registerPassBuilderCallbacks(PassBuilder &PB,
                                     bool DebugPassManager) override;
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

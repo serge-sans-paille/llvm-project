@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static const unsigned CodeModelLargeSize = 256;
 
@@ -34,6 +34,6 @@ static const unsigned CodeModelLargeSize = 256;
                                      const Constant *C,
                                      Align &Alignment) const override;
   };
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -16,13 +16,13 @@
 
 #include "llvm/CodeGen/MachineScheduler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Note that you have to add:
 ///   DAG.addMutation(createARMMacroFusionDAGMutation());
 /// to ARMPassConfig::createMachineScheduler() to have an effect.
 std::unique_ptr<ScheduleDAGMutation> createARMMacroFusionDAGMutation();
 
-} // llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

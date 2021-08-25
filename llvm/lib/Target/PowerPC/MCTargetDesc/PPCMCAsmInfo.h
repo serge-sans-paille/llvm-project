@@ -16,7 +16,7 @@
 #include "llvm/MC/MCAsmInfoELF.h"
 #include "llvm/MC/MCAsmInfoXCOFF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class PPCELFMCAsmInfo : public MCAsmInfoELF {
@@ -33,6 +33,6 @@ public:
   explicit PPCXCOFFMCAsmInfo(bool is64Bit, const Triple &);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

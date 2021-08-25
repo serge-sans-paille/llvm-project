@@ -133,58 +133,58 @@ static MachineSchedRegistry
 SchedCustomRegistry("hexagon", "Run Hexagon's custom scheduler",
                     createVLIWMachineSched);
 
-namespace llvm {
-  extern char &HexagonExpandCondsetsID;
-  void initializeHexagonBitSimplifyPass(PassRegistry&);
-  void initializeHexagonConstExtendersPass(PassRegistry&);
-  void initializeHexagonConstPropagationPass(PassRegistry&);
-  void initializeHexagonEarlyIfConversionPass(PassRegistry&);
-  void initializeHexagonExpandCondsetsPass(PassRegistry&);
-  void initializeHexagonGenMuxPass(PassRegistry&);
-  void initializeHexagonHardwareLoopsPass(PassRegistry&);
-  void initializeHexagonLoopIdiomRecognizeLegacyPassPass(PassRegistry &);
-  void initializeHexagonNewValueJumpPass(PassRegistry&);
-  void initializeHexagonOptAddrModePass(PassRegistry&);
-  void initializeHexagonPacketizerPass(PassRegistry&);
-  void initializeHexagonRDFOptPass(PassRegistry&);
-  void initializeHexagonSplitDoubleRegsPass(PassRegistry&);
-  void initializeHexagonVectorCombineLegacyPass(PassRegistry&);
-  void initializeHexagonVectorLoopCarriedReuseLegacyPassPass(PassRegistry &);
-  void initializeHexagonVExtractPass(PassRegistry&);
-  Pass *createHexagonLoopIdiomPass();
-  Pass *createHexagonVectorLoopCarriedReuseLegacyPass();
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+extern char &HexagonExpandCondsetsID;
+void initializeHexagonBitSimplifyPass(PassRegistry &);
+void initializeHexagonConstExtendersPass(PassRegistry &);
+void initializeHexagonConstPropagationPass(PassRegistry &);
+void initializeHexagonEarlyIfConversionPass(PassRegistry &);
+void initializeHexagonExpandCondsetsPass(PassRegistry &);
+void initializeHexagonGenMuxPass(PassRegistry &);
+void initializeHexagonHardwareLoopsPass(PassRegistry &);
+void initializeHexagonLoopIdiomRecognizeLegacyPassPass(PassRegistry &);
+void initializeHexagonNewValueJumpPass(PassRegistry &);
+void initializeHexagonOptAddrModePass(PassRegistry &);
+void initializeHexagonPacketizerPass(PassRegistry &);
+void initializeHexagonRDFOptPass(PassRegistry &);
+void initializeHexagonSplitDoubleRegsPass(PassRegistry &);
+void initializeHexagonVectorCombineLegacyPass(PassRegistry &);
+void initializeHexagonVectorLoopCarriedReuseLegacyPassPass(PassRegistry &);
+void initializeHexagonVExtractPass(PassRegistry &);
+Pass *createHexagonLoopIdiomPass();
+Pass *createHexagonVectorLoopCarriedReuseLegacyPass();
 
-  FunctionPass *createHexagonBitSimplify();
-  FunctionPass *createHexagonBranchRelaxation();
-  FunctionPass *createHexagonCallFrameInformation();
-  FunctionPass *createHexagonCFGOptimizer();
-  FunctionPass *createHexagonCommonGEP();
-  FunctionPass *createHexagonConstExtenders();
-  FunctionPass *createHexagonConstPropagationPass();
-  FunctionPass *createHexagonCopyToCombine();
-  FunctionPass *createHexagonEarlyIfConversion();
-  FunctionPass *createHexagonFixupHwLoops();
-  FunctionPass *createHexagonGenExtract();
-  FunctionPass *createHexagonGenInsert();
-  FunctionPass *createHexagonGenMux();
-  FunctionPass *createHexagonGenPredicate();
-  FunctionPass *createHexagonHardwareLoops();
-  FunctionPass *createHexagonISelDag(HexagonTargetMachine &TM,
-                                     CodeGenOpt::Level OptLevel);
-  FunctionPass *createHexagonLoopRescheduling();
-  FunctionPass *createHexagonNewValueJump();
-  FunctionPass *createHexagonOptAddrMode();
-  FunctionPass *createHexagonOptimizeSZextends();
-  FunctionPass *createHexagonPacketizer(bool Minimal);
-  FunctionPass *createHexagonPeephole();
-  FunctionPass *createHexagonRDFOpt();
-  FunctionPass *createHexagonSplitConst32AndConst64();
-  FunctionPass *createHexagonSplitDoubleRegs();
-  FunctionPass *createHexagonStoreWidening();
-  FunctionPass *createHexagonVectorCombineLegacyPass();
-  FunctionPass *createHexagonVectorPrint();
-  FunctionPass *createHexagonVExtract();
-} // end namespace llvm;
+FunctionPass *createHexagonBitSimplify();
+FunctionPass *createHexagonBranchRelaxation();
+FunctionPass *createHexagonCallFrameInformation();
+FunctionPass *createHexagonCFGOptimizer();
+FunctionPass *createHexagonCommonGEP();
+FunctionPass *createHexagonConstExtenders();
+FunctionPass *createHexagonConstPropagationPass();
+FunctionPass *createHexagonCopyToCombine();
+FunctionPass *createHexagonEarlyIfConversion();
+FunctionPass *createHexagonFixupHwLoops();
+FunctionPass *createHexagonGenExtract();
+FunctionPass *createHexagonGenInsert();
+FunctionPass *createHexagonGenMux();
+FunctionPass *createHexagonGenPredicate();
+FunctionPass *createHexagonHardwareLoops();
+FunctionPass *createHexagonISelDag(HexagonTargetMachine &TM,
+                                   CodeGenOpt::Level OptLevel);
+FunctionPass *createHexagonLoopRescheduling();
+FunctionPass *createHexagonNewValueJump();
+FunctionPass *createHexagonOptAddrMode();
+FunctionPass *createHexagonOptimizeSZextends();
+FunctionPass *createHexagonPacketizer(bool Minimal);
+FunctionPass *createHexagonPeephole();
+FunctionPass *createHexagonRDFOpt();
+FunctionPass *createHexagonSplitConst32AndConst64();
+FunctionPass *createHexagonSplitDoubleRegs();
+FunctionPass *createHexagonStoreWidening();
+FunctionPass *createHexagonVectorCombineLegacyPass();
+FunctionPass *createHexagonVectorPrint();
+FunctionPass *createHexagonVExtract();
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 static Reloc::Model getEffectiveRelocModel(Optional<Reloc::Model> RM) {
   return RM.getValueOr(Reloc::Static);

@@ -92,24 +92,24 @@ namespace {
 
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
-  raw_ostream &operator<<(raw_ostream &OS, const BT::BitValue &BV) {
-    switch (BV.Type) {
-      case BT::BitValue::Top:
-        OS << 'T';
-        break;
-      case BT::BitValue::Zero:
-        OS << '0';
-        break;
-      case BT::BitValue::One:
-        OS << '1';
-        break;
-      case BT::BitValue::Ref:
-        OS << printv(BV.RefI.Reg) << '[' << BV.RefI.Pos << ']';
-        break;
-    }
-    return OS;
+raw_ostream &operator<<(raw_ostream &OS, const BT::BitValue &BV) {
+  switch (BV.Type) {
+  case BT::BitValue::Top:
+    OS << 'T';
+    break;
+  case BT::BitValue::Zero:
+    OS << '0';
+    break;
+  case BT::BitValue::One:
+    OS << '1';
+    break;
+  case BT::BitValue::Ref:
+    OS << printv(BV.RefI.Reg) << '[' << BV.RefI.Pos << ']';
+    break;
+  }
+  return OS;
   }
 
   raw_ostream &operator<<(raw_ostream &OS, const BT::RegisterCell &RC) {
@@ -177,7 +177,7 @@ namespace llvm {
     return OS;
   }
 
-} // end namespace llvm
+  } // namespace LLVM_LIBRARY_VISIBILITY
 
 void BitTracker::print_cells(raw_ostream &OS) const {
   for (const std::pair<unsigned, RegisterCell> P : Map)

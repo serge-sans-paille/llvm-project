@@ -14,7 +14,7 @@
 
 #include "AMDGPUMachineModuleInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 AMDGPUMachineModuleInfo::AMDGPUMachineModuleInfo(const MachineModuleInfo &MMI)
     : MachineModuleInfoELF(MMI) {
@@ -34,4 +34,4 @@ AMDGPUMachineModuleInfo::AMDGPUMachineModuleInfo(const MachineModuleInfo &MMI)
       CTX.getOrInsertSyncScopeID("singlethread-one-as");
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

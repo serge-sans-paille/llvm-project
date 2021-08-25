@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/Register.h"
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineRegisterInfo;
 
@@ -25,6 +25,6 @@ getBaseWithConstantOffset(MachineRegisterInfo &MRI, Register Reg);
 bool isLegalVOP3PShuffleMask(ArrayRef<int> Mask);
 
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

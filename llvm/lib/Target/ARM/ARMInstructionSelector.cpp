@@ -155,14 +155,14 @@ private:
 };
 } // end anonymous namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 InstructionSelector *
 createARMInstructionSelector(const ARMBaseTargetMachine &TM,
                              const ARMSubtarget &STI,
                              const ARMRegisterBankInfo &RBI) {
   return new ARMInstructionSelector(TM, STI, RBI);
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define GET_GLOBALISEL_IMPL
 #include "ARMGenGlobalISel.inc"

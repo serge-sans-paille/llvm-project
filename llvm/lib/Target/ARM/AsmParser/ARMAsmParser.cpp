@@ -71,9 +71,9 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 extern const MCInstrDesc ARMInsts[];
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 
@@ -10635,13 +10635,13 @@ unsigned ARMAsmParser::checkTargetMatchPredicate(MCInst &Inst) {
   return Match_Success;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template <> inline bool IsCPSRDead<MCInst>(const MCInst *Instr) {
   return true; // In an assembly source, no need to second-guess
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Returns true if Inst is unpredictable if it is in and IT block, but is not
 // the last instruction in the block.

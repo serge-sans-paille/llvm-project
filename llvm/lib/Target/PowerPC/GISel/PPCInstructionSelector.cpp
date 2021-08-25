@@ -82,11 +82,11 @@ bool PPCInstructionSelector::select(MachineInstr &I) {
   return false;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 InstructionSelector *
 createPPCInstructionSelector(const PPCTargetMachine &TM,
                              const PPCSubtarget &Subtarget,
                              const PPCRegisterBankInfo &RBI) {
   return new PPCInstructionSelector(TM, Subtarget, RBI);
 }
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

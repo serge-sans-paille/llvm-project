@@ -40,12 +40,12 @@ static cl::opt<bool> TraceHexVectorStoresOnly("trace-hex-vector-stores-only",
   cl::Hidden, cl::ZeroOrMore, cl::init(false),
   cl::desc("Enables tracing of vector stores"));
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createHexagonVectorPrint();
 void initializeHexagonVectorPrintPass(PassRegistry&);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

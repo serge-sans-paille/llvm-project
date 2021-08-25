@@ -107,7 +107,7 @@ void AArch64TargetStreamer::emitInst(uint32_t Inst) {
   getStreamer().emitBytes(StringRef(Buffer, 4));
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 MCTargetStreamer *
 createAArch64ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
@@ -119,4 +119,4 @@ createAArch64ObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
   return nullptr;
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

@@ -18,7 +18,7 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/Support/X86DisassemblerDecoderCommon.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace X86Disassembler {
 
 // Accessor functions for various fields of an Intel instruction
@@ -642,6 +642,6 @@ struct InternalInstruction {
 };
 
 } // namespace X86Disassembler
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

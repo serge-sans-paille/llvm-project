@@ -9,13 +9,15 @@
 #ifndef LLVM_LIB_TARGET_X86_TARGETINFO_X86TARGETINFO_H
 #define LLVM_LIB_TARGET_X86_TARGETINFO_X86TARGETINFO_H
 
-namespace llvm {
+#include "llvm/Support/Compiler.h"
+
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Target;
 
 Target &getTheX86_32Target();
 Target &getTheX86_64Target();
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_TARGETINFO_X86TARGETINFO_H

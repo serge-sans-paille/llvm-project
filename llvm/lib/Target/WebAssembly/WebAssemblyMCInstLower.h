@@ -19,7 +19,7 @@
 #include "llvm/MC/MCInst.h"
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class WebAssemblyAsmPrinter;
 class MCContext;
 class MCSymbol;
@@ -42,6 +42,6 @@ public:
       : Ctx(ctx), Printer(printer) {}
   void lower(const MachineInstr *MI, MCInst &OutMI) const;
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

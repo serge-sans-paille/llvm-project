@@ -16,7 +16,7 @@
 #ifndef LLVM_LIB_TARGET_ARC_MCTARGETDESC_ARCINFO_H
 #define LLVM_LIB_TARGET_ARC_MCTARGETDESC_ARCINFO_H
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Enums corresponding to ARC condition codes
 namespace ARCCC {
@@ -53,6 +53,6 @@ enum BRCondCode {
 
 } // end namespace ARCCC
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

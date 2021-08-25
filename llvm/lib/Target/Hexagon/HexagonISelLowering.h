@@ -27,7 +27,7 @@
 #include <cstdint>
 #include <utility>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace HexagonISD {
 
@@ -504,6 +504,6 @@ private:
   SDValue PerformHvxDAGCombine(SDNode *N, DAGCombinerInfo &DCI) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_HEXAGONISELLOWERING_H

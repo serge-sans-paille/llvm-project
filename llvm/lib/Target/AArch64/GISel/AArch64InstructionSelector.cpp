@@ -6013,11 +6013,11 @@ void AArch64InstructionSelector::processPHIs(MachineFunction &MF) {
   }
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 InstructionSelector *
 createAArch64InstructionSelector(const AArch64TargetMachine &TM,
                                  AArch64Subtarget &Subtarget,
                                  AArch64RegisterBankInfo &RBI) {
   return new AArch64InstructionSelector(TM, Subtarget, RBI);
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY

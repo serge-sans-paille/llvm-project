@@ -19,7 +19,7 @@
 
 struct amd_kernel_code_t;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUMachineFunction;
 class AMDGPUTargetStreamer;
@@ -150,6 +150,6 @@ protected:
   size_t DisasmLineMaxLen;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_AMDGPUASMPRINTER_H

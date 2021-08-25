@@ -33,7 +33,7 @@
 #include "llvm/MC/MCInstrDesc.h"
 #include <cassert>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// X86AddressMode - This struct holds a generalized full x86 address mode.
 /// The base register can be a frame index, which will eventually be replaced
@@ -227,6 +227,6 @@ addConstantPoolReference(const MachineInstrBuilder &MIB, unsigned CPI,
     .addConstantPoolIndex(CPI, 0, OpFlags).addReg(0);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_X86_X86INSTRBUILDER_H

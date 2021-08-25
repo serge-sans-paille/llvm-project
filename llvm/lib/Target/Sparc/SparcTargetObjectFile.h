@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class TargetMachine;
@@ -31,6 +31,6 @@ public:
                                         MCStreamer &Streamer) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -46,12 +46,12 @@ static cl::opt<bool> NoSR0("extract-nosr0", cl::init(true), cl::Hidden,
 static cl::opt<bool> NeedAnd("extract-needand", cl::init(true), cl::Hidden,
   cl::desc("Require & in extract patterns"));
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void initializeHexagonGenExtractPass(PassRegistry&);
 FunctionPass *createHexagonGenExtract();
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

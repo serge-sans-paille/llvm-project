@@ -25,12 +25,12 @@ using namespace llvm;
 
 #define DEBUG_TYPE "hexagon_cfg"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 FunctionPass *createHexagonCFGOptimizer();
 void initializeHexagonCFGOptimizerPass(PassRegistry&);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

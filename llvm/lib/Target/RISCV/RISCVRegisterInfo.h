@@ -18,7 +18,7 @@
 #define GET_REGINFO_HEADER
 #include "RISCVGenRegisterInfo.inc"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 struct RISCVRegisterInfo : public RISCVGenRegisterInfo {
 
@@ -60,6 +60,6 @@ struct RISCVRegisterInfo : public RISCVGenRegisterInfo {
     return &RISCV::GPRRegClass;
   }
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

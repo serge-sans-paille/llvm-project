@@ -19,7 +19,7 @@
 #include "llvm/Support/MathExtras.h"
 #include <cstdint>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCInstrDesc;
 class MipsSubtarget;
@@ -125,6 +125,6 @@ private:
                                      MachineBasicBlock::iterator I) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPS16INSTRINFO_H

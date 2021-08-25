@@ -11,7 +11,7 @@
 
 #include "llvm/Support/Compiler.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AsmPrinter;
 class MachineInstr;
@@ -36,7 +36,7 @@ private:
   AsmPrinter &Printer;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_MCINST_LOWER_H
 

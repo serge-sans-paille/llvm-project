@@ -18,7 +18,7 @@
 #include "MCTargetDesc/HexagonShuffler.h"
 #include "llvm/ADT/SmallVector.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCContext;
 class MCInst;
@@ -62,6 +62,6 @@ bool HexagonMCShuffle(MCContext &Context, MCInstrInfo const &MCII,
                       MCSubtargetInfo const &STI, MCInst &MCB,
                       SmallVector<DuplexCandidate, 8> possibleDuplexes);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_HEXAGON_MCTARGETDESC_HEXAGONMCSHUFFLER_H

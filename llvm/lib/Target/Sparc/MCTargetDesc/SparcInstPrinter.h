@@ -15,7 +15,7 @@
 
 #include "llvm/MC/MCInstPrinter.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class SparcInstPrinter : public MCInstPrinter {
 public:
@@ -52,6 +52,6 @@ public:
   void printMembarTag(const MCInst *MI, int opNum, const MCSubtargetInfo &STI,
                       raw_ostream &O);
 };
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -31,7 +31,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Target/TargetMachine.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 extern cl::opt<bool> ReuseFrameIndexVals;
 }
 

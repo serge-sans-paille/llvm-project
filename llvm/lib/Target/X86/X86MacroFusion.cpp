@@ -64,11 +64,11 @@ static bool shouldScheduleAdjacent(const TargetInstrInfo &TII,
   llvm_unreachable("unknown fusion type");
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<ScheduleDAGMutation>
 createX86MacroFusionDAGMutation () {
   return createBranchMacroFusionDAGMutation(shouldScheduleAdjacent);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

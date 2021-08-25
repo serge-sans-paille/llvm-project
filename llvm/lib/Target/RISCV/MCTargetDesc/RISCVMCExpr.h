@@ -16,7 +16,7 @@
 
 #include "llvm/MC/MCExpr.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class StringRef;
 
@@ -86,6 +86,6 @@ public:
   static StringRef getVariantKindName(VariantKind Kind);
 };
 
-} // end namespace llvm.
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

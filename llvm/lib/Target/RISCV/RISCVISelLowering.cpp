@@ -4564,7 +4564,7 @@ RISCVTargetLowering::getRegisterByName(const char *RegName, LLT VT,
   return Reg;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace RISCVVIntrinsicsTable {
 
 #define GET_RISCVVIntrinsicsTable_IMPL
@@ -4578,4 +4578,4 @@ namespace RISCVZvlssegTable {
 #include "RISCVGenSearchableTables.inc"
 
 } // namespace RISCVZvlssegTable
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

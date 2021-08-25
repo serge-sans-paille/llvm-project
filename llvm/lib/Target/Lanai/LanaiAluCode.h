@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/ISDOpcodes.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace LPAC {
 enum AluCode {
   ADD = 0x00,
@@ -142,6 +142,6 @@ inline static AluCode isdToLanaiAluCode(ISD::NodeType Node_type) {
   }
 }
 } // namespace LPAC
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_LANAI_LANAIALUCODE_H

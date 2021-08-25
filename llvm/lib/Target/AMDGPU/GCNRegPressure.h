@@ -21,7 +21,7 @@
 #include "llvm/CodeGen/LiveIntervals.h"
 #include <algorithm>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineRegisterInfo;
 class raw_ostream;
@@ -267,6 +267,6 @@ void printLivesAt(SlotIndex SI,
                   const LiveIntervals &LIS,
                   const MachineRegisterInfo &MRI);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AMDGPU_GCNREGPRESSURE_H

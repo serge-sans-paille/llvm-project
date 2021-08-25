@@ -13,11 +13,12 @@
 #ifndef LLVM_LIB_TARGET_SPARC_MCTARGETDESC_SPARCMCTARGETDESC_H
 #define LLVM_LIB_TARGET_SPARC_MCTARGETDESC_SPARCMCTARGETDESC_H
 
+#include "llvm/Support/Compiler.h"
 #include "llvm/Support/DataTypes.h"
 
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
@@ -36,7 +37,7 @@ MCAsmBackend *createSparcAsmBackend(const Target &T, const MCSubtargetInfo &STI,
                                     const MCTargetOptions &Options);
 std::unique_ptr<MCObjectTargetWriter> createSparcELFObjectWriter(bool Is64Bit,
                                                                  uint8_t OSABI);
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 // Defines symbolic names for Sparc registers.  This defines a mapping from
 // register name to register number.

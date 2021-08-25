@@ -21,7 +21,7 @@
 //  Vector Mask Decoding
 //===----------------------------------------------------------------------===//
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static bool extractConstantMask(const Constant *C, unsigned MaskEltSizeInBits,
                                 APInt &UndefElts,
@@ -293,4 +293,4 @@ void DecodeVPPERMMask(const Constant *C, unsigned Width,
   }
 }
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

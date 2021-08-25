@@ -141,10 +141,10 @@ bool AArch64WinCOFFObjectWriter::recordRelocation(const MCFixup &Fixup) const {
   return true;
 }
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<MCObjectTargetWriter> createAArch64WinCOFFObjectWriter() {
   return std::make_unique<AArch64WinCOFFObjectWriter>();
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

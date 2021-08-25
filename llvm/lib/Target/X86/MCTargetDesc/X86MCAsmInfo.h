@@ -17,7 +17,7 @@
 #include "llvm/MC/MCAsmInfoDarwin.h"
 #include "llvm/MC/MCAsmInfoELF.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class Triple;
 
 class X86MCAsmInfoDarwin : public MCAsmInfoDarwin {
@@ -61,6 +61,6 @@ class X86MCAsmInfoGNUCOFF : public MCAsmInfoGNUCOFF {
 public:
   explicit X86MCAsmInfoGNUCOFF(const Triple &Triple);
 };
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

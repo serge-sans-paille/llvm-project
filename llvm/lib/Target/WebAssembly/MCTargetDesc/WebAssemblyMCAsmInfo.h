@@ -16,7 +16,7 @@
 
 #include "llvm/MC/MCAsmInfoWasm.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class Triple;
 
@@ -27,6 +27,6 @@ public:
   ~WebAssemblyMCAsmInfo() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

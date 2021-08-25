@@ -17,7 +17,7 @@
 #include "llvm/CodeGen/RuntimeLibcalls.h"
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 namespace ARM_AM {
   static inline ShiftOpc getShiftOpcForNode(unsigned Opcode) {
@@ -63,6 +63,6 @@ public:
                                  RTLIB::Libcall LC) const;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

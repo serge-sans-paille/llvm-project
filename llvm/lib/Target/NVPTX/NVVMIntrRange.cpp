@@ -24,7 +24,9 @@ using namespace llvm;
 
 #define DEBUG_TYPE "nvvm-intr-range"
 
-namespace llvm { void initializeNVVMIntrRangePass(PassRegistry &); }
+namespace llvm LLVM_LIBRARY_VISIBILITY {
+void initializeNVVMIntrRangePass(PassRegistry &);
+}
 
 // Add !range metadata based on limits of given SM variant.
 static cl::opt<unsigned> NVVMIntrRangeSM("nvvm-intr-range-sm", cl::init(20),

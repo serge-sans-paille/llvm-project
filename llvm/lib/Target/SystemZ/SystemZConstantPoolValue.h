@@ -12,7 +12,7 @@
 #include "llvm/CodeGen/MachineConstantPool.h"
 #include "llvm/Support/ErrorHandling.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class GlobalValue;
 
@@ -52,6 +52,6 @@ public:
   SystemZCP::SystemZCPModifier getModifier() const { return Modifier; }
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

@@ -42,7 +42,7 @@ using namespace llvm;
 
 #define DEBUG_TYPE "nvptx-peephole"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 void initializeNVPTXPeepholePass(PassRegistry &);
 }
 

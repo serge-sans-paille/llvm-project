@@ -32,10 +32,10 @@ using namespace llvm;
 #define OPTADDRMODE_NAME "arc-addr-mode"
 #define DEBUG_TYPE "arc-addr-mode"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createARCOptAddrMode();
 void initializeARCOptAddrModePass(PassRegistry &);
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 class ARCOptAddrMode : public MachineFunctionPass {

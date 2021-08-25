@@ -15,7 +15,7 @@
 
 #include "MipsISelDAGToDAG.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MipsSEDAGToDAGISel : public MipsDAGToDAGISel {
 
@@ -141,6 +141,6 @@ private:
 
 FunctionPass *createMipsSEISelDag(MipsTargetMachine &TM,
                                   CodeGenOpt::Level OptLevel);
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

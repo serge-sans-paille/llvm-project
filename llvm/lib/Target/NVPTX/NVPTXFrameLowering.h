@@ -16,7 +16,7 @@
 #include "llvm/CodeGen/TargetFrameLowering.h"
 #include "llvm/Support/TypeSize.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class NVPTXFrameLowering : public TargetFrameLowering {
 public:
@@ -34,6 +34,6 @@ public:
   DwarfFrameBase getDwarfFrameBase(const MachineFunction &MF) const override;
 };
 
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

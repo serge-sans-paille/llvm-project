@@ -57,12 +57,12 @@ static cl::opt<bool> CheckSingleUse("hexagon-isel-su", cl::Hidden,
 /// createHexagonISelDag - This pass converts a legalized DAG into a
 /// Hexagon-specific DAG, ready for instruction scheduling.
 ///
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 FunctionPass *createHexagonISelDag(HexagonTargetMachine &TM,
                                    CodeGenOpt::Level OptLevel) {
   return new HexagonDAGToDAGISel(TM, OptLevel);
 }
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 void HexagonDAGToDAGISel::SelectIndexedLoad(LoadSDNode *LD, const SDLoc &dl) {
   SDValue Chain = LD->getChain();

@@ -18,7 +18,7 @@
 #include "llvm/CodeGen/SelectionDAG.h"
 #include "llvm/CodeGen/TargetLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class BPFSubtarget;
 namespace BPFISD {
 enum NodeType : unsigned {
@@ -140,6 +140,6 @@ private:
                                                         const;
 
 };
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

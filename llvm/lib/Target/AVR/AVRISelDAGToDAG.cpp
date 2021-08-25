@@ -21,7 +21,7 @@
 
 #define DEBUG_TYPE "avr-isel"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Lowers LLVM IR (in DAG form) to AVR MC instructions (in DAG form).
 class AVRDAGToDAGISel : public SelectionDAGISel {
@@ -550,5 +550,4 @@ FunctionPass *createAVRISelDag(AVRTargetMachine &TM,
   return new AVRDAGToDAGISel(TM, OptLevel);
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

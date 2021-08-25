@@ -18,7 +18,7 @@
 #include "llvm/MC/MCInstPrinter.h"
 #include "../Utils/AArch64BaseInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AArch64InstPrinter : public MCInstPrinter {
 public:
@@ -226,6 +226,6 @@ public:
                                      unsigned AltIdx = AArch64::NoRegAltName);
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_AARCH64_MCTARGETDESC_AARCH64INSTPRINTER_H

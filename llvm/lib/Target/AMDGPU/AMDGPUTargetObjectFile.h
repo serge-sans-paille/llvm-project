@@ -17,7 +17,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class AMDGPUTargetObjectFile : public TargetLoweringObjectFileELF {
   public:
@@ -27,6 +27,6 @@ class AMDGPUTargetObjectFile : public TargetLoweringObjectFileELF {
                                         const TargetMachine &TM) const override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

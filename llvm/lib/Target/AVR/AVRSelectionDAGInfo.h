@@ -15,13 +15,13 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Holds information about the AVR instruction selection DAG.
 class AVRSelectionDAGInfo : public SelectionDAGTargetInfo {
 public:
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_SELECTION_DAG_INFO_H

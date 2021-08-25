@@ -56,11 +56,10 @@ static bool shouldScheduleAdjacent(const TargetInstrInfo &TII_,
 
 } // end namespace
 
-
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 std::unique_ptr<ScheduleDAGMutation> createAMDGPUMacroFusionDAGMutation () {
   return createMacroFusionDAGMutation(shouldScheduleAdjacent);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

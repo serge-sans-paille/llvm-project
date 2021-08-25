@@ -15,7 +15,7 @@
 
 #include "llvm/CodeGen/SelectionDAGTargetInfo.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class XCoreSelectionDAGInfo : public SelectionDAGTargetInfo {
 public:
@@ -27,6 +27,6 @@ public:
                                   MachinePointerInfo SrcPtrInfo) const override;
 };
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

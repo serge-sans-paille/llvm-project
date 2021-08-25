@@ -32,7 +32,7 @@
 
 #define DEBUG_TYPE "avr-asm-printer"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// An AVR assembly code printer.
 class AVRAsmPrinter : public AsmPrinter {
@@ -176,7 +176,7 @@ void AVRAsmPrinter::emitInstruction(const MachineInstr *MI) {
   EmitToStreamer(*OutStreamer, I);
 }
 
-} // end of namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 extern "C" LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAVRAsmPrinter() {
   llvm::RegisterAsmPrinter<llvm::AVRAsmPrinter> X(llvm::getTheAVRTarget());

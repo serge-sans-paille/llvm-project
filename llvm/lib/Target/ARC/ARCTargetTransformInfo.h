@@ -20,7 +20,7 @@
 #include "llvm/Analysis/TargetTransformInfo.h"
 #include "llvm/CodeGen/BasicTTIImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARCSubtarget;
 class ARCTargetLowering;
@@ -49,6 +49,6 @@ public:
         TLI(std::move(Arg.TLI)) {}
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCTARGETTRANSFORMINFO_H

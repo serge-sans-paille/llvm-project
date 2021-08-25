@@ -7,7 +7,7 @@
 
 #include "AVRMCTargetDesc.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 static unsigned getEFlagsForFeatureSet(const FeatureBitset &Features) {
   unsigned EFlags = 0;
@@ -65,4 +65,4 @@ AVRELFStreamer::AVRELFStreamer(MCStreamer &S,
   MCA.setELFHeaderEFlags(EFlags);
 }
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY

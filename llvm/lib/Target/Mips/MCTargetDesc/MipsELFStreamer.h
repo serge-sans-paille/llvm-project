@@ -19,7 +19,7 @@
 #include "llvm/MC/MCELFStreamer.h"
 #include <memory>
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MCAsmBackend;
 class MCCodeEmitter;
@@ -77,6 +77,6 @@ MCELFStreamer *createMipsELFStreamer(MCContext &Context,
                                      std::unique_ptr<MCObjectWriter> OW,
                                      std::unique_ptr<MCCodeEmitter> Emitter,
                                      bool RelaxAll);
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSELFSTREAMER_H

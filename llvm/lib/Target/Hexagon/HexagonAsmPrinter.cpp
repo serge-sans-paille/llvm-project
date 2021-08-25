@@ -53,12 +53,12 @@
 
 using namespace llvm;
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 void HexagonLowerToMC(const MCInstrInfo &MCII, const MachineInstr *MI,
                       MCInst &MCB, HexagonAsmPrinter &AP);
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #define DEBUG_TYPE "asm-printer"
 

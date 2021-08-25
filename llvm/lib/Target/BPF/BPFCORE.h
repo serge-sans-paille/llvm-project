@@ -11,7 +11,7 @@
 
 #include "llvm/ADT/StringRef.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class BasicBlock;
 class Instruction;
@@ -71,6 +71,6 @@ public:
                                         Instruction *Before);
 };
 
-} // namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

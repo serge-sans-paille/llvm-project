@@ -32,7 +32,7 @@
 // GCC #defines PPC on Linux but we use it as our namespace name
 #undef PPC
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 class StringRef;
 
 namespace PPC {
@@ -413,6 +413,6 @@ public:
   const LegalizerInfo *getLegalizerInfo() const override;
   InstructionSelector *getInstructionSelector() const override;
 };
-} // End llvm namespace
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

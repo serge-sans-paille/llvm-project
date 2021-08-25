@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCFixup.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace AArch64 {
 
 enum Fixups {
@@ -64,6 +64,6 @@ enum Fixups {
 };
 
 } // end namespace AArch64
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

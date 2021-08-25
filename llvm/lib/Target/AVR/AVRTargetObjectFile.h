@@ -11,7 +11,7 @@
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 /// Lowering for an AVR ELF32 object file.
 class AVRTargetObjectFile : public TargetLoweringObjectFileELF {
@@ -27,6 +27,6 @@ private:
   MCSection *ProgmemDataSection;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_AVR_TARGET_OBJECT_FILE_H

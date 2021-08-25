@@ -39,13 +39,13 @@ using namespace llvm;
 
 // The generated AsmMatcher SparcGenAsmMatcher uses "Sparc" as the target
 // namespace. But SPARC backend uses "SP" as its namespace.
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 namespace Sparc {
 
     using namespace SP;
 
 } // end namespace Sparc
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 namespace {
 

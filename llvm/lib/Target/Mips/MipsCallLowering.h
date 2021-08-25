@@ -16,7 +16,7 @@
 
 #include "llvm/CodeGen/GlobalISel/CallLowering.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class MachineMemOperand;
 class MipsTargetLowering;
@@ -91,6 +91,6 @@ private:
                          SmallVectorImpl<unsigned> &SplitArgsOrigIndices) const;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_MIPS_MIPSCALLLOWERING_H

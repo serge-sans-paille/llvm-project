@@ -236,7 +236,7 @@ static void ms8(unsigned Size, const MCFixup &Fixup, uint64_t &Value,
 } // end of ldi namespace
 } // end of adjust namespace
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 // Prepare value for the target space for it
 void AVRAsmBackend::adjustFixupValue(const MCFixup &Fixup,
@@ -484,5 +484,4 @@ MCAsmBackend *createAVRAsmBackend(const Target &T, const MCSubtargetInfo &STI,
   return new AVRAsmBackend(STI.getTargetTriple().getOS());
 }
 
-} // end of namespace llvm
-
+} // namespace LLVM_LIBRARY_VISIBILITY

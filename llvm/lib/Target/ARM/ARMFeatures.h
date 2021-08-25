@@ -15,7 +15,7 @@
 
 #include "MCTargetDesc/ARMMCTargetDesc.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 template<typename InstrType> // could be MachineInstr or MCInst
 bool IsCPSRDead(const InstrType *Instr);
@@ -92,6 +92,6 @@ inline bool isV8EligibleForIT(const InstrType *Instr) {
   }
 }
 
-}
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif

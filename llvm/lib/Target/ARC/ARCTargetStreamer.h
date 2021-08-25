@@ -11,7 +11,7 @@
 
 #include "llvm/MC/MCStreamer.h"
 
-namespace llvm {
+namespace llvm LLVM_LIBRARY_VISIBILITY {
 
 class ARCTargetStreamer : public MCTargetStreamer {
 public:
@@ -19,6 +19,6 @@ public:
   ~ARCTargetStreamer() override;
 };
 
-} // end namespace llvm
+} // namespace LLVM_LIBRARY_VISIBILITY
 
 #endif // LLVM_LIB_TARGET_ARC_ARCTARGETSTREAMER_H
