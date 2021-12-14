@@ -28,7 +28,7 @@ using namespace clang;
 using namespace CodeGen;
 
 void CodeGen::addDefaultFunctionDefinitionAttributes(CodeGenModule &CGM,
-                                                     llvm::AttrBuilder &attrs) {
+                                                     llvm::NewAttrBuilder &attrs) {
   CGM.addDefaultFunctionDefinitionAttributes(attrs);
 }
 

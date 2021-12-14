@@ -1781,7 +1781,7 @@ CodeGenModule::getMostBaseClasses(const CXXRecordDecl *RD) {
 
 void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
                                                            llvm::Function *F) {
-  llvm::AttrBuilder B;
+  llvm::NewAttrBuilder B(getLLVMContext());
 
   if (CodeGenOpts.UnwindTables)
     B.addAttribute(llvm::Attribute::UWTable);
@@ -1944,9 +1944,7 @@ void CodeGenModule::SetLLVMFunctionAttributesForDefinition(const Decl *D,
 void CodeGenModule::setLLVMFunctionFEnvAttributes(const FunctionDecl *D,
                                                   llvm::Function *F) {
   if (D->hasAttr<StrictFPAttr>()) {
-    llvm::AttrBuilder FuncAttrs;
-    FuncAttrs.addAttribute("strictfp");
-    F->addFnAttrs(FuncAttrs);
+    F->addFnAttr("strictfp");
   }
 }
 
@@ -1969,7 +1967,7 @@ void CodeGenModule::SetCommonAttributes(GlobalDecl GD, llvm::GlobalValue *GV) {
 }
 
 bool CodeGenModule::GetCPUAndFeaturesAttributes(GlobalDecl GD,
-                                                llvm::AttrBuilder &Attrs) {
+                                                llvm::NewAttrBuilder &Attrs) {
   // Add target-cpu and target-features attributes to functions. If
   // we have a decl for the function and it has a target attribute then
   // parse that and add it to the feature set.
@@ -2053,16 +2051,16 @@ void CodeGenModule::setNonAliasAttributes(GlobalDecl GD,
         if (!D->getAttr<SectionAttr>())
           F->addFnAttr("implicit-section-name", SA->getName());
 
-      llvm::AttrBuilder Attrs;
+      llvm::NewAttrBuilder Attrs(getLLVMContext());
       if (GetCPUAndFeaturesAttributes(GD, Attrs)) {
         // We know that GetCPUAndFeaturesAttributes will always have the
         // newest set, since it has the newest possible FunctionDecl, so the
         // new ones should replace the old.
-        llvm::AttrBuilder RemoveAttrs;
-        RemoveAttrs.addAttribute("target-cpu");
-        RemoveAttrs.addAttribute("target-features");
-        RemoveAttrs.addAttribute("tune-cpu");
-        F->removeFnAttrs(RemoveAttrs);
+        //llvm::NewAttrBuilder RemoveAttrs;
+        //RemoveAttrs.addAttribute("target-cpu");
+        //RemoveAttrs.addAttribute("target-features");
+        //RemoveAttrs.addAttribute("tune-cpu");
+        //F->removeFnAttrs(RemoveAttrs);
         F->addFnAttrs(Attrs);
       }
     }
@@ -3666,7 +3664,7 @@ llvm::Constant *CodeGenModule::GetOrCreateLLVMFunction(
   if (D)
     SetFunctionAttributes(GD, F, IsIncompleteFunction, IsThunk);
   if (ExtraAttrs.hasFnAttrs()) {
-    llvm::AttrBuilder B(ExtraAttrs, llvm::AttributeList::FunctionIndex);
+    llvm::NewAttrBuilder B(getLLVMContext(), ExtraAttrs, llvm::AttributeList::FunctionIndex);
     F->addFnAttrs(B);
   }
 

@@ -1737,7 +1737,7 @@ llvm::Type *CodeGenTypes::GetFunctionTypeForVTable(GlobalDecl GD) {
 }
 
 static void AddAttributesFromFunctionProtoType(ASTContext &Ctx,
-                                               llvm::AttrBuilder &FuncAttrs,
+                                               llvm::NewAttrBuilder &FuncAttrs,
                                                const FunctionProtoType *FPT) {
   if (!FPT)
     return;
@@ -1747,7 +1747,7 @@ static void AddAttributesFromFunctionProtoType(ASTContext &Ctx,
     FuncAttrs.addAttribute(llvm::Attribute::NoUnwind);
 }
 
-static void AddAttributesFromAssumes(llvm::AttrBuilder &FuncAttrs,
+static void AddAttributesFromAssumes(llvm::NewAttrBuilder &FuncAttrs,
                                      const Decl *Callee) {
   if (!Callee)
     return;
@@ -1777,7 +1777,7 @@ bool CodeGenModule::MayDropFunctionReturn(const ASTContext &Context,
 void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
                                                  bool HasOptnone,
                                                  bool AttrOnCallSite,
-                                               llvm::AttrBuilder &FuncAttrs) {
+                                                 llvm::NewAttrBuilder &FuncAttrs) {
   // OptimizeNoneAttr takes precedence over -Os or -Oz. No warning needed.
   if (!HasOptnone) {
     if (CodeGenOpts.OptimizeSize)
@@ -1898,7 +1898,7 @@ void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
 }
 
 void CodeGenModule::addDefaultFunctionDefinitionAttributes(llvm::Function &F) {
-  llvm::AttrBuilder FuncAttrs;
+  llvm::NewAttrBuilder FuncAttrs(F.getContext());
   getDefaultFunctionAttributes(F.getName(), F.hasOptNone(),
                                /* AttrOnCallSite = */ false, FuncAttrs);
   // TODO: call GetCPUAndFeaturesAttributes?
@@ -1906,13 +1906,13 @@ void CodeGenModule::addDefaultFunctionDefinitionAttributes(llvm::Function &F) {
 }
 
 void CodeGenModule::addDefaultFunctionDefinitionAttributes(
-                                                   llvm::AttrBuilder &attrs) {
+                                                   llvm::NewAttrBuilder &attrs) {
   getDefaultFunctionAttributes(/*function name*/ "", /*optnone*/ false,
                                /*for call*/ false, attrs);
   GetCPUAndFeaturesAttributes(GlobalDecl(), attrs);
 }
 
-static void addNoBuiltinAttributes(llvm::AttrBuilder &FuncAttrs,
+static void addNoBuiltinAttributes(llvm::NewAttrBuilder &FuncAttrs,
                                    const LangOptions &LangOpts,
                                    const NoBuiltinAttr *NBA = nullptr) {
   auto AddNoBuiltinAttr = [&FuncAttrs](StringRef BuiltinName) {
@@ -2020,8 +2020,8 @@ void CodeGenModule::ConstructAttributeList(StringRef Name,
                                            llvm::AttributeList &AttrList,
                                            unsigned &CallingConv,
                                            bool AttrOnCallSite, bool IsThunk) {
-  llvm::AttrBuilder FuncAttrs;
-  llvm::AttrBuilder RetAttrs;
+  llvm::NewAttrBuilder FuncAttrs(getLLVMContext());
+  llvm::NewAttrBuilder RetAttrs(getLLVMContext());
 
   // Collect function IR attributes from the CC lowering.
   // We'll collect the paramete and result attributes later.

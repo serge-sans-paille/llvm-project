@@ -344,6 +344,7 @@ public:
 
   /// Add function attributes to this function.
   void addFnAttrs(const AttrBuilder &Attrs);
+  void addFnAttrs(const NewAttrBuilder &Attrs);
 
   /// Add return value attributes to this function.
   void addRetAttr(Attribute::AttrKind Kind);
