@@ -600,6 +600,10 @@ AttributeSet AttributeSet::get(LLVMContext &C, const AttrBuilder &B) {
   return AttributeSet(AttributeSetNode::get(C, B));
 }
 
+AttributeSet AttributeSet::get(LLVMContext &C, const NewAttrBuilder &B) {
+  return AttributeSet(AttributeSetNode::get(C, B.uniquify()));
+}
+
 AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
   return AttributeSet(AttributeSetNode::get(C, Attrs));
 }
@@ -607,14 +611,14 @@ AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
 AttributeSet AttributeSet::addAttribute(LLVMContext &C,
                                         Attribute::AttrKind Kind) const {
   if (hasAttribute(Kind)) return *this;
-  AttrBuilder B;
+  NewAttrBuilder B(C);
   B.addAttribute(Kind);
   return addAttributes(C, AttributeSet::get(C, B));
 }
 
 AttributeSet AttributeSet::addAttribute(LLVMContext &C, StringRef Kind,
                                         StringRef Value) const {
-  AttrBuilder B;
+  NewAttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributes(C, AttributeSet::get(C, B));
 }
@@ -627,7 +631,7 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
   if (!AS.hasAttributes())
     return *this;
 
-  AttrBuilder B(AS);
+  NewAttrBuilder B(C, AS);
   for (const auto &I : *this)
     B.addAttribute(I);
 
@@ -637,16 +641,14 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
                                              Attribute::AttrKind Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
-  B.removeAttribute(Kind);
+  NewAttrBuilder B(C, make_filter_range(*this, [Kind](Attribute Attr) { return !Attr.hasAttribute(Kind);}));
   return get(C, B);
 }
 
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
-                                             StringRef Kind) const {
+                                           StringRef Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
-  B.removeAttribute(Kind);
+  NewAttrBuilder B(C, make_filter_range(*this, [Kind](Attribute Attr) { return !Attr.hasAttribute(Kind);}));
   return get(C, B);
 }
 
@@ -1213,14 +1215,14 @@ AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
-  AttrBuilder B;
+  NewAttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributesAtIndex(C, Index, B);
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  Attribute A) const {
-  AttrBuilder B;
+  NewAttrBuilder B(C);
   B.addAttribute(A);
   return addAttributesAtIndex(C, Index, B);
 }
@@ -1255,6 +1257,20 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
 #endif
 
   AttrBuilder Merged(getAttributes(Index));
+  Merged.merge(B);
+  return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
+}
+
+AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
+                                                  unsigned Index,
+                                                  const NewAttrBuilder &B) const {
+  if (B.empty())
+    return *this;
+
+  if (!pImpl)
+    return AttributeList::get(C, {{Index, AttributeSet::get(C, B)}});
+
+  NewAttrBuilder Merged(C, getAttributes(Index));
   Merged.merge(B);
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
@@ -1649,6 +1665,15 @@ Optional<unsigned> AttrBuilder::getVScaleRangeMax() const {
   return unpackVScaleRangeArgs(getRawIntAttr(Attribute::VScaleRange)).second;
 }
 
+NewAttrBuilder &NewAttrBuilder::addAlignmentAttr(MaybeAlign Align) {
+  if (!Align)
+    return *this;
+
+  assert(*Align <= llvm::Value::MaximumAlignment && "Alignment too large.");
+  Attrs.push_back(Attribute::get(Ctxt, Attribute::Alignment, Align->value()));
+  return *this;
+}
+
 AttrBuilder &AttrBuilder::addAlignmentAttr(MaybeAlign Align) {
   if (!Align)
     return *this;
@@ -1666,6 +1691,12 @@ AttrBuilder &AttrBuilder::addStackAlignmentAttr(MaybeAlign Align) {
   return addRawIntAttr(Attribute::StackAlignment, Align->value());
 }
 
+NewAttrBuilder &NewAttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
+  if (Bytes == 0) return *this;
+  Attrs.push_back(Attribute::get(Ctxt, Attribute::Dereferenceable, Bytes));
+  return *this;
+}
+
 AttrBuilder &AttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
   if (Bytes == 0) return *this;
 
@@ -1677,6 +1708,12 @@ AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
     return *this;
 
   return addRawIntAttr(Attribute::DereferenceableOrNull, Bytes);
+}
+
+NewAttrBuilder &NewAttrBuilder::addAllocSizeAttr(unsigned ElemSize,
+                                           const Optional<unsigned> &NumElems) {
+  Attrs.push_back(Attribute::get(Ctxt, Attribute::AllocSize, packAllocSizeArgs(ElemSize, NumElems)));
+  return *this;
 }
 
 AttrBuilder &AttrBuilder::addAllocSizeAttr(unsigned ElemSize,
@@ -1736,7 +1773,72 @@ AttrBuilder &AttrBuilder::addPreallocatedAttr(Type *Ty) {
 AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
   return addTypeAttr(Attribute::InAlloca, Ty);
 }
+ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
+  if(Attrs.size() <= 1)
+    return Attrs;
 
+  llvm::stable_sort(Attrs,
+      [](Attribute A0, Attribute A1)
+      {
+        // move sentinel at the end
+        if(!A0.isValid())
+          return false;
+        if(!A1.isValid())
+          return true;
+
+        if (!A0.isStringAttribute()) {
+          if (A1.isStringAttribute())
+            return true;
+          return A0.getKindAsEnum() < A1.getKindAsEnum();
+        }
+
+        if (!A1.isStringAttribute())
+          return false;
+        return A0.getKindAsString() < A1.getKindAsString();
+  });
+
+  while(!Attrs.back().isValid())
+    Attrs.pop_back();
+
+  SmallVector<unsigned> ToPrune;
+  for(unsigned I = 1, N = Attrs.size(); I < N; ++I) {
+    if((Attrs[I] == Attrs[I-1]) ||
+       (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
+      ToPrune.push_back(I - 1);
+    // FIXME: this matches old implementation but doesn't make sense to me.
+    if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
+      ToPrune.push_back(I);
+  }
+  unsigned Tail = Attrs.size();
+  for(unsigned Index : reverse(ToPrune))
+    std::swap(Attrs[Index], Attrs[--Tail]);
+  Attrs.resize(Tail);
+  return Attrs;
+}
+
+NewAttrBuilder &NewAttrBuilder::merge(const NewAttrBuilder &B) {
+#if 0
+  llvm::sort(Attrs);
+  unsigned Size = Attrs.size();
+  for(Attribute A : B.attrs()) {
+    auto Where = std::lower_bound(Attrs.begin(), Attrs.begin() + Size, A);
+    if(Where != Attrs.begin() + Size) {
+      if(A == *Where)
+        continue;
+#if 0
+      if(Where->hasAttribute(A.getKindAsString())) {
+        *Where = A;
+        continue;
+      }
+#endif
+    }
+    Attrs.push_back(A);
+  }
+#else
+  Attrs.append(B.Attrs.begin(), B.Attrs.end());
+#endif
+  return *this;
+}
 AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
   // FIXME: What if both have an int/type attribute, but they don't match?!
   for (unsigned Index = 0; Index < Attribute::NumIntAttrKinds; ++Index)

@@ -1223,7 +1223,7 @@ public:
 
   /// Like the overload taking a `Function &`, but intended specifically
   /// for frontends that want to build on Clang's target-configuration logic.
-  void addDefaultFunctionDefinitionAttributes(llvm::AttrBuilder &attrs);
+  void addDefaultFunctionDefinitionAttributes(llvm::NewAttrBuilder &attrs);
 
   StringRef getMangledName(GlobalDecl GD);
   StringRef getBlockMangledName(GlobalDecl GD, const BlockDecl *BD);
@@ -1483,7 +1483,7 @@ private:
                         ForDefinition_t IsForDefinition = NotForDefinition);
 
   bool GetCPUAndFeaturesAttributes(GlobalDecl GD,
-                                   llvm::AttrBuilder &AttrBuilder);
+                                   llvm::NewAttrBuilder &AttrBuilder);
   void setNonAliasAttributes(GlobalDecl GD, llvm::GlobalObject *GO);
 
   /// Set function attributes for a function declaration.
@@ -1623,7 +1623,7 @@ private:
   /// attributes to add to a function with the given properties.
   void getDefaultFunctionAttributes(StringRef Name, bool HasOptnone,
                                     bool AttrOnCallSite,
-                                    llvm::AttrBuilder &FuncAttrs);
+                                    llvm::NewAttrBuilder &FuncAttrs);
 
   llvm::Metadata *CreateMetadataIdentifierImpl(QualType T, MetadataTypeMap &Map,
                                                StringRef Suffix);

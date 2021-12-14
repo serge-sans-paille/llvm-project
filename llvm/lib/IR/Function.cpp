@@ -549,6 +549,10 @@ void Function::addFnAttrs(const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
 }
 
+void Function::addFnAttrs(const NewAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
+}
+
 void Function::addRetAttr(Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.addRetAttribute(getContext(), Kind);
 }

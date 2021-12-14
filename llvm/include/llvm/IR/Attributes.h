@@ -34,6 +34,7 @@
 namespace llvm {
 
 class AttrBuilder;
+class NewAttrBuilder;
 class AttributeImpl;
 class AttributeListImpl;
 class AttributeSetNode;
@@ -287,6 +288,7 @@ public:
   ~AttributeSet() = default;
 
   static AttributeSet get(LLVMContext &C, const AttrBuilder &B);
+  static AttributeSet get(LLVMContext &C, const NewAttrBuilder &B);
   static AttributeSet get(LLVMContext &C, ArrayRef<Attribute> Attrs);
 
   bool operator==(const AttributeSet &O) const { return SetNode == O.SetNode; }
@@ -481,6 +483,9 @@ public:
   LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
                                                     unsigned Index,
                                                     const AttrBuilder &B) const;
+  LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
+                                                    unsigned Index,
+                                                    const NewAttrBuilder &B) const;
 
   /// Add a function attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -507,6 +512,10 @@ public:
   /// attribute lists are immutable.
   LLVM_NODISCARD AttributeList addFnAttributes(LLVMContext &C,
                                                const AttrBuilder &B) const {
+    return addAttributesAtIndex(C, FunctionIndex, B);
+  }
+  LLVM_NODISCARD AttributeList addFnAttributes(LLVMContext &C,
+                                               const NewAttrBuilder &B) const {
     return addAttributesAtIndex(C, FunctionIndex, B);
   }
 
@@ -923,6 +932,50 @@ template <> struct DenseMapInfo<AttributeList, void> {
   static bool isEqual(AttributeList LHS, AttributeList RHS) {
     return LHS == RHS;
   }
+};
+
+class NewAttrBuilder {
+  LLVMContext& Ctxt;
+  mutable SmallVector<Attribute> Attrs;
+  public:
+  NewAttrBuilder(LLVMContext& Ctxt) : Ctxt(Ctxt) {}
+  NewAttrBuilder(LLVMContext& Ctxt, AttributeList AL, unsigned Idx) : NewAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
+  template<class Range>
+  NewAttrBuilder(LLVMContext& Ctxt, Range&& R) : Ctxt(Ctxt), Attrs(R.begin(), R.end()) {}
+
+  NewAttrBuilder &addAttribute(Attribute::AttrKind Val) {
+    Attrs.push_back(Attribute::get(Ctxt, Val));
+    return *this;
+  }
+  NewAttrBuilder &addAttribute(StringRef A, StringRef V = StringRef()) {
+    Attrs.push_back(Attribute::get(Ctxt, A, V));
+    return *this;
+  }
+  NewAttrBuilder &addAttribute(Attribute A) {
+    Attrs.push_back(A);
+    return *this;
+  }
+  NewAttrBuilder& merge(const NewAttrBuilder& B);
+
+  template<class AttrKey>
+  NewAttrBuilder& removeAttribute(AttrKey Val) {
+    for(auto Iter = Attrs.begin(), End = Attrs.end(); Iter != End; ++Iter) {
+      if(Iter->hasAttribute(Val)) {
+        Attribute Sentinel;
+        std::swap(*Iter, Sentinel);
+        break;
+      }
+    }
+    return *this;
+  }
+
+  bool empty() const { return Attrs.empty(); }
+  ArrayRef<Attribute> uniquify() const;
+
+  NewAttrBuilder &addAllocSizeAttr(unsigned ElemSize, const Optional<unsigned> &NumElems);
+  NewAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
+  NewAttrBuilder &addAlignmentAttr(MaybeAlign Align);
+
 };
 
 //===----------------------------------------------------------------------===//
