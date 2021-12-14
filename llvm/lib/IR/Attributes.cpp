@@ -1816,85 +1816,11 @@ AttrBuilder &AttrBuilder::addPreallocatedAttr(Type *Ty) {
 AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
   return addTypeAttr(Attribute::InAlloca, Ty);
 }
-ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
-  if(Attrs.empty())
-    return Attrs;
-
-  llvm::stable_sort(Attrs,
-      [](Attribute A0, Attribute A1)
-      {
-        // move sentinel at the end
-        if(!A0.isValid())
-          return false;
-        if(!A1.isValid())
-          return true;
-
-        if (!A0.isStringAttribute()) {
-          if (A1.isStringAttribute())
-            return true;
-          return A0.getKindAsEnum() < A1.getKindAsEnum();
-        }
-
-        if (!A1.isStringAttribute())
-          return false;
-        return A0.getKindAsString() < A1.getKindAsString();
-  });
-
-#if 0
-  while(!Attrs.back().isValid())
-    Attrs.pop_back();
-
-  SmallVector<unsigned> ToPrune;
-  for(unsigned I = 1, N = Attrs.size(); I < N; ++I) {
-    if((Attrs[I] == Attrs[I-1]) ||
-       (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
-      ToPrune.push_back(I - 1);
-    // FIXME: this matches old implementation but doesn't make sense to me.
-    else if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
-      ToPrune.push_back(I);
-  }
-  unsigned Tail = Attrs.size();
-  for(unsigned Index : reverse(ToPrune))
-    std::swap(Attrs[Index], Attrs[--Tail]);
-#else
-  int Tail = Attrs.size();
-  while(!Attrs[Tail - 1].isValid())
-	  --Tail;
-
-  for(int I = Tail - 1; I > 0; --I) {
-    if((Attrs[I] == Attrs[I-1]) ||
-       (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
-	    std::swap(Attrs[I-1], Attrs[--Tail]);
-    else if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
-    // FIXME: pruning I and not I-1 matches old implementation but doesn't make sense to me.
-	    std::swap(Attrs[I], Attrs[--Tail]);
-  }
-#endif
-  Attrs.resize(Tail);
-  return Attrs;
-}
 
 NewAttrBuilder &NewAttrBuilder::merge(const NewAttrBuilder &B) {
-#if 0
-  llvm::sort(Attrs);
-  unsigned Size = Attrs.size();
-  for(Attribute A : B.attrs()) {
-    auto Where = std::lower_bound(Attrs.begin(), Attrs.begin() + Size, A);
-    if(Where != Attrs.begin() + Size) {
-      if(A == *Where)
-        continue;
-#if 0
-      if(Where->hasAttribute(A.getKindAsString())) {
-        *Where = A;
-        continue;
-      }
-#endif
-    }
-    Attrs.push_back(A);
-  }
-#else
-  Attrs.append(B.Attrs.begin(), B.Attrs.end());
-#endif
+  auto Start = Attrs.begin();
+  for(Attribute BA : B.Attrs)
+    Start = addAttributeHelper(BA, Start);
   return *this;
 }
 AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
