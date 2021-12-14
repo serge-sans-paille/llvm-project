@@ -1846,17 +1846,14 @@ ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
   while(!Attrs[Tail - 1].isValid())
 	  --Tail;
 
-  SmallVector<unsigned> ToPrune;
-  for(unsigned I = 1, N = Tail; I < N; ++I) {
+  for(int I = Tail - 1; I > 0; --I) {
     if((Attrs[I] == Attrs[I-1]) ||
        (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
-      ToPrune.push_back(I - 1);
-    // FIXME: this matches old implementation but doesn't make sense to me.
+	    std::swap(Attrs[I-1], Attrs[--Tail]);
     else if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
-      ToPrune.push_back(I);
+    // FIXME: pruning I and not I-1 matches old implementation but doesn't make sense to me.
+	    std::swap(Attrs[I], Attrs[--Tail]);
   }
-  for(unsigned Index : reverse(ToPrune))
-    std::swap(Attrs[Index], Attrs[--Tail]);
 #endif
   Attrs.resize(Tail);
   return Attrs;
