@@ -2095,11 +2095,11 @@ void CodeGenModule::setNonAliasAttributes(GlobalDecl GD,
         // We know that GetCPUAndFeaturesAttributes will always have the
         // newest set, since it has the newest possible FunctionDecl, so the
         // new ones should replace the old.
-        //llvm::NewAttrBuilder RemoveAttrs;
-        //RemoveAttrs.addAttribute("target-cpu");
-        //RemoveAttrs.addAttribute("target-features");
-        //RemoveAttrs.addAttribute("tune-cpu");
-        //F->removeFnAttrs(RemoveAttrs);
+        llvm::NewAttrBuilder RemoveAttrs(getLLVMContext());
+        RemoveAttrs.addAttribute("target-cpu");
+        RemoveAttrs.addAttribute("target-features");
+        RemoveAttrs.addAttribute("tune-cpu");
+        F->removeFnAttrs(RemoveAttrs);
         F->addFnAttrs(Attrs);
       }
     }

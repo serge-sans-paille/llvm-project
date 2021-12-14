@@ -366,6 +366,7 @@ public:
   void removeFnAttr(StringRef Kind);
 
   void removeFnAttrs(const AttrBuilder &Attrs);
+  void removeFnAttrs(const NewAttrBuilder &Attrs);
 
   /// removes the attribute from the return value list of attributes.
   void removeRetAttr(Attribute::AttrKind Kind);

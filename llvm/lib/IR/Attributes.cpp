@@ -1825,6 +1825,7 @@ ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
         return A0.getKindAsString() < A1.getKindAsString();
   });
 
+#if 0
   while(!Attrs.back().isValid())
     Attrs.pop_back();
 
@@ -1840,6 +1841,23 @@ ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
   unsigned Tail = Attrs.size();
   for(unsigned Index : reverse(ToPrune))
     std::swap(Attrs[Index], Attrs[--Tail]);
+#else
+  int Tail = Attrs.size();
+  while(!Attrs[Tail - 1].isValid())
+	  --Tail;
+
+  SmallVector<unsigned> ToPrune;
+  for(unsigned I = 1, N = Tail; I < N; ++I) {
+    if((Attrs[I] == Attrs[I-1]) ||
+       (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
+      ToPrune.push_back(I - 1);
+    // FIXME: this matches old implementation but doesn't make sense to me.
+    else if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
+      ToPrune.push_back(I);
+  }
+  for(unsigned Index : reverse(ToPrune))
+    std::swap(Attrs[Index], Attrs[--Tail]);
+#endif
   Attrs.resize(Tail);
   return Attrs;
 }

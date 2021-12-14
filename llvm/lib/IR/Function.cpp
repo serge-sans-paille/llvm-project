@@ -597,6 +597,10 @@ void Function::removeFnAttrs(const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
 }
 
+void Function::removeFnAttrs(const NewAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
+}
+
 void Function::removeRetAttr(Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.removeRetAttribute(getContext(), Kind);
 }
