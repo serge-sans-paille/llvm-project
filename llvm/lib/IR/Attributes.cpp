@@ -663,6 +663,14 @@ AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
   return get(C, B);
 }
 
+AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
+                                            const NewAttrBuilder &Attrs) const {
+  NewAttrBuilder B(C, *this);
+  for(Attribute A : Attrs.uniquify())
+    B.removeAttribute(A);
+  return get(C, B);
+}
+
 unsigned AttributeSet::getNumAttributes() const {
   return SetNode ? SetNode->getNumAttributes() : 0;
 }
@@ -1146,6 +1154,15 @@ AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
   AttrSets[Index] = AttributeSet::get(C, B);
   return getImpl(C, AttrSets);
 }
+AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
+                                 const NewAttrBuilder &B) {
+  if (!B.hasAttributes())
+    return {};
+  Index = attrIdxToArrayIdx(Index);
+  SmallVector<AttributeSet, 8> AttrSets(Index + 1);
+  AttrSets[Index] = AttributeSet::get(C, B);
+  return getImpl(C, AttrSets);
+}
 
 AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
                                  ArrayRef<Attribute::AttrKind> Kinds) {
@@ -1264,7 +1281,7 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
 AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
                                                   unsigned Index,
                                                   const NewAttrBuilder &B) const {
-  if (B.empty())
+  if (!B.hasAttributes())
     return *this;
 
   if (!pImpl)
@@ -1328,6 +1345,17 @@ AttributeList AttributeList::removeAttributeAtIndex(LLVMContext &C,
 AttributeList
 AttributeList::removeAttributesAtIndex(LLVMContext &C, unsigned Index,
                                        const AttrBuilder &AttrsToRemove) const {
+  AttributeSet Attrs = getAttributes(Index);
+  AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
+  // If nothing was removed, return the original list.
+  if (Attrs == NewAttrs)
+    return *this;
+  return setAttributesAtIndex(C, Index, NewAttrs);
+}
+
+AttributeList
+AttributeList::removeAttributesAtIndex(LLVMContext &C, unsigned Index,
+                                       const NewAttrBuilder &AttrsToRemove) const {
   AttributeSet Attrs = getAttributes(Index);
   AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
   // If nothing was removed, return the original list.
@@ -1774,7 +1802,7 @@ AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
   return addTypeAttr(Attribute::InAlloca, Ty);
 }
 ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
-  if(Attrs.size() <= 1)
+  if(Attrs.empty())
     return Attrs;
 
   llvm::stable_sort(Attrs,
@@ -1806,7 +1834,7 @@ ArrayRef<Attribute> NewAttrBuilder::uniquify() const {
        (Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsString())))
       ToPrune.push_back(I - 1);
     // FIXME: this matches old implementation but doesn't make sense to me.
-    if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
+    else if(!Attrs[I].isStringAttribute() && Attrs[I - 1].hasAttribute(Attrs[I].getKindAsEnum()))
       ToPrune.push_back(I);
   }
   unsigned Tail = Attrs.size();

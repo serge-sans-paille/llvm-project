@@ -154,6 +154,9 @@ TEST(Attributes, AddMatchingAlignAttr) {
   NewAttrBuilder B(C);
   B.addAttribute(Attribute::NonNull);
   B.addAlignmentAttr(8);
+  llvm::errs() << "Attr builder:\n";
+  for(auto A : B.uniquify())
+	  llvm::errs() << "- " << A.getAsString() << "\n";
   AL = AL.addParamAttributes(C, 0, B);
   EXPECT_EQ(Align(8), AL.getParamAlignment(0));
   EXPECT_EQ(Align(32), AL.getParamAlignment(1));

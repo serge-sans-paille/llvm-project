@@ -323,6 +323,8 @@ public:
   /// attribute sets are immutable.
   LLVM_NODISCARD AttributeSet
   removeAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeSet
+  removeAttributes(LLVMContext &C, const NewAttrBuilder &AttrsToRemove) const;
 
   /// Return the number of attributes in this set.
   unsigned getNumAttributes() const;
@@ -459,6 +461,8 @@ public:
                            ArrayRef<StringRef> Kind);
   static AttributeList get(LLVMContext &C, unsigned Index,
                            const AttrBuilder &B);
+  static AttributeList get(LLVMContext &C, unsigned Index,
+                           const NewAttrBuilder &B);
 
   // TODO: remove non-AtIndex versions of these methods.
   /// Add an attribute to the attribute set at the given index.
@@ -539,6 +543,10 @@ public:
                                                 const AttrBuilder &B) const {
     return addAttributesAtIndex(C, ReturnIndex, B);
   }
+  LLVM_NODISCARD AttributeList addRetAttributes(LLVMContext &C,
+                                                const NewAttrBuilder &B) const {
+    return addAttributesAtIndex(C, ReturnIndex, B);
+  }
 
   /// Add an argument attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -568,6 +576,11 @@ public:
                                                   const AttrBuilder &B) const {
     return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
   }
+  LLVM_NODISCARD AttributeList addParamAttributes(LLVMContext &C,
+                                                  unsigned ArgNo,
+                                                  const NewAttrBuilder &B) const {
+    return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
+  }
 
   /// Remove the specified attribute at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -588,6 +601,8 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeAttributesAtIndex(
       LLVMContext &C, unsigned Index, const AttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeList removeAttributesAtIndex(
+      LLVMContext &C, unsigned Index, const NewAttrBuilder &AttrsToRemove) const;
 
   /// Remove all attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -612,6 +627,10 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList
   removeFnAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
+  }
+  LLVM_NODISCARD AttributeList
+  removeFnAttributes(LLVMContext &C, const NewAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
   }
 
@@ -641,6 +660,10 @@ public:
   removeRetAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
   }
+  LLVM_NODISCARD AttributeList
+  removeRetAttributes(LLVMContext &C, const NewAttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
+  }
 
   /// Remove the specified attribute at the specified arg index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -661,6 +684,10 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeParamAttributes(
       LLVMContext &C, unsigned ArgNo, const AttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
+  }
+  LLVM_NODISCARD AttributeList removeParamAttributes(
+      LLVMContext &C, unsigned ArgNo, const NewAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
   }
 
@@ -957,24 +984,38 @@ class NewAttrBuilder {
   }
   NewAttrBuilder& merge(const NewAttrBuilder& B);
 
+  bool hasAttributes() const { return std::find_if(Attrs.begin(), Attrs.end(), [](Attribute A) { return A.isValid(); }) != Attrs.end();}
+
   template<class AttrKey>
   NewAttrBuilder& removeAttribute(AttrKey Val) {
     for(auto Iter = Attrs.begin(), End = Attrs.end(); Iter != End; ++Iter) {
       if(Iter->hasAttribute(Val)) {
         Attribute Sentinel;
         std::swap(*Iter, Sentinel);
-        break;
       }
     }
     return *this;
   }
+  NewAttrBuilder& removeAttribute(Attribute A) {
+	  if(A.isStringAttribute())
+		  return removeAttribute(A.getKindAsString());
+	  else
+		  return removeAttribute(A.getKindAsEnum());
+  }
 
-  bool empty() const { return Attrs.empty(); }
+  bool empty() const {
+	  return std::find_if(Attrs.begin(), Attrs.end(), [](Attribute A) { return A.isEnumAttribute(); }) ==Attrs.end();
+  }
+
+  void clear() { Attrs.clear(); }
   ArrayRef<Attribute> uniquify() const;
 
   NewAttrBuilder &addAllocSizeAttr(unsigned ElemSize, const Optional<unsigned> &NumElems);
   NewAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
   NewAttrBuilder &addAlignmentAttr(MaybeAlign Align);
+  NewAttrBuilder &addAlignmentAttr(unsigned Align) {
+    return addAlignmentAttr(MaybeAlign(Align));
+  }
 
 };
 
