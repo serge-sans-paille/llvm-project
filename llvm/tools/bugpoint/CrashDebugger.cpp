@@ -354,9 +354,7 @@ bool ReduceCrashingFunctionAttributes::TestFuncAttrs(
 
   // Build up an AttributeList from the attributes we've been given by the
   // reducer.
-  AttrBuilder AB;
-  for (auto A : Attrs)
-    AB.addAttribute(A);
+  NewAttrBuilder AB(BD.getContext(), Attrs);
   AttributeList NewAttrs;
   NewAttrs = NewAttrs.addFnAttributes(BD.getContext(), AB);
 

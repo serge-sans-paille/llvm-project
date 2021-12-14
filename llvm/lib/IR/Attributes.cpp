@@ -1730,6 +1730,13 @@ AttrBuilder &AttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
 
   return addRawIntAttr(Attribute::Dereferenceable, Bytes);
 }
+NewAttrBuilder &NewAttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
+  if (Bytes == 0)
+    return *this;
+
+  Attrs.push_back(Attribute::get(Ctxt, Attribute::DereferenceableOrNull, Bytes));
+  return *this;
+}
 
 AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
   if (Bytes == 0)
@@ -1781,11 +1788,19 @@ AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   TypeAttrs[*TypeIndex] = Ty;
   return *this;
 }
+NewAttrBuilder &NewAttrBuilder::addByValAttr(Type *Ty) {
+	Attrs.push_back(Attribute::get(Ctxt, Attribute::ByVal, Ty));
+  return *this;
+}
 
 AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
   return addTypeAttr(Attribute::ByVal, Ty);
 }
 
+NewAttrBuilder &NewAttrBuilder::addStructRetAttr(Type *Ty) {
+	Attrs.push_back(Attribute::get(Ctxt, Attribute::StructRet, Ty));
+	return *this;
+}
 AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
   return addTypeAttr(Attribute::StructRet, Ty);
 }

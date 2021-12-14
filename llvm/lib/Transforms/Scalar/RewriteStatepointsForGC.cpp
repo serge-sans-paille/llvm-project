@@ -2654,7 +2654,7 @@ static bool insertParsePoints(Function &F, DominatorTree &DT,
 template <typename AttrHolder>
 static void RemoveNonValidAttrAtIndex(LLVMContext &Ctx, AttrHolder &AH,
                                       unsigned Index) {
-  AttrBuilder R;
+  NewAttrBuilder R(Ctx);
   AttributeSet AS = AH.getAttributes().getAttributes(Index);
   if (AS.getDereferenceableBytes())
     R.addAttribute(Attribute::get(Ctx, Attribute::Dereferenceable,

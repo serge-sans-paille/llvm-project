@@ -1004,7 +1004,7 @@ class NewAttrBuilder {
   }
 
   bool empty() const {
-	  return std::find_if(Attrs.begin(), Attrs.end(), [](Attribute A) { return A.isEnumAttribute(); }) ==Attrs.end();
+	  return std::find_if(Attrs.begin(), Attrs.end(), [](Attribute A) { return A.isValid() && !A.isStringAttribute(); }) ==Attrs.end();
   }
 
   void clear() { Attrs.clear(); }
@@ -1012,10 +1012,13 @@ class NewAttrBuilder {
 
   NewAttrBuilder &addAllocSizeAttr(unsigned ElemSize, const Optional<unsigned> &NumElems);
   NewAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
+  NewAttrBuilder &addDereferenceableOrNullAttr(uint64_t Bytes);
   NewAttrBuilder &addAlignmentAttr(MaybeAlign Align);
   NewAttrBuilder &addAlignmentAttr(unsigned Align) {
     return addAlignmentAttr(MaybeAlign(Align));
   }
+  NewAttrBuilder &addStructRetAttr(Type *Ty);
+  NewAttrBuilder &addByValAttr(Type *Ty);
 
 };
 

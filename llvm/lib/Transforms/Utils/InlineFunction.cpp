@@ -1183,12 +1183,13 @@ static bool MayContainThrowingOrExitingCall(Instruction *Begin,
       Begin->getIterator(), End->getIterator(), InlinerAttributeWindow + 1);
 }
 
-static AttrBuilder IdentifyValidAttributes(CallBase &CB) {
+static NewAttrBuilder IdentifyValidAttributes(CallBase &CB) {
 
   AttrBuilder AB(CB.getAttributes(), AttributeList::ReturnIndex);
-  if (AB.empty())
-    return AB;
-  AttrBuilder Valid;
+  NewAttrBuilder Valid(CB.getContext());
+  if (AB.empty()) {
+     return Valid;
+  }
   // Only allow these white listed attributes to be propagated back to the
   // callee. This is because other attributes may only be valid on the call
   // itself, i.e. attributes such as signext and zeroext.
@@ -1207,7 +1208,7 @@ static void AddReturnAttributes(CallBase &CB, ValueToValueMapTy &VMap) {
   if (!UpdateReturnAttributes)
     return;
 
-  AttrBuilder Valid = IdentifyValidAttributes(CB);
+  NewAttrBuilder Valid = IdentifyValidAttributes(CB);
   if (Valid.empty())
     return;
   auto *CalledFunction = CB.getCalledFunction();
@@ -1252,6 +1253,7 @@ static void AddReturnAttributes(CallBase &CB, ValueToValueMapTy &VMap) {
     // existing attribute value (i.e. attributes such as dereferenceable,
     // dereferenceable_or_null etc). See AttrBuilder::merge for more details.
     AttributeList AL = NewRetVal->getAttributes();
+
     AttributeList NewAL = AL.addRetAttributes(Context, Valid);
     NewRetVal->setAttributes(NewAL);
   }
