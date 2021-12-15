@@ -600,6 +600,10 @@ AttributeSet AttributeSet::get(LLVMContext &C, const AttrBuilder &B) {
   return AttributeSet(AttributeSetNode::get(C, B));
 }
 
+AttributeSet AttributeSet::get(LLVMContext &C, const SmallAttrBuilder &B) {
+  return AttributeSet(AttributeSetNode::get(C, B));
+}
+
 AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
   return AttributeSet(AttributeSetNode::get(C, Attrs));
 }
@@ -607,14 +611,14 @@ AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
 AttributeSet AttributeSet::addAttribute(LLVMContext &C,
                                         Attribute::AttrKind Kind) const {
   if (hasAttribute(Kind)) return *this;
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addAttribute(Kind);
   return addAttributes(C, AttributeSet::get(C, B));
 }
 
 AttributeSet AttributeSet::addAttribute(LLVMContext &C, StringRef Kind,
                                         StringRef Value) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributes(C, AttributeSet::get(C, B));
 }
@@ -627,7 +631,7 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
   if (!AS.hasAttributes())
     return *this;
 
-  AttrBuilder B(AS);
+  SmallAttrBuilder B(C, AS);
   for (const auto &I : *this)
     B.addAttribute(I);
 
@@ -637,16 +641,18 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
                                              Attribute::AttrKind Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
-  B.removeAttribute(Kind);
+  SmallAttrBuilder B(C, make_filter_range(*this, [Kind](Attribute Attr) {
+                       return !Attr.hasAttribute(Kind);
+                     }));
   return get(C, B);
 }
 
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
-                                             StringRef Kind) const {
+                                           StringRef Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
-  B.removeAttribute(Kind);
+  SmallAttrBuilder B(C, make_filter_range(*this, [Kind](Attribute Attr) {
+                       return !Attr.hasAttribute(Kind);
+                     }));
   return get(C, B);
 }
 
@@ -658,6 +664,18 @@ AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
     return *this;
 
   B.remove(Attrs);
+  return get(C, B);
+}
+
+AttributeSet
+AttributeSet::removeAttributes(LLVMContext &C,
+                               const SmallAttrBuilder &Attrs) const {
+  SmallAttrBuilder B(C, *this);
+  auto AttrsPair = Attrs.uniquify();
+  for (Attribute A : AttrsPair.first)
+    B.removeEnumAttribute(A);
+  for (Attribute A : AttrsPair.second)
+    B.removeStringAttribute(A);
   return get(C, B);
 }
 
@@ -779,6 +797,18 @@ AttributeSetNode::AttributeSetNode(ArrayRef<Attribute> Attrs)
   }
 }
 
+AttributeSetNode::AttributeSetNode(ArrayRef<Attribute> EAttrs,
+                                   ArrayRef<Attribute> SAttrs)
+    : NumAttrs(EAttrs.size() + SAttrs.size()) {
+  // There's memory after the node where we can store the entries in.
+  llvm::copy(SAttrs, llvm::copy(EAttrs, getTrailingObjects<Attribute>()));
+
+  for (const auto &A : SAttrs)
+    StringAttrs.insert({A.getKindAsString(), A});
+  for (const auto &A : EAttrs)
+    AvailableAttrs.addAttribute(A.getKindAsEnum());
+}
+
 AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
                                         ArrayRef<Attribute> Attrs) {
   SmallVector<Attribute, 8> SortedAttrs(Attrs.begin(), Attrs.end());
@@ -839,6 +869,41 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C, const AttrBuilder &B) {
     Attrs.emplace_back(Attribute::get(C, TDA.first, TDA.second));
 
   return getSorted(C, Attrs);
+}
+
+AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
+                                        const SmallAttrBuilder &B) {
+  if (!B.hasAttributes())
+    return nullptr;
+
+  // Build a key to look up the existing attributes.
+  LLVMContextImpl *pImpl = C.pImpl;
+  FoldingSetNodeID ID;
+
+  auto AttrsPair = B.uniquify();
+
+  assert(llvm::is_sorted(AttrsPair.first) && "Expected sorted attributes!");
+  for (const auto &Attr : AttrsPair.first)
+    Attr.Profile(ID);
+  assert(llvm::is_sorted(AttrsPair.second) && "Expected sorted attributes!");
+  for (const auto &Attr : AttrsPair.second)
+    Attr.Profile(ID);
+
+  void *InsertPoint;
+  AttributeSetNode *PA =
+      pImpl->AttrsSetNodes.FindNodeOrInsertPos(ID, InsertPoint);
+
+  // If we didn't find any existing attributes of the same shape then create a
+  // new one and insert it.
+  if (!PA) {
+    // Coallocate entries after the AttributeSetNode itself.
+    void *Mem = ::operator new(totalSizeToAlloc<Attribute>(B.size()));
+    PA = new (Mem) AttributeSetNode(AttrsPair.first, AttrsPair.second);
+    pImpl->AttrsSetNodes.InsertNode(PA, InsertPoint);
+  }
+
+  // Return the AttributeSetNode that we found or created.
+  return PA;
 }
 
 bool AttributeSetNode::hasAttribute(StringRef Kind) const {
@@ -1144,6 +1209,15 @@ AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
   AttrSets[Index] = AttributeSet::get(C, B);
   return getImpl(C, AttrSets);
 }
+AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
+                                 const SmallAttrBuilder &B) {
+  if (!B.hasAttributes())
+    return {};
+  Index = attrIdxToArrayIdx(Index);
+  SmallVector<AttributeSet, 8> AttrSets(Index + 1);
+  AttrSets[Index] = AttributeSet::get(C, B);
+  return getImpl(C, AttrSets);
+}
 
 AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
                                  ArrayRef<Attribute::AttrKind> Kinds) {
@@ -1213,14 +1287,14 @@ AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributesAtIndex(C, Index, B);
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  Attribute A) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addAttribute(A);
   return addAttributesAtIndex(C, Index, B);
 }
@@ -1255,6 +1329,20 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
 #endif
 
   AttrBuilder Merged(getAttributes(Index));
+  Merged.merge(B);
+  return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
+}
+
+AttributeList
+AttributeList::addAttributesAtIndex(LLVMContext &C, unsigned Index,
+                                    const SmallAttrBuilder &B) const {
+  if (!B.hasAttributes())
+    return *this;
+
+  if (!pImpl)
+    return AttributeList::get(C, {{Index, AttributeSet::get(C, B)}});
+
+  SmallAttrBuilder Merged(C, getAttributes(Index));
   Merged.merge(B);
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
@@ -1312,6 +1400,17 @@ AttributeList AttributeList::removeAttributeAtIndex(LLVMContext &C,
 AttributeList
 AttributeList::removeAttributesAtIndex(LLVMContext &C, unsigned Index,
                                        const AttrBuilder &AttrsToRemove) const {
+  AttributeSet Attrs = getAttributes(Index);
+  AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
+  // If nothing was removed, return the original list.
+  if (Attrs == NewAttrs)
+    return *this;
+  return setAttributesAtIndex(C, Index, NewAttrs);
+}
+
+AttributeList AttributeList::removeAttributesAtIndex(
+    LLVMContext &C, unsigned Index,
+    const SmallAttrBuilder &AttrsToRemove) const {
   AttributeSet Attrs = getAttributes(Index);
   AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
   // If nothing was removed, return the original list.
@@ -1649,6 +1748,15 @@ Optional<unsigned> AttrBuilder::getVScaleRangeMax() const {
   return unpackVScaleRangeArgs(getRawIntAttr(Attribute::VScaleRange)).second;
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addAlignmentAttr(MaybeAlign Align) {
+  if (!Align)
+    return *this;
+
+  assert(*Align <= llvm::Value::MaximumAlignment && "Alignment too large.");
+  return addAttribute(
+      Attribute::get(Ctxt, Attribute::Alignment, Align->value()));
+}
+
 AttrBuilder &AttrBuilder::addAlignmentAttr(MaybeAlign Align) {
   if (!Align)
     return *this;
@@ -1666,10 +1774,24 @@ AttrBuilder &AttrBuilder::addStackAlignmentAttr(MaybeAlign Align) {
   return addRawIntAttr(Attribute::StackAlignment, Align->value());
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
+  if (Bytes == 0)
+    return *this;
+  return addAttribute(Attribute::get(Ctxt, Attribute::Dereferenceable, Bytes));
+}
+
 AttrBuilder &AttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
   if (Bytes == 0) return *this;
 
   return addRawIntAttr(Attribute::Dereferenceable, Bytes);
+}
+SmallAttrBuilder &
+SmallAttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
+  if (Bytes == 0)
+    return *this;
+
+  return addAttribute(
+      Attribute::get(Ctxt, Attribute::DereferenceableOrNull, Bytes));
 }
 
 AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
@@ -1677,6 +1799,13 @@ AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
     return *this;
 
   return addRawIntAttr(Attribute::DereferenceableOrNull, Bytes);
+}
+
+SmallAttrBuilder &
+SmallAttrBuilder::addAllocSizeAttr(unsigned ElemSize,
+                                   const Optional<unsigned> &NumElems) {
+  return addAttribute(Attribute::get(Ctxt, Attribute::AllocSize,
+                                     packAllocSizeArgs(ElemSize, NumElems)));
 }
 
 AttrBuilder &AttrBuilder::addAllocSizeAttr(unsigned ElemSize,
@@ -1716,11 +1845,17 @@ AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   TypeAttrs[*TypeIndex] = Ty;
   return *this;
 }
+SmallAttrBuilder &SmallAttrBuilder::addByValAttr(Type *Ty) {
+  return addAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
+}
 
 AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
   return addTypeAttr(Attribute::ByVal, Ty);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addStructRetAttr(Type *Ty) {
+  return addAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
+}
 AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
   return addTypeAttr(Attribute::StructRet, Ty);
 }
@@ -1737,6 +1872,20 @@ AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
   return addTypeAttr(Attribute::InAlloca, Ty);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::merge(const SmallAttrBuilder &B) {
+  {
+    auto Start = EnumAttrs.begin();
+    for (auto A : B.EnumAttrs)
+      Start = addEnumAttributeHelper(A, Start);
+  }
+  {
+    auto Start = StringAttrs.begin();
+    for (auto A : B.StringAttrs)
+      Start = addStringAttributeHelper(A, Start);
+  }
+
+  return *this;
+}
 AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
   // FIXME: What if both have an int/type attribute, but they don't match?!
   for (unsigned Index = 0; Index < Attribute::NumIntAttrKinds; ++Index)

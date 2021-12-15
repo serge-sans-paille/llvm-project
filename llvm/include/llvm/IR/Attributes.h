@@ -34,6 +34,7 @@
 namespace llvm {
 
 class AttrBuilder;
+class SmallAttrBuilder;
 class AttributeImpl;
 class AttributeListImpl;
 class AttributeSetNode;
@@ -287,6 +288,7 @@ public:
   ~AttributeSet() = default;
 
   static AttributeSet get(LLVMContext &C, const AttrBuilder &B);
+  static AttributeSet get(LLVMContext &C, const SmallAttrBuilder &B);
   static AttributeSet get(LLVMContext &C, ArrayRef<Attribute> Attrs);
 
   bool operator==(const AttributeSet &O) const { return SetNode == O.SetNode; }
@@ -321,6 +323,8 @@ public:
   /// attribute sets are immutable.
   LLVM_NODISCARD AttributeSet
   removeAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeSet
+  removeAttributes(LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const;
 
   /// Return the number of attributes in this set.
   unsigned getNumAttributes() const;
@@ -457,6 +461,8 @@ public:
                            ArrayRef<StringRef> Kind);
   static AttributeList get(LLVMContext &C, unsigned Index,
                            const AttrBuilder &B);
+  static AttributeList get(LLVMContext &C, unsigned Index,
+                           const SmallAttrBuilder &B);
 
   // TODO: remove non-AtIndex versions of these methods.
   /// Add an attribute to the attribute set at the given index.
@@ -481,6 +487,8 @@ public:
   LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
                                                     unsigned Index,
                                                     const AttrBuilder &B) const;
+  LLVM_NODISCARD AttributeList addAttributesAtIndex(
+      LLVMContext &C, unsigned Index, const SmallAttrBuilder &B) const;
 
   /// Add a function attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -509,6 +517,10 @@ public:
                                                const AttrBuilder &B) const {
     return addAttributesAtIndex(C, FunctionIndex, B);
   }
+  LLVM_NODISCARD AttributeList
+  addFnAttributes(LLVMContext &C, const SmallAttrBuilder &B) const {
+    return addAttributesAtIndex(C, FunctionIndex, B);
+  }
 
   /// Add a return value attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -528,6 +540,10 @@ public:
   /// attribute lists are immutable.
   LLVM_NODISCARD AttributeList addRetAttributes(LLVMContext &C,
                                                 const AttrBuilder &B) const {
+    return addAttributesAtIndex(C, ReturnIndex, B);
+  }
+  LLVM_NODISCARD AttributeList
+  addRetAttributes(LLVMContext &C, const SmallAttrBuilder &B) const {
     return addAttributesAtIndex(C, ReturnIndex, B);
   }
 
@@ -559,6 +575,10 @@ public:
                                                   const AttrBuilder &B) const {
     return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
   }
+  LLVM_NODISCARD AttributeList addParamAttributes(
+      LLVMContext &C, unsigned ArgNo, const SmallAttrBuilder &B) const {
+    return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
+  }
 
   /// Remove the specified attribute at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -579,6 +599,9 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeAttributesAtIndex(
       LLVMContext &C, unsigned Index, const AttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeList
+  removeAttributesAtIndex(LLVMContext &C, unsigned Index,
+                          const SmallAttrBuilder &AttrsToRemove) const;
 
   /// Remove all attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -603,6 +626,10 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList
   removeFnAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
+  }
+  LLVM_NODISCARD AttributeList removeFnAttributes(
+      LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
   }
 
@@ -632,6 +659,10 @@ public:
   removeRetAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
   }
+  LLVM_NODISCARD AttributeList removeRetAttributes(
+      LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
+  }
 
   /// Remove the specified attribute at the specified arg index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -652,6 +683,11 @@ public:
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeParamAttributes(
       LLVMContext &C, unsigned ArgNo, const AttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
+  }
+  LLVM_NODISCARD AttributeList
+  removeParamAttributes(LLVMContext &C, unsigned ArgNo,
+                        const SmallAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
   }
 
@@ -923,6 +959,184 @@ template <> struct DenseMapInfo<AttributeList, void> {
   static bool isEqual(AttributeList LHS, AttributeList RHS) {
     return LHS == RHS;
   }
+};
+
+//===----------------------------------------------------------------------===//
+/// \class
+/// This class aggregates add/remove attribute requests in order to efficiently
+/// build new AttributeSet. Unlike AttrBuilder, it is not suited to query the
+/// state of attributes.
+
+class SmallAttrBuilder {
+  LLVMContext &Ctxt;
+
+  SmallVector<Attribute> EnumAttrs;
+  SmallVector<Attribute> StringAttrs;
+  using iterator = typename SmallVector<Attribute>::iterator;
+
+  struct StringAttributeComparator {
+    bool operator()(Attribute A0, Attribute A1) const {
+      return A0.getKindAsString() < A1.getKindAsString();
+    }
+    bool operator()(Attribute A0, StringRef Kind) const {
+      return A0.getKindAsString() < Kind;
+    }
+  };
+  struct EnumAttributeComparator {
+    bool operator()(Attribute A0, Attribute A1) const {
+      return A0.getKindAsEnum() < A1.getKindAsEnum();
+    }
+    bool operator()(Attribute A0, Attribute::AttrKind Kind) const {
+      return A0.getKindAsEnum() < Kind;
+    }
+  };
+  iterator addStringAttributeHelper(Attribute A, iterator Iter) {
+    auto R = std::lower_bound(Iter, StringAttrs.end(), A,
+                              StringAttributeComparator{});
+    if (R == StringAttrs.end()) {
+      StringAttrs.push_back(A);
+      return StringAttrs.end();
+    } else if (R->hasAttribute(A.getKindAsString())) {
+      std::swap(*R, A);
+      return R;
+    } else {
+      return StringAttrs.insert(R, A);
+    }
+  }
+  iterator addEnumAttributeHelper(Attribute A, iterator Iter) {
+    auto R =
+        std::lower_bound(Iter, EnumAttrs.end(), A, EnumAttributeComparator{});
+    if (R == EnumAttrs.end()) {
+      EnumAttrs.push_back(A);
+      return EnumAttrs.end();
+    } else if (R->hasAttribute(A.getKindAsEnum()))
+      return R;
+    else {
+      return EnumAttrs.insert(R, A);
+    }
+  }
+  iterator addAttributeHelper(Attribute A, iterator Iter) {
+    if (A.isStringAttribute()) {
+      return addStringAttributeHelper(A, Iter);
+    } else {
+      return addEnumAttributeHelper(A, Iter);
+    }
+  }
+
+public:
+
+  SmallAttrBuilder(LLVMContext &Ctxt) : Ctxt(Ctxt) {}
+  SmallAttrBuilder(LLVMContext &Ctxt, AttributeList AL, unsigned Idx)
+      : SmallAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
+
+  SmallAttrBuilder(LLVMContext &Ctxt, AttributeSet AS) : Ctxt(Ctxt) {
+    for (Attribute A : AS)
+      if (A.isStringAttribute())
+        StringAttrs.push_back(A);
+      else
+        EnumAttrs.push_back(A);
+    assert(llvm::is_sorted(EnumAttrs) && "Expected sorted attributes!");
+    assert(llvm::is_sorted(StringAttrs) && "Expected sorted attributes!");
+  }
+
+  template <class Range, class _ = std::enable_if_t<!std::is_same<std::decay_t<Range>, AttributeSet>::value, void>>
+  SmallAttrBuilder(LLVMContext &Ctxt, Range &&R) : Ctxt(Ctxt) {
+    for (Attribute A : R)
+      if (A.isStringAttribute())
+        StringAttrs.push_back(A);
+      else
+        EnumAttrs.push_back(A);
+    llvm::sort(StringAttrs, StringAttributeComparator());
+    llvm::sort(EnumAttrs, EnumAttributeComparator());
+  }
+
+  SmallAttrBuilder &addAttribute(Attribute::AttrKind Val) {
+    Attribute A = Attribute::get(Ctxt, Val);
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A,
+                              EnumAttributeComparator{});
+    if (R != EnumAttrs.end() && R->hasAttribute(Val))
+      return *this;
+    else
+      EnumAttrs.insert(R, A);
+    return *this;
+  }
+  SmallAttrBuilder &addAttribute(StringRef K, StringRef V = StringRef()) {
+    Attribute A = Attribute::get(Ctxt, K, V);
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), A,
+                              StringAttributeComparator{});
+    if (R != StringAttrs.end() && R->hasAttribute(K))
+      std::swap(*R, A);
+    else
+      StringAttrs.insert(R, A);
+    return *this;
+  }
+  SmallAttrBuilder &addAttribute(Attribute A) {
+    if (A.isStringAttribute())
+      addStringAttributeHelper(A, StringAttrs.begin());
+    else
+      addEnumAttributeHelper(A, EnumAttrs.begin());
+    return *this;
+  }
+  SmallAttrBuilder &merge(const SmallAttrBuilder &B);
+
+  bool hasAttributes() const {
+    return !EnumAttrs.empty() || !StringAttrs.empty();
+  }
+
+  SmallAttrBuilder &removeAttribute(StringRef Val) {
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), Val,
+                              StringAttributeComparator{});
+    if (R != StringAttrs.end() && R->hasAttribute(Val)) {
+      StringAttrs.erase(R);
+    }
+    return *this;
+  }
+
+  SmallAttrBuilder &removeAttribute(Attribute::AttrKind Val) {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Val,
+                              EnumAttributeComparator{});
+    if (R != EnumAttrs.end() && R->hasAttribute(Val)) {
+      EnumAttrs.erase(R);
+    }
+    return *this;
+  }
+  SmallAttrBuilder &removeStringAttribute(Attribute A) {
+    return removeAttribute(A.getKindAsString());
+  }
+  SmallAttrBuilder &removeEnumAttribute(Attribute A) {
+    return removeAttribute(A.getKindAsEnum());
+  }
+
+  SmallAttrBuilder &removeAttribute(Attribute A) {
+    if (A.isStringAttribute())
+      return removeStringAttribute(A);
+    else
+      return removeEnumAttribute(A);
+  }
+
+  unsigned size() const { return EnumAttrs.size() + StringAttrs.size(); }
+
+  bool empty() const { return EnumAttrs.empty(); }
+
+  void clear() {
+    EnumAttrs.clear();
+    StringAttrs.clear();
+  }
+  std::pair<ArrayRef<Attribute>, ArrayRef<Attribute>> uniquify() const {
+    return std::make_pair(ArrayRef<Attribute>(EnumAttrs),
+                          ArrayRef<Attribute>(StringAttrs));
+  }
+
+  SmallAttrBuilder &addAllocSizeAttr(unsigned ElemSize,
+                                     const Optional<unsigned> &NumElems);
+  SmallAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
+  SmallAttrBuilder &addDereferenceableOrNullAttr(uint64_t Bytes);
+  SmallAttrBuilder &addAlignmentAttr(MaybeAlign Align);
+  SmallAttrBuilder &addAlignmentAttr(unsigned Align) {
+    return addAlignmentAttr(MaybeAlign(Align));
+  }
+  SmallAttrBuilder &addStructRetAttr(Type *Ty);
+  SmallAttrBuilder &addByValAttr(Type *Ty);
 };
 
 //===----------------------------------------------------------------------===//

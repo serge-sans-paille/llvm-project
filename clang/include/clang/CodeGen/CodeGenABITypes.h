@@ -30,7 +30,7 @@
 #include "llvm/IR/BasicBlock.h"
 
 namespace llvm {
-class AttrBuilder;
+class SmallAttrBuilder;
 class Constant;
 class DataLayout;
 class Module;
@@ -129,7 +129,7 @@ unsigned getLLVMFieldNumber(CodeGenModule &CGM,
 /// This function assumes that the caller is not defining a function that
 /// requires special no-builtin treatment.
 void addDefaultFunctionDefinitionAttributes(CodeGenModule &CGM,
-                                            llvm::AttrBuilder &attrs);
+                                            llvm::SmallAttrBuilder &attrs);
 
 /// Returns the default constructor for a C struct with non-trivially copyable
 /// fields, generating it if necessary. The returned function uses the `cdecl`
