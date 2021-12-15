@@ -1048,11 +1048,10 @@ public:
       : SmallAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
 
   SmallAttrBuilder(LLVMContext &Ctxt, AttributeSet AS) : Ctxt(Ctxt) {
-    for (Attribute A : AS)
-      if (A.isStringAttribute())
-        StringAttrs.push_back(A);
-      else
-        EnumAttrs.push_back(A);
+    auto Iter = AS.begin(), End = AS.end();
+    while(Iter!=End && !Iter->isStringAttribute())
+      EnumAttrs.push_back(*Iter++);
+    StringAttrs.append(Iter, End);
     assert(llvm::is_sorted(EnumAttrs) && "Expected sorted attributes!");
     assert(llvm::is_sorted(StringAttrs) && "Expected sorted attributes!");
   }
