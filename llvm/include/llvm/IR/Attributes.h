@@ -1016,6 +1016,7 @@ class SmallAttrBuilder {
       return EnumAttrs.insert(R, A);
     }
   }
+
   SmallAttrBuilder& forceEnumAttribute(Attribute A) {
     auto R =
         std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A, EnumAttributeComparator{});
@@ -1039,6 +1040,9 @@ class SmallAttrBuilder {
 
 public:
 
+  bool operator==(const SmallAttrBuilder & Other) const {
+	  return EnumAttrs == Other.EnumAttrs && StringAttrs == Other.StringAttrs;
+  }
   SmallAttrBuilder(LLVMContext &Ctxt) : Ctxt(Ctxt) {}
   SmallAttrBuilder(LLVMContext &Ctxt, AttributeList AL, unsigned Idx)
       : SmallAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
