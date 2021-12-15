@@ -549,6 +549,10 @@ void Function::addFnAttrs(const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
 }
 
+void Function::addFnAttrs(const SmallAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
+}
+
 void Function::addRetAttr(Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.addRetAttribute(getContext(), Kind);
 }
@@ -590,6 +594,10 @@ void Function::removeFnAttr(StringRef Kind) {
 }
 
 void Function::removeFnAttrs(const AttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
+}
+
+void Function::removeFnAttrs(const SmallAttrBuilder &Attrs) {
   AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
 }
 

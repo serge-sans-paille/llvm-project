@@ -333,6 +333,7 @@ public:
 
   /// Add function attributes to this function.
   void addFnAttrs(const AttrBuilder &Attrs);
+  void addFnAttrs(const SmallAttrBuilder &Attrs);
 
   /// Add return value attributes to this function.
   void addRetAttr(Attribute::AttrKind Kind);
@@ -365,6 +366,7 @@ public:
   void removeFnAttr(StringRef Kind);
 
   void removeFnAttrs(const AttrBuilder &Attrs);
+  void removeFnAttrs(const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the return value list of attributes.
   void removeRetAttr(Attribute::AttrKind Kind);
