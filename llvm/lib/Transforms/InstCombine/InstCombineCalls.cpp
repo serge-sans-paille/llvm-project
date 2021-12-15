@@ -3063,7 +3063,7 @@ bool InstCombinerImpl::transformConstExprCastCall(CallBase &Call) {
 
     // Add any parameter attributes.
     if (CallerPAL.hasParamAttr(i, Attribute::ByVal)) {
-      AttrBuilder AB(CallerPAL.getParamAttrs(i));
+      SmallAttrBuilder AB(Ctx, CallerPAL.getParamAttrs(i));
       AB.addByValAttr(NewArg->getType()->getPointerElementType());
       ArgAttrs.push_back(AttributeSet::get(Ctx, AB));
     } else

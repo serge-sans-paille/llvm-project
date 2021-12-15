@@ -912,7 +912,7 @@ bool DeadArgumentEliminationPass::RemoveDeadStuffFromFunction(Function *F) {
           // this is not an expected case anyway
           ArgAttrVec.push_back(AttributeSet::get(
               F->getContext(),
-              AttrBuilder(Attrs).removeAttribute(Attribute::Returned)));
+              SmallAttrBuilder(F->getContext(), Attrs).removeAttribute(Attribute::Returned)));
         } else {
           // Otherwise, use the original attributes.
           ArgAttrVec.push_back(Attrs);

@@ -835,7 +835,7 @@ Value *CoroCloner::deriveNewFramePointer() {
 static void addFramePointerAttrs(AttributeList &Attrs, LLVMContext &Context,
                                  unsigned ParamIndex,
                                  uint64_t Size, Align Alignment) {
-  AttrBuilder ParamAttrs;
+  SmallAttrBuilder ParamAttrs(Context);
   ParamAttrs.addAttribute(Attribute::NonNull);
   ParamAttrs.addAttribute(Attribute::NoAlias);
   ParamAttrs.addAlignmentAttr(Alignment);
@@ -845,14 +845,14 @@ static void addFramePointerAttrs(AttributeList &Attrs, LLVMContext &Context,
 
 static void addAsyncContextAttrs(AttributeList &Attrs, LLVMContext &Context,
                                  unsigned ParamIndex) {
-  AttrBuilder ParamAttrs;
+  SmallAttrBuilder ParamAttrs(Context);
   ParamAttrs.addAttribute(Attribute::SwiftAsync);
   Attrs = Attrs.addParamAttributes(Context, ParamIndex, ParamAttrs);
 }
 
 static void addSwiftSelfAttrs(AttributeList &Attrs, LLVMContext &Context,
                               unsigned ParamIndex) {
-  AttrBuilder ParamAttrs;
+  SmallAttrBuilder ParamAttrs(Context);
   ParamAttrs.addAttribute(Attribute::SwiftSelf);
   Attrs = Attrs.addParamAttributes(Context, ParamIndex, ParamAttrs);
 }
