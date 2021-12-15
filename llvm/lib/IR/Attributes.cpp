@@ -601,7 +601,7 @@ AttributeSet AttributeSet::get(LLVMContext &C, const AttrBuilder &B) {
 }
 
 AttributeSet AttributeSet::get(LLVMContext &C, const NewAttrBuilder &B) {
-  return AttributeSet(AttributeSetNode::get(C, B.uniquify()));
+  return AttributeSet(AttributeSetNode::getSorted(C, B.uniquify()));
 }
 
 AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
