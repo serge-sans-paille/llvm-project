@@ -454,7 +454,7 @@ class DataFlowSanitizer {
   MDNode *OriginStoreWeights;
   DFSanABIList ABIList;
   DenseMap<Value *, Function *> UnwrappedFnMap;
-  AttrBuilder ReadOnlyNoneAttrs;
+  SmallAttrBuilder* ReadOnlyNoneAttrs;
 
   /// Memory map parameters used in calculation mapping application addresses
   /// to shadow addresses and origin addresses.
@@ -1121,7 +1121,7 @@ DataFlowSanitizer::buildWrapperFunction(Function *F, StringRef NewFName,
 
   BasicBlock *BB = BasicBlock::Create(*Ctx, "entry", NewF);
   if (F->isVarArg()) {
-    NewF->removeFnAttrs(AttrBuilder().addAttribute("split-stack"));
+    NewF->removeFnAttrs(SmallAttrBuilder(*Ctx).addAttribute("split-stack"));
     CallInst::Create(DFSanVarargWrapperFn,
                      IRBuilder<>(BB).CreateGlobalStringPtr(F->getName()), "",
                      BB);
@@ -1316,6 +1316,8 @@ void DataFlowSanitizer::injectMetadataGlobals(Module &M) {
 
 bool DataFlowSanitizer::runImpl(Module &M) {
   initializeModule(M);
+  SmallAttrBuilder B(*Ctx);
+  ReadOnlyNoneAttrs = &B;
 
   if (ABIList.isIn(M, "skip"))
     return false;
@@ -1407,7 +1409,7 @@ bool DataFlowSanitizer::runImpl(Module &M) {
     }
   }
 
-  ReadOnlyNoneAttrs.addAttribute(Attribute::ReadOnly)
+  ReadOnlyNoneAttrs->addAttribute(Attribute::ReadOnly)
       .addAttribute(Attribute::ReadNone);
 
   // First, change the ABI of every function in the module.  ABI-listed
@@ -1445,7 +1447,7 @@ bool DataFlowSanitizer::runImpl(Module &M) {
           (shouldTrackOrigins() ? std::string("dfso$") : std::string("dfsw$")) +
               std::string(F.getName()),
           WrapperLinkage, FT);
-      NewF->removeFnAttrs(ReadOnlyNoneAttrs);
+      NewF->removeFnAttrs(*ReadOnlyNoneAttrs);
 
       Value *WrappedFnCst =
           ConstantExpr::getBitCast(NewF, PointerType::getUnqual(FT));
@@ -2832,7 +2834,7 @@ bool DFSanVisitor::visitWrappedCallBase(Function &F, CallBase &CB) {
 
       // Custom functions returning non-void will write to the return label.
       if (!FT->getReturnType()->isVoidTy()) {
-        CustomFn->removeFnAttrs(DFSF.DFS.ReadOnlyNoneAttrs);
+        CustomFn->removeFnAttrs(*DFSF.DFS.ReadOnlyNoneAttrs);
       }
     }
 
