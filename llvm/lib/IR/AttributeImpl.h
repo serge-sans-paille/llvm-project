@@ -220,8 +220,11 @@ class AttributeSetNode final
   DenseMap<StringRef, Attribute> StringAttrs;
 
   AttributeSetNode(ArrayRef<Attribute> Attrs);
+  AttributeSetNode(ArrayRef<Attribute> EnumAttrs, ArrayRef<Attribute> StringAttrs);
 
   Optional<Attribute> findEnumAttribute(Attribute::AttrKind Kind) const;
+  static AttributeSetNode *getSorted(LLVMContext &C,
+                                     ArrayRef<Attribute> SortedAttrs);
 
 public:
   // AttributesSetNode is uniqued, these should not be available.
@@ -231,10 +234,9 @@ public:
   void operator delete(void *p) { ::operator delete(p); }
 
   static AttributeSetNode *get(LLVMContext &C, const AttrBuilder &B);
+  static AttributeSetNode *get(LLVMContext &C, const NewAttrBuilder &B);
 
   static AttributeSetNode *get(LLVMContext &C, ArrayRef<Attribute> Attrs);
-  static AttributeSetNode *getSorted(LLVMContext &C,
-                                     ArrayRef<Attribute> SortedAttrs);
 
   /// Return the number of attributes this AttributeList contains.
   unsigned getNumAttributes() const { return NumAttrs; }

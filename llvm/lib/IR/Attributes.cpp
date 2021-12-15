@@ -601,7 +601,7 @@ AttributeSet AttributeSet::get(LLVMContext &C, const AttrBuilder &B) {
 }
 
 AttributeSet AttributeSet::get(LLVMContext &C, const NewAttrBuilder &B) {
-  return AttributeSet(AttributeSetNode::getSorted(C, B.uniquify()));
+  return AttributeSet(AttributeSetNode::get(C, B));
 }
 
 AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
@@ -666,8 +666,11 @@ AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
 AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
                                             const NewAttrBuilder &Attrs) const {
   NewAttrBuilder B(C, *this);
-  for(Attribute A : Attrs.uniquify())
-    B.removeAttribute(A);
+  auto AttrsPair =Attrs.uniquify();
+  for(Attribute A : AttrsPair.first)
+    B.removeEnumAttribute(A);
+  for(Attribute A : AttrsPair.second)
+    B.removeStringAttribute(A);
   return get(C, B);
 }
 
@@ -789,6 +792,17 @@ AttributeSetNode::AttributeSetNode(ArrayRef<Attribute> Attrs)
   }
 }
 
+AttributeSetNode::AttributeSetNode(ArrayRef<Attribute> EAttrs, ArrayRef<Attribute> SAttrs)
+    : NumAttrs(EAttrs.size() + SAttrs.size()) {
+  // There's memory after the node where we can store the entries in.
+  llvm::copy(SAttrs, llvm::copy(EAttrs, getTrailingObjects<Attribute>()));
+
+  for (const auto &A : SAttrs)
+      StringAttrs.insert({ A.getKindAsString(), A });
+  for (const auto &A : EAttrs)
+      AvailableAttrs.addAttribute(A.getKindAsEnum());
+}
+
 AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
                                         ArrayRef<Attribute> Attrs) {
   SmallVector<Attribute, 8> SortedAttrs(Attrs.begin(), Attrs.end());
@@ -849,6 +863,41 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C, const AttrBuilder &B) {
     Attrs.emplace_back(Attribute::get(C, TDA.first, TDA.second));
 
   return getSorted(C, Attrs);
+}
+
+AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
+                                        const NewAttrBuilder & B) {
+  if (!B.hasAttributes())
+    return nullptr;
+
+  // Build a key to look up the existing attributes.
+  LLVMContextImpl *pImpl = C.pImpl;
+  FoldingSetNodeID ID;
+
+  auto AttrsPair = B.uniquify();
+
+  assert(llvm::is_sorted(AttrsPair.first) && "Expected sorted attributes!");
+  for (const auto &Attr : AttrsPair.first)
+    Attr.Profile(ID);
+  assert(llvm::is_sorted(AttrsPair.second) && "Expected sorted attributes!");
+  for (const auto &Attr : AttrsPair.second)
+    Attr.Profile(ID);
+
+  void *InsertPoint;
+  AttributeSetNode *PA =
+    pImpl->AttrsSetNodes.FindNodeOrInsertPos(ID, InsertPoint);
+
+  // If we didn't find any existing attributes of the same shape then create a
+  // new one and insert it.
+  if (!PA) {
+    // Coallocate entries after the AttributeSetNode itself.
+    void *Mem = ::operator new(totalSizeToAlloc<Attribute>(B.size()));
+    PA = new (Mem) AttributeSetNode(AttrsPair.first, AttrsPair.second);
+    pImpl->AttrsSetNodes.InsertNode(PA, InsertPoint);
+  }
+
+  // Return the AttributeSetNode that we found or created.
+  return PA;
 }
 
 bool AttributeSetNode::hasAttribute(StringRef Kind) const {
@@ -1698,8 +1747,7 @@ NewAttrBuilder &NewAttrBuilder::addAlignmentAttr(MaybeAlign Align) {
     return *this;
 
   assert(*Align <= llvm::Value::MaximumAlignment && "Alignment too large.");
-  Attrs.push_back(Attribute::get(Ctxt, Attribute::Alignment, Align->value()));
-  return *this;
+  return addAttribute(Attribute::get(Ctxt, Attribute::Alignment, Align->value()));
 }
 
 AttrBuilder &AttrBuilder::addAlignmentAttr(MaybeAlign Align) {
@@ -1721,8 +1769,7 @@ AttrBuilder &AttrBuilder::addStackAlignmentAttr(MaybeAlign Align) {
 
 NewAttrBuilder &NewAttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
   if (Bytes == 0) return *this;
-  Attrs.push_back(Attribute::get(Ctxt, Attribute::Dereferenceable, Bytes));
-  return *this;
+  return addAttribute(Attribute::get(Ctxt, Attribute::Dereferenceable, Bytes));
 }
 
 AttrBuilder &AttrBuilder::addDereferenceableAttr(uint64_t Bytes) {
@@ -1734,8 +1781,7 @@ NewAttrBuilder &NewAttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
   if (Bytes == 0)
     return *this;
 
-  Attrs.push_back(Attribute::get(Ctxt, Attribute::DereferenceableOrNull, Bytes));
-  return *this;
+  return addAttribute(Attribute::get(Ctxt, Attribute::DereferenceableOrNull, Bytes));
 }
 
 AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
@@ -1747,8 +1793,7 @@ AttrBuilder &AttrBuilder::addDereferenceableOrNullAttr(uint64_t Bytes) {
 
 NewAttrBuilder &NewAttrBuilder::addAllocSizeAttr(unsigned ElemSize,
                                            const Optional<unsigned> &NumElems) {
-  Attrs.push_back(Attribute::get(Ctxt, Attribute::AllocSize, packAllocSizeArgs(ElemSize, NumElems)));
-  return *this;
+  return addAttribute(Attribute::get(Ctxt, Attribute::AllocSize, packAllocSizeArgs(ElemSize, NumElems)));
 }
 
 AttrBuilder &AttrBuilder::addAllocSizeAttr(unsigned ElemSize,
@@ -1789,8 +1834,7 @@ AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   return *this;
 }
 NewAttrBuilder &NewAttrBuilder::addByValAttr(Type *Ty) {
-	Attrs.push_back(Attribute::get(Ctxt, Attribute::ByVal, Ty));
-  return *this;
+	return addAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
 }
 
 AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
@@ -1798,8 +1842,7 @@ AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
 }
 
 NewAttrBuilder &NewAttrBuilder::addStructRetAttr(Type *Ty) {
-	Attrs.push_back(Attribute::get(Ctxt, Attribute::StructRet, Ty));
-	return *this;
+	return addAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
 }
 AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
   return addTypeAttr(Attribute::StructRet, Ty);
@@ -1818,9 +1861,15 @@ AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
 }
 
 NewAttrBuilder &NewAttrBuilder::merge(const NewAttrBuilder &B) {
-  auto Start = Attrs.begin();
-  for(Attribute BA : B.Attrs)
-    Start = addAttributeHelper(BA, Start);
+	{auto Start = EnumAttrs.begin();
+  for(auto A : B.EnumAttrs)
+    Start = addEnumAttributeHelper(A, Start);
+	}
+	{auto Start = StringAttrs.begin();
+  for(auto A : B.StringAttrs)
+    Start = addStringAttributeHelper(A, Start);
+	}
+
   return *this;
 }
 AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {

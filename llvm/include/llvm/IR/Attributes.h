@@ -963,106 +963,145 @@ template <> struct DenseMapInfo<AttributeList, void> {
 
 class NewAttrBuilder {
   LLVMContext& Ctxt;
-  SmallVector<Attribute> Attrs;
+  SmallVector<Attribute> EnumAttrs;
+  SmallVector<Attribute> StringAttrs;
   using iterator = typename SmallVector<Attribute>::iterator;
 
-  struct AttributeComparator {
+  struct StringAttributeComparator {
     bool operator()(Attribute A0, Attribute A1) const
     {
-      if (!A0.isStringAttribute()) {
-        if (A1.isStringAttribute())
-          return true;
-        return A0.getKindAsEnum() < A1.getKindAsEnum();
-      }
-      if (!A1.isStringAttribute())
-        return false;
       return A0.getKindAsString() < A1.getKindAsString();
-    }
-    bool operator()(Attribute A0, Attribute::AttrKind Kind) const
-    {
-      if (!A0.isStringAttribute()) {
-        return A0.getKindAsEnum() < Kind;
-      }
-      return false;
     }
     bool operator()(Attribute A0, StringRef Kind) const
     {
-      if (!A0.isStringAttribute())
-          return true;
       return A0.getKindAsString() < Kind;
     }
   };
+  struct EnumAttributeComparator {
+    bool operator()(Attribute A0, Attribute A1) const
+    {
+      return A0.getKindAsEnum() < A1.getKindAsEnum();
+    }
+    bool operator()(Attribute A0, Attribute::AttrKind Kind) const
+    {
+      return A0.getKindAsEnum() < Kind;
+    }
+  };
+  iterator addStringAttributeHelper(Attribute A, iterator Iter) {
+      auto R = std::lower_bound(Iter, StringAttrs.end(), A, StringAttributeComparator{});
+      if(R == StringAttrs.end()) {
+        StringAttrs.push_back(A);
+        return StringAttrs.end();
+      }
+      else if(R->hasAttribute(A.getKindAsString())) {
+        std::swap(*R, A);
+        return R;
+      }
+      else {
+        return StringAttrs.insert(R, A);
+      }
+  }
+  iterator addEnumAttributeHelper(Attribute A, iterator Iter) {
+      auto R = std::lower_bound(Iter, EnumAttrs.end(), A, EnumAttributeComparator{});
+      if(R == EnumAttrs.end()) {
+        EnumAttrs.push_back(A);
+        return EnumAttrs.end();
+      }
+      else if(R->hasAttribute(A.getKindAsEnum()))
+        return R;
+      else {
+        return EnumAttrs.insert(R, A);
+      }
+  }
   iterator addAttributeHelper(Attribute A, iterator Iter) {
-    auto R = std::lower_bound(Iter, Attrs.end(), A, AttributeComparator{});
-    if(R == Attrs.end()) {
-      Attrs.push_back(A);
-      return Attrs.end();
+    if(A.isStringAttribute()) {
+      return addStringAttributeHelper(A, Iter);
     }
-    else if(A.isStringAttribute() && R->hasAttribute(A.getKindAsString())) {
-	    std::swap(*R, A);
-	    return R;
-    }
-    else if(!A.isStringAttribute() && R->hasAttribute(A.getKindAsEnum()))
-		return R;
     else {
-      return Attrs.insert(R, A);
+      return addEnumAttributeHelper(A, Iter);
     }
   }
   public:
   NewAttrBuilder(LLVMContext& Ctxt) : Ctxt(Ctxt) {}
   NewAttrBuilder(LLVMContext& Ctxt, AttributeList AL, unsigned Idx) : NewAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
   template<class Range>
-  NewAttrBuilder(LLVMContext& Ctxt, Range&& R) : Ctxt(Ctxt), Attrs(R.begin(), R.end()) {
-	  llvm::sort(Attrs);
+  NewAttrBuilder(LLVMContext& Ctxt, Range&& R) : Ctxt(Ctxt) { 
+	  for(Attribute A : R)
+		  if(A.isStringAttribute())
+			  StringAttrs.push_back(A);
+		  else
+			  EnumAttrs.push_back(A);
+    llvm::sort(StringAttrs, StringAttributeComparator());
+    llvm::sort(EnumAttrs, EnumAttributeComparator());
   }
 
   NewAttrBuilder &addAttribute(Attribute::AttrKind Val) {
     Attribute A = Attribute::get(Ctxt, Val);
-    auto R = std::lower_bound(Attrs.begin(), Attrs.end(), A, AttributeComparator{});
-    if(R != Attrs.end() && R->hasAttribute(Val))
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A, EnumAttributeComparator{});
+    if(R != EnumAttrs.end() && R->hasAttribute(Val))
 	    return *this;
-    else
-    Attrs.insert(R, A);
+    else {
+    EnumAttrs.insert(R, A);
+    }
     return *this;
   }
   NewAttrBuilder &addAttribute(StringRef K, StringRef V = StringRef()) {
     Attribute A = Attribute::get(Ctxt, K, V);
-    auto R = std::lower_bound(Attrs.begin(), Attrs.end(), A, AttributeComparator{});
-    if(R != Attrs.end() && R->hasAttribute(K))
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), A, StringAttributeComparator{});
+    if(R != StringAttrs.end() && R->hasAttribute(K))
       std::swap(*R, A);
     else
-      Attrs.insert(R, A);
+      StringAttrs.insert(R, A);
     return *this;
   }
   NewAttrBuilder &addAttribute(Attribute A) {
-    addAttributeHelper(A, Attrs.begin());
+	  if(A.isStringAttribute())
+    addStringAttributeHelper(A, StringAttrs.begin());
+	  else
+    addEnumAttributeHelper(A, EnumAttrs.begin());
     return *this;
   }
   NewAttrBuilder& merge(const NewAttrBuilder& B);
 
-  bool hasAttributes() const { return !Attrs.empty();}
+  bool hasAttributes() const { return !EnumAttrs.empty() || !StringAttrs.empty();}
 
-  template<class AttrKey>
-  NewAttrBuilder& removeAttribute(AttrKey Val) {
-    auto R = std::lower_bound(Attrs.begin(), Attrs.end(), Val, AttributeComparator{});
-    if(R != Attrs.end() && R->hasAttribute(Val))
-      Attrs.erase(R);
+  NewAttrBuilder& removeAttribute(StringRef Val) {
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), Val, StringAttributeComparator{});
+    if(R != StringAttrs.end() && R->hasAttribute(Val)) {
+      StringAttrs.erase(R);
+    }
     return *this;
+  }
+
+  NewAttrBuilder& removeAttribute(Attribute::AttrKind Val) {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Val, EnumAttributeComparator{});
+    if(R != EnumAttrs.end() && R->hasAttribute(Val)) {
+      EnumAttrs.erase(R);
+    }
+    return *this;
+  }
+  NewAttrBuilder& removeStringAttribute(Attribute A) {
+      return removeAttribute(A.getKindAsString());
+  }
+  NewAttrBuilder& removeEnumAttribute(Attribute A) {
+      return removeAttribute(A.getKindAsEnum());
   }
 
   NewAttrBuilder& removeAttribute(Attribute A) {
     if(A.isStringAttribute())
-      return removeAttribute(A.getKindAsString());
+      return removeStringAttribute(A);
     else
-      return removeAttribute(A.getKindAsEnum());
+      return removeEnumAttribute(A);
   }
+
+  unsigned size() const  { return EnumAttrs.size() + StringAttrs.size(); }
 
   bool empty() const {
-    return Attrs.empty() || Attrs.front().isStringAttribute();
+    return EnumAttrs.empty();
   }
 
-  void clear() { Attrs.clear(); }
-  ArrayRef<Attribute> uniquify() const { return Attrs; }
+  void clear() { EnumAttrs.clear(); StringAttrs.clear();}
+  std::pair<ArrayRef<Attribute>, ArrayRef<Attribute>> uniquify() const { return std::make_pair(ArrayRef<Attribute>(EnumAttrs), ArrayRef<Attribute>(StringAttrs));}
 
   NewAttrBuilder &addAllocSizeAttr(unsigned ElemSize, const Optional<unsigned> &NumElems);
   NewAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
