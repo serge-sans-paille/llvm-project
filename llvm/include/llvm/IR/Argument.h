@@ -163,6 +163,7 @@ public:
   void removeAttr(Attribute::AttrKind Kind);
 
   void removeAttrs(const AttrBuilder &B);
+  void removeAttrs(const SmallAttrBuilder &B);
 
   /// Check if an argument has a given attribute.
   bool hasAttribute(Attribute::AttrKind Kind) const;

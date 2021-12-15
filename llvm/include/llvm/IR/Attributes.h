@@ -1009,11 +1009,25 @@ class SmallAttrBuilder {
     if (R == EnumAttrs.end()) {
       EnumAttrs.push_back(A);
       return EnumAttrs.end();
-    } else if (R->hasAttribute(A.getKindAsEnum()))
+    } else if (R->hasAttribute(A.getKindAsEnum())) {
       return R;
+    }
     else {
       return EnumAttrs.insert(R, A);
     }
+  }
+  SmallAttrBuilder& forceEnumAttribute(Attribute A) {
+    auto R =
+        std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A, EnumAttributeComparator{});
+    if (R == EnumAttrs.end()) {
+      EnumAttrs.push_back(A);
+    } else if (R->hasAttribute(A.getKindAsEnum())) {
+      std::swap(*R, A);
+    }
+    else {
+      EnumAttrs.insert(R, A);
+    }
+    return *this;
   }
   iterator addAttributeHelper(Attribute A, iterator Iter) {
     if (A.isStringAttribute()) {
@@ -1122,21 +1136,79 @@ public:
     EnumAttrs.clear();
     StringAttrs.clear();
   }
+
+  bool contains(Attribute::AttrKind K) const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), K, EnumAttributeComparator{});
+	  return R!= EnumAttrs.end() && R->hasAttribute(K);
+  }
+  bool contains(StringRef K) const {
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), K, StringAttributeComparator{});
+	  return R!= StringAttrs.end() && R->hasAttribute(K);
+  }
+
+  bool overlaps(const SmallAttrBuilder &B) const;
+
+  SmallAttrBuilder& remove(const SmallAttrBuilder& B) {
+	  for(Attribute A : B.EnumAttrs)
+		  removeEnumAttribute(A);
+	  for(Attribute A : B.StringAttrs)
+		  removeStringAttribute(A);
+	  return *this;
+  }
+  SmallAttrBuilder& remove(Attribute A) {
+	  return removeAttribute(A);
+  }
   std::pair<ArrayRef<Attribute>, ArrayRef<Attribute>> uniquify() const {
     return std::make_pair(ArrayRef<Attribute>(EnumAttrs),
                           ArrayRef<Attribute>(StringAttrs));
   }
 
+  SmallAttrBuilder &addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
+	  addEnumAttributeHelper(Attribute::get(Ctxt, Kind, Ty), EnumAttrs.begin());
+	  return *this;
+  }
+
   SmallAttrBuilder &addAllocSizeAttr(unsigned ElemSize,
                                      const Optional<unsigned> &NumElems);
   SmallAttrBuilder &addDereferenceableAttr(uint64_t Bytes);
+  uint64_t getDereferenceableBytes() const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Dereferenceable, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Dereferenceable))? R->getValueAsInt() : 0;
+  }
   SmallAttrBuilder &addDereferenceableOrNullAttr(uint64_t Bytes);
+  uint64_t getDereferenceableOrNullBytes() const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::DereferenceableOrNull, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::DereferenceableOrNull))? R->getValueAsInt() : 0;
+  }
   SmallAttrBuilder &addAlignmentAttr(MaybeAlign Align);
   SmallAttrBuilder &addAlignmentAttr(unsigned Align) {
     return addAlignmentAttr(MaybeAlign(Align));
   }
   SmallAttrBuilder &addStructRetAttr(Type *Ty);
+  Type *getStructRetType() const { 
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::StructRet, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::StructRet))? R->getValueAsType() : nullptr;
+  }
   SmallAttrBuilder &addByValAttr(Type *Ty);
+  Type *getByValType() const { 
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::ByVal, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::ByVal))? R->getValueAsType() : nullptr;
+  }
+  SmallAttrBuilder &addPreallocatedAttr(Type *Ty);
+  Type *getPreallocatedType() const { 
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Preallocated, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Preallocated))? R->getValueAsType() : nullptr;
+  }
+  SmallAttrBuilder &addInAllocaAttr(Type *Ty);
+  Type *getInAllocaType() const { 
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::InAlloca, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::InAlloca))? R->getValueAsType() : nullptr;
+  }
+  SmallAttrBuilder &addByRefAttr(Type *Ty);
+  Type *getByRefType() const { 
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::ByRef, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::ByRef))? R->getValueAsType() : nullptr;
+  }
 };
 
 //===----------------------------------------------------------------------===//
@@ -1378,14 +1450,14 @@ public:
 namespace AttributeFuncs {
 
 /// Which attributes cannot be applied to a type.
-AttrBuilder typeIncompatible(Type *Ty);
+SmallAttrBuilder typeIncompatible(Type *Ty);
 
 /// Get param/return attributes which imply immediate undefined behavior if an
 /// invalid value is passed. For example, this includes noundef (where undef
 /// implies UB), but not nonnull (where null implies poison). It also does not
 /// include attributes like nocapture, which constrain the function
 /// implementation rather than the passed value.
-AttrBuilder getUBImplyingAttributes();
+SmallAttrBuilder getUBImplyingAttributes(LLVMContext& C);
 
 /// \returns Return true if the two functions have compatible target-independent
 /// attributes for inlining purposes.

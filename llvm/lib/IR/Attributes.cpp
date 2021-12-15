@@ -1846,7 +1846,7 @@ AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   return *this;
 }
 SmallAttrBuilder &SmallAttrBuilder::addByValAttr(Type *Ty) {
-  return addAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
 }
 
 AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
@@ -1854,18 +1854,29 @@ AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
 }
 
 SmallAttrBuilder &SmallAttrBuilder::addStructRetAttr(Type *Ty) {
-  return addAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
 }
 AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
   return addTypeAttr(Attribute::StructRet, Ty);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addByRefAttr(Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::ByRef, Ty));
+}
 AttrBuilder &AttrBuilder::addByRefAttr(Type *Ty) {
   return addTypeAttr(Attribute::ByRef, Ty);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addPreallocatedAttr(Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::Preallocated, Ty));
+}
+
 AttrBuilder &AttrBuilder::addPreallocatedAttr(Type *Ty) {
   return addTypeAttr(Attribute::Preallocated, Ty);
+}
+
+SmallAttrBuilder &SmallAttrBuilder::addInAllocaAttr(Type *Ty) {
+  return addTypeAttr(Attribute::InAlloca, Ty);
 }
 
 AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
@@ -1921,6 +1932,35 @@ AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
 
   return *this;
 }
+bool SmallAttrBuilder::overlaps(const SmallAttrBuilder &B) const {
+  // First check if any of the target independent attributes overlap.
+  auto SelfEnumIter = EnumAttrs.begin();
+  auto OtherEnumIter = B.EnumAttrs.begin();
+  while(SelfEnumIter < EnumAttrs.end() && OtherEnumIter < B.EnumAttrs.end()) {
+	  if(SelfEnumIter->getKindAsEnum() < OtherEnumIter->getKindAsEnum())
+		  ++SelfEnumIter;
+	  else if(SelfEnumIter->getKindAsEnum() > OtherEnumIter->getKindAsEnum()) 
+		  ++OtherEnumIter;
+	  else
+		  return true;
+  }
+
+  auto SelfStringIter = StringAttrs.begin();
+  auto OtherStringIter = B.StringAttrs.begin();
+  while(SelfStringIter < StringAttrs.end() && OtherStringIter < B.StringAttrs.end()) {
+	  int Cmp = SelfStringIter->getKindAsString().compare(OtherStringIter->getKindAsString());
+	  if(Cmp < 0)
+		  ++SelfStringIter;
+	  else if(Cmp > 0) 
+		  ++OtherStringIter;
+	  else
+		  return true;
+  }
+
+
+  return false;
+}
+
 
 bool AttrBuilder::overlaps(const AttrBuilder &B) const {
   // First check if any of the target independent attributes overlap.
@@ -1979,8 +2019,8 @@ bool AttrBuilder::operator==(const AttrBuilder &B) const {
 //===----------------------------------------------------------------------===//
 
 /// Which attributes cannot be applied to a type.
-AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
-  AttrBuilder Incompatible;
+SmallAttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
+  SmallAttrBuilder Incompatible(Ty->getContext());
 
   if (!Ty->isIntegerTy())
     // Attribute that only apply to integers.
@@ -2013,8 +2053,8 @@ AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
   return Incompatible;
 }
 
-AttrBuilder AttributeFuncs::getUBImplyingAttributes() {
-  AttrBuilder B;
+SmallAttrBuilder AttributeFuncs::getUBImplyingAttributes(LLVMContext& C) {
+  SmallAttrBuilder B(C);
   B.addAttribute(Attribute::NoUndef);
   B.addDereferenceableAttr(1);
   B.addDereferenceableOrNullAttr(1);

@@ -306,6 +306,11 @@ void Argument::removeAttrs(const AttrBuilder &B) {
   getParent()->setAttributes(AL);
 }
 
+void Argument::removeAttrs(const SmallAttrBuilder &B) {
+  AttributeList AL = getParent()->getAttributes();
+  AL = AL.removeParamAttributes(Parent->getContext(), getArgNo(), B);
+  getParent()->setAttributes(AL);
+}
 bool Argument::hasAttribute(Attribute::AttrKind Kind) const {
   return getParent()->hasParamAttribute(getArgNo(), Kind);
 }
@@ -565,6 +570,9 @@ void Function::addRetAttrs(const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addRetAttributes(getContext(), Attrs);
 }
 
+void Function::addRetAttrs(const SmallAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.addRetAttributes(getContext(), Attrs);
+}
 void Function::addParamAttr(unsigned ArgNo, Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.addParamAttribute(getContext(), ArgNo, Kind);
 }
@@ -577,6 +585,9 @@ void Function::addParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addParamAttributes(getContext(), ArgNo, Attrs);
 }
 
+void Function::addParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.addParamAttributes(getContext(), ArgNo, Attrs);
+}
 void Function::removeAttributeAtIndex(unsigned i, Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.removeAttributeAtIndex(getContext(), i, Kind);
 }
@@ -613,6 +624,10 @@ void Function::removeRetAttrs(const AttrBuilder &Attrs) {
   AttributeSets = AttributeSets.removeRetAttributes(getContext(), Attrs);
 }
 
+void Function::removeRetAttrs(const SmallAttrBuilder &Attrs) {
+  AttributeSets = AttributeSets.removeRetAttributes(getContext(), Attrs);
+}
+
 void Function::removeParamAttr(unsigned ArgNo, Attribute::AttrKind Kind) {
   AttributeSets = AttributeSets.removeParamAttribute(getContext(), ArgNo, Kind);
 }
@@ -626,6 +641,10 @@ void Function::removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs) {
       AttributeSets.removeParamAttributes(getContext(), ArgNo, Attrs);
 }
 
+void Function::removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs) {
+  AttributeSets =
+      AttributeSets.removeParamAttributes(getContext(), ArgNo, Attrs);
+}
 void Function::addDereferenceableParamAttr(unsigned ArgNo, uint64_t Bytes) {
   AttributeSets =
       AttributeSets.addDereferenceableParamAttr(getContext(), ArgNo, Bytes);

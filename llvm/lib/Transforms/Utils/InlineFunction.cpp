@@ -1185,10 +1185,10 @@ static bool MayContainThrowingOrExitingCall(Instruction *Begin,
 
 static SmallAttrBuilder IdentifyValidAttributes(CallBase &CB) {
 
-  AttrBuilder AB(CB.getAttributes(), AttributeList::ReturnIndex);
+  SmallAttrBuilder AB(CB.getContext(), CB.getAttributes(), AttributeList::ReturnIndex);
   SmallAttrBuilder Valid(CB.getContext());
   if (AB.empty()) {
-    return Valid;
+    return AB;
   }
   // Only allow these white listed attributes to be propagated back to the
   // callee. This is because other attributes may only be valid on the call

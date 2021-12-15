@@ -343,6 +343,7 @@ public:
 
   /// Add return value attributes to this function.
   void addRetAttrs(const AttrBuilder &Attrs);
+  void addRetAttrs(const SmallAttrBuilder &Attrs);
 
   /// adds the attribute to the list of attributes for the given arg.
   void addParamAttr(unsigned ArgNo, Attribute::AttrKind Kind);
@@ -352,6 +353,7 @@ public:
 
   /// adds the attributes to the list of attributes for the given arg.
   void addParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs);
+  void addParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the list of attributes.
   void removeAttributeAtIndex(unsigned i, Attribute::AttrKind Kind);
@@ -376,6 +378,7 @@ public:
 
   /// removes the attributes from the return value list of attributes.
   void removeRetAttrs(const AttrBuilder &Attrs);
+  void removeRetAttrs(const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the list of attributes.
   void removeParamAttr(unsigned ArgNo, Attribute::AttrKind Kind);
@@ -385,6 +388,7 @@ public:
 
   /// removes the attribute from the list of attributes.
   void removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs);
+  void removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs);
 
   /// Return true if the function has the attribute.
   bool hasFnAttribute(Attribute::AttrKind Kind) const;
