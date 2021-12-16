@@ -671,11 +671,16 @@ AttributeSet
 AttributeSet::removeAttributes(LLVMContext &C,
                                const SmallAttrBuilder &Attrs) const {
   SmallAttrBuilder B(C, *this);
-  auto AttrsPair = Attrs.uniquify();
-  for (Attribute A : AttrsPair.first)
-    B.removeEnumAttribute(A);
-  for (Attribute A : AttrsPair.second)
-    B.removeStringAttribute(A);
+  {
+  auto Start = B.EnumAttrs.begin();
+  for (Attribute A : Attrs.getEnumAttrs())
+    Start = B.removeEnumAttributeHelper(A, Start);
+  }
+  {
+  auto Start = B.StringAttrs.begin();
+  for (Attribute A : Attrs.getStringAttrs())
+    Start = B.removeStringAttributeHelper(A, Start);
+  }
   return get(C, B);
 }
 
@@ -888,13 +893,12 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
   LLVMContextImpl *pImpl = C.pImpl;
   FoldingSetNodeID ID;
 
-  auto AttrsPair = B.uniquify();
-
-  assert(llvm::is_sorted(AttrsPair.first) && "Expected sorted attributes!");
-  for (const auto &Attr : AttrsPair.first)
+  assert(llvm::is_sorted(Attrs.getEnumAttrs()) && "Expected sorted attributes!");
+  for (const auto &Attr : B.getEnumAttrs())
     Attr.Profile(ID);
-  assert(llvm::is_sorted(AttrsPair.second) && "Expected sorted attributes!");
-  for (const auto &Attr : AttrsPair.second)
+
+  assert(llvm::is_sorted(Attrs.getStringAttrs()) && "Expected sorted attributes!");
+  for (const auto &Attr : B.getStringAttrs())
     Attr.Profile(ID);
 
   void *InsertPoint;
@@ -906,7 +910,7 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
   if (!PA) {
     // Coallocate entries after the AttributeSetNode itself.
     void *Mem = ::operator new(totalSizeToAlloc<Attribute>(B.size()));
-    PA = new (Mem) AttributeSetNode(AttrsPair.first, AttrsPair.second);
+    PA = new (Mem) AttributeSetNode(B.getEnumAttrs(), B.getStringAttrs());
     pImpl->AttrsSetNodes.InsertNode(PA, InsertPoint);
   }
 

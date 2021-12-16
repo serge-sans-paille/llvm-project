@@ -986,6 +986,7 @@ template <> struct DenseMapInfo<AttributeList, void> {
 /// state of attributes.
 
 class SmallAttrBuilder {
+  friend AttributeSet;
   LLVMContext &Ctxt;
 
   SmallVector<Attribute> EnumAttrs;
@@ -1154,6 +1155,24 @@ public:
   SmallAttrBuilder &removeEnumAttribute(Attribute A) {
     return removeAttribute(A.getKindAsEnum());
   }
+  iterator removeStringAttributeHelper(Attribute A, iterator Start) {
+	  auto Val = A.getKindAsString();
+    auto R = std::lower_bound(Start, StringAttrs.end(), Val,
+                              StringAttributeComparator{});
+    if (R != StringAttrs.end() && R->hasAttribute(Val)) {
+      return StringAttrs.erase(R);
+    }
+    return R;
+  }
+  iterator removeEnumAttributeHelper(Attribute A, iterator Start) {
+	  auto Val = A.getKindAsEnum();
+    auto R = std::lower_bound(Start, EnumAttrs.end(), Val,
+                              EnumAttributeComparator{});
+    if (R != EnumAttrs.end() && R->hasAttribute(Val)) {
+      return EnumAttrs.erase(R);
+    }
+    return R;
+  }
 
   SmallAttrBuilder &removeAttribute(Attribute A) {
     if (A.isStringAttribute())
@@ -1251,6 +1270,10 @@ public:
   td_const_range td_attrs() const {
     return td_const_range(td_begin(), td_end());
   }
+
+  ArrayRef<Attribute> getEnumAttrs() const { return EnumAttrs;}
+  ArrayRef<Attribute> getStringAttrs() const { return StringAttrs;}
+
 };
 
 //===----------------------------------------------------------------------===//
