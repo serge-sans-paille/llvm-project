@@ -1764,6 +1764,14 @@ AttrBuilder &AttrBuilder::addAlignmentAttr(MaybeAlign Align) {
   assert(*Align <= llvm::Value::MaximumAlignment && "Alignment too large.");
   return addRawIntAttr(Attribute::Alignment, Align->value());
 }
+SmallAttrBuilder &SmallAttrBuilder::addStackAlignmentAttr(MaybeAlign Align) {
+  // Default alignment, allow the target to define how to align it.
+  if (!Align)
+    return *this;
+
+  assert(*Align <= 0x100 && "Alignment too large.");
+  return addAttribute(Attribute::get(Ctxt, Attribute::StackAlignment, Align->value()));
+}
 
 AttrBuilder &AttrBuilder::addStackAlignmentAttr(MaybeAlign Align) {
   // Default alignment, allow the target to define how to align it.
@@ -1813,6 +1821,11 @@ AttrBuilder &AttrBuilder::addAllocSizeAttr(unsigned ElemSize,
   return addAllocSizeAttrFromRawRepr(packAllocSizeArgs(ElemSize, NumElems));
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addAllocSizeAttrFromRawRepr(uint64_t RawArgs) {
+  // (0, 0) is our "not present" value, so we need to check for it here.
+  assert(RawArgs && "Invalid allocsize arguments -- given allocsize(0, 0)");
+  return addAttribute(Attribute::get(Ctxt, Attribute::AllocSize, RawArgs));
+}
 AttrBuilder &AttrBuilder::addAllocSizeAttrFromRawRepr(uint64_t RawArgs) {
   // (0, 0) is our "not present" value, so we need to check for it here.
   assert(RawArgs && "Invalid allocsize arguments -- given allocsize(0, 0)");
@@ -1824,6 +1837,13 @@ AttrBuilder &AttrBuilder::addVScaleRangeAttr(unsigned MinValue,
   return addVScaleRangeAttrFromRawRepr(packVScaleRangeArgs(MinValue, MaxValue));
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addVScaleRangeAttrFromRawRepr(uint64_t RawArgs) {
+  // (0, 0) is not present hence ignore this case
+  if (RawArgs == 0)
+    return *this;
+
+  return addAttribute(Attribute::get(Ctxt, Attribute::VScaleRange, RawArgs));
+}
 AttrBuilder &AttrBuilder::addVScaleRangeAttrFromRawRepr(uint64_t RawArgs) {
   // (0, 0) is not present hence ignore this case
   if (RawArgs == 0)

@@ -1140,6 +1140,26 @@ public:
     StringAttrs.clear();
   }
 
+
+  // Iterators for target-dependent attributes.
+  using td_type = decltype(StringAttrs)::value_type;
+  using td_iterator = decltype(StringAttrs)::iterator;
+  using td_const_iterator = decltype(StringAttrs)::const_iterator;
+  using td_range = iterator_range<td_iterator>;
+  using td_const_range = iterator_range<td_const_iterator>;
+
+  td_iterator td_begin() { return StringAttrs.begin(); }
+  td_iterator td_end() { return StringAttrs.end(); }
+
+  td_const_iterator td_begin() const { return StringAttrs.begin(); }
+  td_const_iterator td_end() const { return StringAttrs.end(); }
+
+  td_range td_attrs() { return td_range(td_begin(), td_end()); }
+
+  td_const_range td_attrs() const {
+    return td_const_range(td_begin(), td_end());
+  }
+
   bool contains(Attribute::AttrKind K) const {
     auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), K, EnumAttributeComparator{});
 	  return R!= EnumAttrs.end() && R->hasAttribute(K);
@@ -1197,6 +1217,17 @@ public:
     auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::ByVal, EnumAttributeComparator{});
     return (R != EnumAttrs.end() && R->hasAttribute(Attribute::ByVal))? R->getValueAsType() : nullptr;
   }
+  SmallAttrBuilder &addStackAlignmentAttr(MaybeAlign Align);
+  SmallAttrBuilder &addStackAlignmentAttr(unsigned Align) {
+    return addStackAlignmentAttr(MaybeAlign(Align));
+  }
+  MaybeAlign getStackAlignment() const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::StackAlignment, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::StackAlignment))? MaybeAlign(R->getValueAsInt()) : None;
+  }
+  SmallAttrBuilder &addAllocSizeAttrFromRawRepr(uint64_t RawAllocSizeRepr);
+  SmallAttrBuilder &addVScaleRangeAttrFromRawRepr(uint64_t RawVScaleRangeRepr);
+
   SmallAttrBuilder &addPreallocatedAttr(Type *Ty);
   Type *getPreallocatedType() const { 
     auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Preallocated, EnumAttributeComparator{});

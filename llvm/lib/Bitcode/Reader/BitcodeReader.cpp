@@ -1270,7 +1270,7 @@ static uint64_t getRawAttributeMask(Attribute::AttrKind Val) {
   llvm_unreachable("Unsupported attribute type");
 }
 
-static void addRawAttributeValue(AttrBuilder &B, uint64_t Val) {
+static void addRawAttributeValue(SmallAttrBuilder &B, uint64_t Val) {
   if (!Val) return;
 
   for (Attribute::AttrKind I = Attribute::None; I != Attribute::EndAttrKinds;
@@ -1288,10 +1288,10 @@ static void addRawAttributeValue(AttrBuilder &B, uint64_t Val) {
   }
 }
 
-/// This fills an AttrBuilder object with the LLVM attributes that have
+/// This fills an SmallAttrBuilder object with the LLVM attributes that have
 /// been decoded from the given integer. This function must stay in sync with
 /// 'encodeLLVMAttributesForBitcode'.
-static void decodeLLVMAttributesForBitcode(AttrBuilder &B,
+static void decodeLLVMAttributesForBitcode(SmallAttrBuilder &B,
                                            uint64_t EncodedAttrs) {
   // The alignment is stored as a 16-bit raw value from bits 31--16.  We shift
   // the bits above 31 down by 11 bits.
@@ -1348,7 +1348,7 @@ Error BitcodeReader::parseAttributeBlock() {
         return error("Invalid record");
 
       for (unsigned i = 0, e = Record.size(); i != e; i += 2) {
-        AttrBuilder B;
+        SmallAttrBuilder B(Context);
         decodeLLVMAttributesForBitcode(B, Record[i+1]);
         Attrs.push_back(AttributeList::get(Context, Record[i], B));
       }
@@ -1590,7 +1590,7 @@ Error BitcodeReader::parseAttributeGroupBlock() {
       uint64_t GrpID = Record[0];
       uint64_t Idx = Record[1]; // Index of the object this attribute refers to.
 
-      AttrBuilder B;
+      SmallAttrBuilder B(Context);
       for (unsigned i = 2, e = Record.size(); i != e; ++i) {
         if (Record[i] == 0) {        // Enum attribute
           Attribute::AttrKind Kind;
