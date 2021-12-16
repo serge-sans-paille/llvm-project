@@ -1832,6 +1832,11 @@ AttrBuilder &AttrBuilder::addAllocSizeAttrFromRawRepr(uint64_t RawArgs) {
   return addRawIntAttr(Attribute::AllocSize, RawArgs);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addVScaleRangeAttr(unsigned MinValue,
+                                             Optional<unsigned> MaxValue) {
+  return addVScaleRangeAttrFromRawRepr(packVScaleRangeArgs(MinValue, MaxValue));
+}
+
 AttrBuilder &AttrBuilder::addVScaleRangeAttr(unsigned MinValue,
                                              Optional<unsigned> MaxValue) {
   return addVScaleRangeAttrFromRawRepr(packVScaleRangeArgs(MinValue, MaxValue));
@@ -2024,6 +2029,10 @@ bool AttrBuilder::hasAttributes(AttributeList AL, uint64_t Index) const {
   return false;
 }
 
+bool SmallAttrBuilder::hasAlignmentAttr() const {
+	auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Alignment, EnumAttributeComparator{});
+  return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Alignment));
+}
 bool AttrBuilder::hasAlignmentAttr() const {
   return getRawIntAttr(Attribute::Alignment) != 0;
 }

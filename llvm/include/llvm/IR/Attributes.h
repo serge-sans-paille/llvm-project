@@ -1174,8 +1174,20 @@ public:
   SmallAttrBuilder &addStackAlignmentAttr(unsigned Align) {
     return addStackAlignmentAttr(MaybeAlign(Align));
   }
+
+  MaybeAlign getStackAlignment() const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::StackAlignment, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::StackAlignment))? MaybeAlign(R->getValueAsInt()) : None;
+  }
+  bool hasAlignmentAttr() const;
   SmallAttrBuilder &addAllocSizeAttrFromRawRepr(uint64_t RawAllocSizeRepr);
   SmallAttrBuilder &addVScaleRangeAttrFromRawRepr(uint64_t RawVScaleRangeRepr);
+  SmallAttrBuilder &addVScaleRangeAttr(unsigned MinValue,
+                                  Optional<unsigned> MaxValue);
+  MaybeAlign getAlignment() const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Alignment, EnumAttributeComparator{});
+    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Alignment))? MaybeAlign(R->getValueAsInt()) : None;
+  }
 
 
   bool contains(Attribute::AttrKind K) const {
