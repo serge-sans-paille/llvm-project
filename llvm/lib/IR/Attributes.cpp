@@ -679,6 +679,14 @@ AttributeSet::removeAttributes(LLVMContext &C,
   return get(C, B);
 }
 
+AttributeSet
+AttributeSet::removeAttributes(LLVMContext &C,
+                               AttributeSet AS) const {
+  SmallAttrBuilder B(C, *this);
+  B.removeAttributes(AS);
+  return get(C, B);
+}
+
 unsigned AttributeSet::getNumAttributes() const {
   return SetNode ? SetNode->getNumAttributes() : 0;
 }
@@ -1218,6 +1226,15 @@ AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
   AttrSets[Index] = AttributeSet::get(C, B);
   return getImpl(C, AttrSets);
 }
+AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
+                                 AttributeSet AS) {
+  if (!AS.hasAttributes())
+    return {};
+  Index = attrIdxToArrayIdx(Index);
+  SmallVector<AttributeSet, 8> AttrSets(Index + 1);
+  AttrSets[Index] = AS;
+  return getImpl(C, AttrSets);
+}
 
 AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
                                  ArrayRef<Attribute::AttrKind> Kinds) {
@@ -1263,7 +1280,7 @@ AttributeList AttributeList::get(LLVMContext &C,
 
   SmallVector<AttributeSet, 8> NewAttrSets(MaxSize);
   for (unsigned I = 0; I < MaxSize; ++I) {
-    AttrBuilder CurBuilder;
+    SmallAttrBuilder CurBuilder(C);
     for (const auto &List : Attrs)
       CurBuilder.merge(List.getAttributes(I - 1));
     NewAttrSets[I] = AttributeSet::get(C, CurBuilder);
@@ -1347,6 +1364,12 @@ AttributeList::addAttributesAtIndex(LLVMContext &C, unsigned Index,
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
 
+AttributeList
+AttributeList::addAttributesAtIndex(LLVMContext &C, unsigned Index,
+                                    AttributeSet AS) const {
+	return addAttributesAtIndex(C, Index, SmallAttrBuilder(C, AS));
+}
+
 AttributeList AttributeList::addParamAttribute(LLVMContext &C,
                                                ArrayRef<unsigned> ArgNos,
                                                Attribute A) const {
@@ -1411,6 +1434,17 @@ AttributeList::removeAttributesAtIndex(LLVMContext &C, unsigned Index,
 AttributeList AttributeList::removeAttributesAtIndex(
     LLVMContext &C, unsigned Index,
     const SmallAttrBuilder &AttrsToRemove) const {
+  AttributeSet Attrs = getAttributes(Index);
+  AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
+  // If nothing was removed, return the original list.
+  if (Attrs == NewAttrs)
+    return *this;
+  return setAttributesAtIndex(C, Index, NewAttrs);
+}
+
+AttributeList AttributeList::removeAttributesAtIndex(
+    LLVMContext &C, unsigned Index,
+    AttributeSet AttrsToRemove) const {
   AttributeSet Attrs = getAttributes(Index);
   AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
   // If nothing was removed, return the original list.
@@ -1711,7 +1745,7 @@ AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
 }
 
 AttrBuilder &AttrBuilder::removeAttributes(AttributeList A, uint64_t Index) {
-  remove(A.getAttributes(Index));
+  remove(AttrBuilder(A.getAttributes(Index)));
   return *this;
 }
 
