@@ -325,6 +325,8 @@ public:
   removeAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const;
   LLVM_NODISCARD AttributeSet
   removeAttributes(LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeSet
+  removeAttributes(LLVMContext &C, AttributeSet AttrsToRemove) const;
 
   /// Return the number of attributes in this set.
   unsigned getNumAttributes() const;
@@ -463,6 +465,8 @@ public:
                            const AttrBuilder &B);
   static AttributeList get(LLVMContext &C, unsigned Index,
                            const SmallAttrBuilder &B);
+  static AttributeList get(LLVMContext &C, unsigned Index,
+                           AttributeSet AS);
 
   // TODO: remove non-AtIndex versions of these methods.
   /// Add an attribute to the attribute set at the given index.
@@ -489,6 +493,8 @@ public:
                                                     const AttrBuilder &B) const;
   LLVM_NODISCARD AttributeList addAttributesAtIndex(
       LLVMContext &C, unsigned Index, const SmallAttrBuilder &B) const;
+  LLVM_NODISCARD AttributeList addAttributesAtIndex(
+      LLVMContext &C, unsigned Index, AttributeSet AS) const;
 
   /// Add a function attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -520,6 +526,10 @@ public:
   LLVM_NODISCARD AttributeList
   addFnAttributes(LLVMContext &C, const SmallAttrBuilder &B) const {
     return addAttributesAtIndex(C, FunctionIndex, B);
+  }
+  LLVM_NODISCARD AttributeList addFnAttributes(LLVMContext &C,
+                                               AttributeSet AS) const {
+    return addAttributesAtIndex(C, FunctionIndex, AS);
   }
 
   /// Add a return value attribute to the list. Returns a new list because
@@ -602,6 +612,9 @@ public:
   LLVM_NODISCARD AttributeList
   removeAttributesAtIndex(LLVMContext &C, unsigned Index,
                           const SmallAttrBuilder &AttrsToRemove) const;
+  LLVM_NODISCARD AttributeList
+  removeAttributesAtIndex(LLVMContext &C, unsigned Index,
+                          AttributeSet AttrsToRemove) const;
 
   /// Remove all attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -688,6 +701,11 @@ public:
   LLVM_NODISCARD AttributeList
   removeParamAttributes(LLVMContext &C, unsigned ArgNo,
                         const SmallAttrBuilder &AttrsToRemove) const {
+    return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
+  }
+  LLVM_NODISCARD AttributeList
+  removeParamAttributes(LLVMContext &C, unsigned ArgNo,
+                        AttributeSet AttrsToRemove) const {
     return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
   }
 
@@ -1096,6 +1114,9 @@ public:
     return *this;
   }
   SmallAttrBuilder &merge(const SmallAttrBuilder &B);
+  SmallAttrBuilder &merge(AttributeSet AS) {
+    return merge(SmallAttrBuilder(Ctxt, AS));
+  }
 
   bool hasAttributes() const {
     return !EnumAttrs.empty() || !StringAttrs.empty();
@@ -1141,6 +1162,15 @@ public:
       return removeEnumAttribute(A);
   }
   bool overlaps(const SmallAttrBuilder &B) const;
+
+  SmallAttrBuilder &removeAttributes(AttributeSet AS) {
+	  auto Iter = AS.begin(), End = AS.end();
+    while(Iter != End && !Iter->isStringAttribute())
+	    removeEnumAttribute(*Iter++);
+    while(Iter != End)
+	    removeStringAttribute(*Iter++);
+    return *this;
+  }
 
   unsigned size() const { return EnumAttrs.size() + StringAttrs.size(); }
 
@@ -1238,12 +1268,12 @@ class AttrBuilder {
 public:
   AttrBuilder() = default;
 
-  AttrBuilder(const Attribute &A) {
+  explicit AttrBuilder(const Attribute &A) {
     addAttribute(A);
   }
 
   AttrBuilder(AttributeList AS, unsigned Idx);
-  AttrBuilder(AttributeSet AS);
+  explicit AttrBuilder(AttributeSet AS);
 
   void clear();
 
