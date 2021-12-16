@@ -1142,11 +1142,17 @@ public:
   }
 
   SmallAttrBuilder& remove(const SmallAttrBuilder& B) {
-           for(Attribute A : B.EnumAttrs)
-         	  removeEnumAttribute(A);
-           for(Attribute A : B.StringAttrs)
-         	  removeStringAttribute(A);
-           return *this;
+	  {
+	  auto Start = EnumAttrs.begin();
+	  for (Attribute A : B.getEnumAttrs())
+	    Start = removeEnumAttributeHelper(A, Start);
+	  }
+	  {
+	  auto Start = StringAttrs.begin();
+	  for (Attribute A : B.getStringAttrs())
+	    Start = removeStringAttributeHelper(A, Start);
+	  }
+	  return *this;
   }
 
   SmallAttrBuilder &removeStringAttribute(Attribute A) {
