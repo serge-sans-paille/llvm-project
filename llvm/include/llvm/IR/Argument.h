@@ -154,6 +154,7 @@ public:
 
   /// Add attributes to an argument.
   void addAttrs(AttrBuilder &B);
+  void addAttrs(SmallAttrBuilder &B);
 
   void addAttr(Attribute::AttrKind Kind);
 

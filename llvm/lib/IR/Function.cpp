@@ -288,6 +288,12 @@ void Argument::addAttrs(AttrBuilder &B) {
   getParent()->setAttributes(AL);
 }
 
+void Argument::addAttrs(SmallAttrBuilder &B) {
+  AttributeList AL = getParent()->getAttributes();
+  AL = AL.addParamAttributes(Parent->getContext(), getArgNo(), B);
+  getParent()->setAttributes(AL);
+}
+
 void Argument::addAttr(Attribute::AttrKind Kind) {
   getParent()->addParamAttr(getArgNo(), Kind);
 }
