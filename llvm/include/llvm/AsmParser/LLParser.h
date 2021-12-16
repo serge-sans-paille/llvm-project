@@ -122,7 +122,7 @@ namespace llvm {
 
     // Attribute builder reference information.
     std::map<Value*, std::vector<unsigned> > ForwardRefAttrGroups;
-    std::map<unsigned, AttrBuilder> NumberedAttrBuilders;
+    std::map<unsigned, SmallAttrBuilder> NumberedAttrBuilders;
 
     // Summary global value reference information.
     std::map<unsigned, std::vector<std::pair<ValueInfo *, LocTy>>>
@@ -232,7 +232,7 @@ namespace llvm {
     }
     bool parseFlag(unsigned &Val);
 
-    bool parseStringAttribute(AttrBuilder &B);
+    bool parseStringAttribute(SmallAttrBuilder &B);
 
     bool parseTLSModel(GlobalVariable::ThreadLocalMode &TLM);
     bool parseOptionalThreadLocal(GlobalVariable::ThreadLocalMode &TLM);
@@ -242,13 +242,13 @@ namespace llvm {
       return parseOptionalAddrSpace(
           AddrSpace, M->getDataLayout().getProgramAddressSpace());
     };
-    bool parseEnumAttribute(Attribute::AttrKind Attr, AttrBuilder &B,
+    bool parseEnumAttribute(Attribute::AttrKind Attr, SmallAttrBuilder &B,
                             bool InAttrGroup);
-    bool parseOptionalParamOrReturnAttrs(AttrBuilder &B, bool IsParam);
-    bool parseOptionalParamAttrs(AttrBuilder &B) {
+    bool parseOptionalParamOrReturnAttrs(SmallAttrBuilder &B, bool IsParam);
+    bool parseOptionalParamAttrs(SmallAttrBuilder &B) {
       return parseOptionalParamOrReturnAttrs(B, true);
     }
-    bool parseOptionalReturnAttrs(AttrBuilder &B) {
+    bool parseOptionalReturnAttrs(SmallAttrBuilder &B) {
       return parseOptionalParamOrReturnAttrs(B, false);
     }
     bool parseOptionalLinkage(unsigned &Res, bool &HasLinkage,
@@ -314,10 +314,10 @@ namespace llvm {
     bool parseMDString(MDString *&Result);
     bool parseMDNodeID(MDNode *&Result);
     bool parseUnnamedAttrGrp();
-    bool parseFnAttributeValuePairs(AttrBuilder &B,
+    bool parseFnAttributeValuePairs(SmallAttrBuilder &B,
                                     std::vector<unsigned> &FwdRefAttrGrps,
                                     bool inAttrGrp, LocTy &BuiltinLoc);
-    bool parseRequiredTypeAttr(AttrBuilder &B, lltok::Kind AttrToken,
+    bool parseRequiredTypeAttr(SmallAttrBuilder &B, lltok::Kind AttrToken,
                                Attribute::AttrKind AttrKind);
 
     // Module Summary Index Parsing.
