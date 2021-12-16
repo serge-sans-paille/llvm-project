@@ -604,7 +604,7 @@ std::vector<std::string> codegen::getFeatureList() {
   return Features.getFeatures();
 }
 
-void codegen::renderBoolStringAttr(AttrBuilder &B, StringRef Name, bool Val) {
+void codegen::renderBoolStringAttr(SmallAttrBuilder &B, StringRef Name, bool Val) {
   B.addAttribute(Name, Val ? "true" : "false");
 }
 
@@ -620,7 +620,7 @@ void codegen::setFunctionAttributes(StringRef CPU, StringRef Features,
                                     Function &F) {
   auto &Ctx = F.getContext();
   AttributeList Attrs = F.getAttributes();
-  AttrBuilder NewAttrs;
+  SmallAttrBuilder NewAttrs(Ctx);
 
   if (!CPU.empty() && !F.hasFnAttribute("target-cpu"))
     NewAttrs.addAttribute("target-cpu", CPU);

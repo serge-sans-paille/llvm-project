@@ -1250,7 +1250,7 @@ static void AddReturnAttributes(CallBase &CB, ValueToValueMapTy &VMap) {
     // NB! When we have the same attribute already existing on NewRetVal, but
     // with a differing value, the AttributeList's merge API honours the already
     // existing attribute value (i.e. attributes such as dereferenceable,
-    // dereferenceable_or_null etc). See AttrBuilder::merge for more details.
+    // dereferenceable_or_null etc). See SmallAttrBuilder::merge for more details.
     AttributeList AL = NewRetVal->getAttributes();
 
     AttributeList NewAL = AL.addRetAttributes(Context, Valid);
