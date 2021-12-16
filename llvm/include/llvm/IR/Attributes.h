@@ -1063,6 +1063,9 @@ public:
 	  return EnumAttrs == Other.EnumAttrs && StringAttrs == Other.StringAttrs;
   }
   SmallAttrBuilder(LLVMContext &Ctxt) : Ctxt(Ctxt) {}
+  SmallAttrBuilder(LLVMContext &Ctxt, Attribute A) : Ctxt(Ctxt) {
+    addAttribute(A);
+  }
   SmallAttrBuilder(LLVMContext &Ctxt, AttributeList AL, unsigned Idx)
       : SmallAttrBuilder(Ctxt, AL.getAttributes(Idx)) {}
 

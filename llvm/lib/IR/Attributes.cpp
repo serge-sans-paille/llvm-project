@@ -1296,27 +1296,18 @@ AttributeList AttributeList::get(LLVMContext &C,
 AttributeList
 AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                    Attribute::AttrKind Kind) const {
-  if (hasAttributeAtIndex(Index, Kind))
-    return *this;
-  AttributeSet Attrs = getAttributes(Index);
-  // TODO: Insert at correct position and avoid sort.
-  SmallVector<Attribute, 8> NewAttrs(Attrs.begin(), Attrs.end());
-  NewAttrs.push_back(Attribute::get(C, Kind));
-  return setAttributesAtIndex(C, Index, AttributeSet::get(C, NewAttrs));
+  return addAttributeAtIndex(C, Index, Attribute::get(C, Kind));
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
-  SmallAttrBuilder B(C);
-  B.addAttribute(Kind, Value);
-  return addAttributesAtIndex(C, Index, B);
+  return addAttributeAtIndex(C, Index, Attribute::get(C, Kind, Value));
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  Attribute A) const {
-  SmallAttrBuilder B(C);
-  B.addAttribute(A);
+  SmallAttrBuilder B(C, A);
   return addAttributesAtIndex(C, Index, B);
 }
 
