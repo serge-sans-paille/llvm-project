@@ -1697,24 +1697,25 @@ bool SmallAttrBuilder::overlaps(const SmallAttrBuilder &B) const {
   auto SelfEnumIter = EnumAttrs.begin();
   auto OtherEnumIter = B.EnumAttrs.begin();
   while(SelfEnumIter < EnumAttrs.end() && OtherEnumIter < B.EnumAttrs.end()) {
-	  if(SelfEnumIter->getKindAsEnum() < OtherEnumIter->getKindAsEnum())
-		  ++SelfEnumIter;
-	  else if(SelfEnumIter->getKindAsEnum() > OtherEnumIter->getKindAsEnum()) 
-		  ++OtherEnumIter;
-	  else
+	  auto R = std::lower_bound(SelfEnumIter, EnumAttrs.end(), *OtherEnumIter, EnumAttributeComparator());
+	  if(R == EnumAttrs.end())
+		  break;
+	  if(R->getKindAsEnum() == OtherEnumIter->getKindAsEnum())
 		  return true;
+	  SelfEnumIter = R;
+	  ++OtherEnumIter;
   }
 
   auto SelfStringIter = StringAttrs.begin();
   auto OtherStringIter = B.StringAttrs.begin();
   while(SelfStringIter < StringAttrs.end() && OtherStringIter < B.StringAttrs.end()) {
-	  int Cmp = SelfStringIter->getKindAsString().compare(OtherStringIter->getKindAsString());
-	  if(Cmp < 0)
-		  ++SelfStringIter;
-	  else if(Cmp > 0) 
-		  ++OtherStringIter;
-	  else
+	  auto R = std::lower_bound(SelfStringIter, StringAttrs.end(), *OtherStringIter, StringAttributeComparator());
+	  if(R == StringAttrs.end())
+		  break;
+	  if(R->getKindAsString() == OtherStringIter->getKindAsString())
 		  return true;
+	  SelfStringIter = R;
+	  ++OtherStringIter;
   }
 
 
