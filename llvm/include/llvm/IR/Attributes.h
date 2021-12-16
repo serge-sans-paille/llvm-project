@@ -33,7 +33,6 @@
 
 namespace llvm {
 
-class AttrBuilder;
 class SmallAttrBuilder;
 class AttributeImpl;
 class AttributeListImpl;
@@ -287,7 +286,6 @@ public:
   AttributeSet(const AttributeSet &) = default;
   ~AttributeSet() = default;
 
-  static AttributeSet get(LLVMContext &C, const AttrBuilder &B);
   static AttributeSet get(LLVMContext &C, const SmallAttrBuilder &B);
   static AttributeSet get(LLVMContext &C, ArrayRef<Attribute> Attrs);
 
@@ -321,8 +319,6 @@ public:
 
   /// Remove the specified attributes from this set. Returns a new set because
   /// attribute sets are immutable.
-  LLVM_NODISCARD AttributeSet
-  removeAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const;
   LLVM_NODISCARD AttributeSet
   removeAttributes(LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const;
   LLVM_NODISCARD AttributeSet
@@ -414,7 +410,6 @@ public:
   };
 
 private:
-  friend class AttrBuilder;
   friend class AttributeListImpl;
   friend class AttributeSet;
   friend class AttributeSetNode;
@@ -462,8 +457,6 @@ public:
   static AttributeList get(LLVMContext &C, unsigned Index,
                            ArrayRef<StringRef> Kind);
   static AttributeList get(LLVMContext &C, unsigned Index,
-                           const AttrBuilder &B);
-  static AttributeList get(LLVMContext &C, unsigned Index,
                            const SmallAttrBuilder &B);
   static AttributeList get(LLVMContext &C, unsigned Index,
                            AttributeSet AS);
@@ -488,9 +481,6 @@ public:
 
   /// Add attributes to the attribute set at the given index.
   /// Returns a new list because attribute lists are immutable.
-  LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
-                                                    unsigned Index,
-                                                    const AttrBuilder &B) const;
   LLVM_NODISCARD AttributeList addAttributesAtIndex(
       LLVMContext &C, unsigned Index, const SmallAttrBuilder &B) const;
   LLVM_NODISCARD AttributeList addAttributesAtIndex(
@@ -519,10 +509,6 @@ public:
 
   /// Add function attribute to the list. Returns a new list because
   /// attribute lists are immutable.
-  LLVM_NODISCARD AttributeList addFnAttributes(LLVMContext &C,
-                                               const AttrBuilder &B) const {
-    return addAttributesAtIndex(C, FunctionIndex, B);
-  }
   LLVM_NODISCARD AttributeList
   addFnAttributes(LLVMContext &C, const SmallAttrBuilder &B) const {
     return addAttributesAtIndex(C, FunctionIndex, B);
@@ -548,10 +534,6 @@ public:
 
   /// Add a return value attribute to the list. Returns a new list because
   /// attribute lists are immutable.
-  LLVM_NODISCARD AttributeList addRetAttributes(LLVMContext &C,
-                                                const AttrBuilder &B) const {
-    return addAttributesAtIndex(C, ReturnIndex, B);
-  }
   LLVM_NODISCARD AttributeList
   addRetAttributes(LLVMContext &C, const SmallAttrBuilder &B) const {
     return addAttributesAtIndex(C, ReturnIndex, B);
@@ -580,11 +562,6 @@ public:
 
   /// Add an argument attribute to the list. Returns a new list because
   /// attribute lists are immutable.
-  LLVM_NODISCARD AttributeList addParamAttributes(LLVMContext &C,
-                                                  unsigned ArgNo,
-                                                  const AttrBuilder &B) const {
-    return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
-  }
   LLVM_NODISCARD AttributeList addParamAttributes(
       LLVMContext &C, unsigned ArgNo, const SmallAttrBuilder &B) const {
     return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
@@ -607,8 +584,6 @@ public:
 
   /// Remove the specified attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
-  LLVM_NODISCARD AttributeList removeAttributesAtIndex(
-      LLVMContext &C, unsigned Index, const AttrBuilder &AttrsToRemove) const;
   LLVM_NODISCARD AttributeList
   removeAttributesAtIndex(LLVMContext &C, unsigned Index,
                           const SmallAttrBuilder &AttrsToRemove) const;
@@ -637,10 +612,6 @@ public:
 
   /// Remove the specified attribute at the function index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
-  LLVM_NODISCARD AttributeList
-  removeFnAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
-    return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
-  }
   LLVM_NODISCARD AttributeList removeFnAttributes(
       LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
@@ -668,10 +639,6 @@ public:
 
   /// Remove the specified attribute at the return value index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
-  LLVM_NODISCARD AttributeList
-  removeRetAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
-    return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
-  }
   LLVM_NODISCARD AttributeList removeRetAttributes(
       LLVMContext &C, const SmallAttrBuilder &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
@@ -694,10 +661,6 @@ public:
 
   /// Remove the specified attribute at the specified arg index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
-  LLVM_NODISCARD AttributeList removeParamAttributes(
-      LLVMContext &C, unsigned ArgNo, const AttrBuilder &AttrsToRemove) const {
-    return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
-  }
   LLVM_NODISCARD AttributeList
   removeParamAttributes(LLVMContext &C, unsigned ArgNo,
                         const SmallAttrBuilder &AttrsToRemove) const {
@@ -981,10 +944,10 @@ template <> struct DenseMapInfo<AttributeList, void> {
 
 //===----------------------------------------------------------------------===//
 /// \class
-/// This class aggregates add/remove attribute requests in order to efficiently
-/// build new AttributeSet. Unlike AttrBuilder, it is not suited to query the
-/// state of attributes.
-
+/// This class is used in conjunction with the Attribute::get method to
+/// create an Attribute object. The object itself is uniquified. The Builder's
+/// value, however, is not. So this can be used as a quick way to test for
+/// equality, presence of attributes, etc.
 class SmallAttrBuilder {
   LLVMContext &Ctxt;
 
@@ -1279,242 +1242,6 @@ public:
     auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::ByRef, EnumAttributeComparator{});
     return (R != EnumAttrs.end() && R->hasAttribute(Attribute::ByRef))? R->getValueAsType() : nullptr;
   }
-};
-
-//===----------------------------------------------------------------------===//
-/// \class
-/// This class is used in conjunction with the Attribute::get method to
-/// create an Attribute object. The object itself is uniquified. The Builder's
-/// value, however, is not. So this can be used as a quick way to test for
-/// equality, presence of attributes, etc.
-class AttrBuilder {
-  std::bitset<Attribute::EndAttrKinds> Attrs;
-  std::map<SmallString<32>, SmallString<32>, std::less<>> TargetDepAttrs;
-  std::array<uint64_t, Attribute::NumIntAttrKinds> IntAttrs = {};
-  std::array<Type *, Attribute::NumTypeAttrKinds> TypeAttrs = {};
-
-  Optional<unsigned> kindToIntIndex(Attribute::AttrKind Kind) const;
-  Optional<unsigned> kindToTypeIndex(Attribute::AttrKind Kind) const;
-
-public:
-  AttrBuilder() = default;
-
-  explicit AttrBuilder(const Attribute &A) {
-    addAttribute(A);
-  }
-
-  AttrBuilder(AttributeList AS, unsigned Idx);
-  explicit AttrBuilder(AttributeSet AS);
-
-  void clear();
-
-  /// Add an attribute to the builder.
-  AttrBuilder &addAttribute(Attribute::AttrKind Val) {
-    assert((unsigned)Val < Attribute::EndAttrKinds &&
-           "Attribute out of range!");
-    assert(Attribute::isEnumAttrKind(Val) &&
-           "Adding integer/type attribute without an argument!");
-    Attrs[Val] = true;
-    return *this;
-  }
-
-  /// Add the Attribute object to the builder.
-  AttrBuilder &addAttribute(Attribute A);
-
-  /// Add the target-dependent attribute to the builder.
-  AttrBuilder &addAttribute(StringRef A, StringRef V = StringRef());
-
-  /// Remove an attribute from the builder.
-  AttrBuilder &removeAttribute(Attribute::AttrKind Val);
-
-  /// Remove the attributes from the builder.
-  AttrBuilder &removeAttributes(AttributeList A, uint64_t WithoutIndex);
-
-  /// Remove the target-dependent attribute to the builder.
-  AttrBuilder &removeAttribute(StringRef A);
-
-  /// Add the attributes from the builder.
-  AttrBuilder &merge(const AttrBuilder &B);
-
-  /// Remove the attributes from the builder.
-  AttrBuilder &remove(const AttrBuilder &B);
-
-  /// Return true if the builder has any attribute that's in the
-  /// specified builder.
-  bool overlaps(const AttrBuilder &B) const;
-
-  /// Return true if the builder has the specified attribute.
-  bool contains(Attribute::AttrKind A) const {
-    assert((unsigned)A < Attribute::EndAttrKinds && "Attribute out of range!");
-    return Attrs[A];
-  }
-
-  /// Return true if the builder has the specified target-dependent
-  /// attribute.
-  bool contains(StringRef A) const;
-
-  /// Return true if the builder has IR-level attributes.
-  bool hasAttributes() const;
-
-  /// Return true if the builder has any attribute that's in the
-  /// specified attribute.
-  bool hasAttributes(AttributeList A, uint64_t Index) const;
-
-  /// Return true if the builder has an alignment attribute.
-  bool hasAlignmentAttr() const;
-
-  /// Return raw (possibly packed/encoded) value of integer attribute or 0 if
-  /// not set.
-  uint64_t getRawIntAttr(Attribute::AttrKind Kind) const;
-
-  /// Retrieve the alignment attribute, if it exists.
-  MaybeAlign getAlignment() const {
-    return MaybeAlign(getRawIntAttr(Attribute::Alignment));
-  }
-
-  /// Retrieve the stack alignment attribute, if it exists.
-  MaybeAlign getStackAlignment() const {
-    return MaybeAlign(getRawIntAttr(Attribute::StackAlignment));
-  }
-
-  /// Retrieve the number of dereferenceable bytes, if the
-  /// dereferenceable attribute exists (zero is returned otherwise).
-  uint64_t getDereferenceableBytes() const {
-    return getRawIntAttr(Attribute::Dereferenceable);
-  }
-
-  /// Retrieve the number of dereferenceable_or_null bytes, if the
-  /// dereferenceable_or_null attribute exists (zero is returned otherwise).
-  uint64_t getDereferenceableOrNullBytes() const {
-    return getRawIntAttr(Attribute::DereferenceableOrNull);
-  }
-
-  /// Retrieve type for the given type attribute.
-  Type *getTypeAttr(Attribute::AttrKind Kind) const;
-
-  /// Retrieve the byval type.
-  Type *getByValType() const { return getTypeAttr(Attribute::ByVal); }
-
-  /// Retrieve the sret type.
-  Type *getStructRetType() const { return getTypeAttr(Attribute::StructRet); }
-
-  /// Retrieve the byref type.
-  Type *getByRefType() const { return getTypeAttr(Attribute::ByRef); }
-
-  /// Retrieve the preallocated type.
-  Type *getPreallocatedType() const {
-    return getTypeAttr(Attribute::Preallocated);
-  }
-
-  /// Retrieve the inalloca type.
-  Type *getInAllocaType() const { return getTypeAttr(Attribute::InAlloca); }
-
-  /// Retrieve the allocsize args, if the allocsize attribute exists.  If it
-  /// doesn't exist, pair(0, 0) is returned.
-  std::pair<unsigned, Optional<unsigned>> getAllocSizeArgs() const;
-
-  /// Retrieve the minimum value of 'vscale_range'.
-  unsigned getVScaleRangeMin() const;
-
-  /// Retrieve the maximum value of 'vscale_range' or None when unknown.
-  Optional<unsigned> getVScaleRangeMax() const;
-
-  /// Add integer attribute with raw value (packed/encoded if necessary).
-  AttrBuilder &addRawIntAttr(Attribute::AttrKind Kind, uint64_t Value);
-
-  /// This turns an alignment into the form used internally in Attribute.
-  /// This call has no effect if Align is not set.
-  AttrBuilder &addAlignmentAttr(MaybeAlign Align);
-
-  /// This turns an int alignment (which must be a power of 2) into the
-  /// form used internally in Attribute.
-  /// This call has no effect if Align is 0.
-  /// Deprecated, use the version using a MaybeAlign.
-  inline AttrBuilder &addAlignmentAttr(unsigned Align) {
-    return addAlignmentAttr(MaybeAlign(Align));
-  }
-
-  /// This turns a stack alignment into the form used internally in Attribute.
-  /// This call has no effect if Align is not set.
-  AttrBuilder &addStackAlignmentAttr(MaybeAlign Align);
-
-  /// This turns an int stack alignment (which must be a power of 2) into
-  /// the form used internally in Attribute.
-  /// This call has no effect if Align is 0.
-  /// Deprecated, use the version using a MaybeAlign.
-  inline AttrBuilder &addStackAlignmentAttr(unsigned Align) {
-    return addStackAlignmentAttr(MaybeAlign(Align));
-  }
-
-  /// This turns the number of dereferenceable bytes into the form used
-  /// internally in Attribute.
-  AttrBuilder &addDereferenceableAttr(uint64_t Bytes);
-
-  /// This turns the number of dereferenceable_or_null bytes into the
-  /// form used internally in Attribute.
-  AttrBuilder &addDereferenceableOrNullAttr(uint64_t Bytes);
-
-  /// This turns one (or two) ints into the form used internally in Attribute.
-  AttrBuilder &addAllocSizeAttr(unsigned ElemSizeArg,
-                                const Optional<unsigned> &NumElemsArg);
-
-  /// This turns two ints into the form used internally in Attribute.
-  AttrBuilder &addVScaleRangeAttr(unsigned MinValue,
-                                  Optional<unsigned> MaxValue);
-
-  /// Add a type attribute with the given type.
-  AttrBuilder &addTypeAttr(Attribute::AttrKind Kind, Type *Ty);
-
-  /// This turns a byval type into the form used internally in Attribute.
-  AttrBuilder &addByValAttr(Type *Ty);
-
-  /// This turns a sret type into the form used internally in Attribute.
-  AttrBuilder &addStructRetAttr(Type *Ty);
-
-  /// This turns a byref type into the form used internally in Attribute.
-  AttrBuilder &addByRefAttr(Type *Ty);
-
-  /// This turns a preallocated type into the form used internally in Attribute.
-  AttrBuilder &addPreallocatedAttr(Type *Ty);
-
-  /// This turns an inalloca type into the form used internally in Attribute.
-  AttrBuilder &addInAllocaAttr(Type *Ty);
-
-  /// Add an allocsize attribute, using the representation returned by
-  /// Attribute.getIntValue().
-  AttrBuilder &addAllocSizeAttrFromRawRepr(uint64_t RawAllocSizeRepr);
-
-  /// Add a vscale_range attribute, using the representation returned by
-  /// Attribute.getIntValue().
-  AttrBuilder &addVScaleRangeAttrFromRawRepr(uint64_t RawVScaleRangeRepr);
-
-  /// Return true if the builder contains no target-independent
-  /// attributes.
-  bool empty() const { return Attrs.none(); }
-
-  // Iterators for target-dependent attributes.
-  using td_type = decltype(TargetDepAttrs)::value_type;
-  using td_iterator = decltype(TargetDepAttrs)::iterator;
-  using td_const_iterator = decltype(TargetDepAttrs)::const_iterator;
-  using td_range = iterator_range<td_iterator>;
-  using td_const_range = iterator_range<td_const_iterator>;
-
-  td_iterator td_begin() { return TargetDepAttrs.begin(); }
-  td_iterator td_end() { return TargetDepAttrs.end(); }
-
-  td_const_iterator td_begin() const { return TargetDepAttrs.begin(); }
-  td_const_iterator td_end() const { return TargetDepAttrs.end(); }
-
-  td_range td_attrs() { return td_range(td_begin(), td_end()); }
-
-  td_const_range td_attrs() const {
-    return td_const_range(td_begin(), td_end());
-  }
-
-  bool td_empty() const { return TargetDepAttrs.empty(); }
-
-  bool operator==(const AttrBuilder &B) const;
-  bool operator!=(const AttrBuilder &B) const { return !(*this == B); }
 };
 
 namespace AttributeFuncs {

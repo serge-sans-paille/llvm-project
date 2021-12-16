@@ -282,12 +282,6 @@ bool Argument::onlyReadsMemory() const {
          Attrs.hasParamAttr(getArgNo(), Attribute::ReadNone);
 }
 
-void Argument::addAttrs(AttrBuilder &B) {
-  AttributeList AL = getParent()->getAttributes();
-  AL = AL.addParamAttributes(Parent->getContext(), getArgNo(), B);
-  getParent()->setAttributes(AL);
-}
-
 void Argument::addAttrs(SmallAttrBuilder &B) {
   AttributeList AL = getParent()->getAttributes();
   AL = AL.addParamAttributes(Parent->getContext(), getArgNo(), B);
@@ -304,12 +298,6 @@ void Argument::addAttr(Attribute Attr) {
 
 void Argument::removeAttr(Attribute::AttrKind Kind) {
   getParent()->removeParamAttr(getArgNo(), Kind);
-}
-
-void Argument::removeAttrs(const AttrBuilder &B) {
-  AttributeList AL = getParent()->getAttributes();
-  AL = AL.removeParamAttributes(Parent->getContext(), getArgNo(), B);
-  getParent()->setAttributes(AL);
 }
 
 void Argument::removeAttrs(const SmallAttrBuilder &B) {
@@ -351,7 +339,7 @@ Function *Function::createWithDefaultAttr(FunctionType *Ty,
                                           unsigned AddrSpace, const Twine &N,
                                           Module *M) {
   auto *F = new Function(Ty, Linkage, AddrSpace, N, M);
-  AttrBuilder B;
+  SmallAttrBuilder B(F->getContext());
   if (M->getUwtable())
     B.addAttribute(Attribute::UWTable);
   switch (M->getFramePointer()) {
@@ -556,10 +544,6 @@ void Function::addFnAttr(Attribute Attr) {
   AttributeSets = AttributeSets.addFnAttribute(getContext(), Attr);
 }
 
-void Function::addFnAttrs(const AttrBuilder &Attrs) {
-  AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
-}
-
 void Function::addFnAttrs(const SmallAttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addFnAttributes(getContext(), Attrs);
 }
@@ -572,10 +556,6 @@ void Function::addRetAttr(Attribute Attr) {
   AttributeSets = AttributeSets.addRetAttribute(getContext(), Attr);
 }
 
-void Function::addRetAttrs(const AttrBuilder &Attrs) {
-  AttributeSets = AttributeSets.addRetAttributes(getContext(), Attrs);
-}
-
 void Function::addRetAttrs(const SmallAttrBuilder &Attrs) {
   AttributeSets = AttributeSets.addRetAttributes(getContext(), Attrs);
 }
@@ -585,10 +565,6 @@ void Function::addParamAttr(unsigned ArgNo, Attribute::AttrKind Kind) {
 
 void Function::addParamAttr(unsigned ArgNo, Attribute Attr) {
   AttributeSets = AttributeSets.addParamAttribute(getContext(), ArgNo, Attr);
-}
-
-void Function::addParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs) {
-  AttributeSets = AttributeSets.addParamAttributes(getContext(), ArgNo, Attrs);
 }
 
 void Function::addParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs) {
@@ -610,10 +586,6 @@ void Function::removeFnAttr(StringRef Kind) {
   AttributeSets = AttributeSets.removeFnAttribute(getContext(), Kind);
 }
 
-void Function::removeFnAttrs(const AttrBuilder &Attrs) {
-  AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
-}
-
 void Function::removeFnAttrs(const SmallAttrBuilder &Attrs) {
   AttributeSets = AttributeSets.removeFnAttributes(getContext(), Attrs);
 }
@@ -626,10 +598,6 @@ void Function::removeRetAttr(StringRef Kind) {
   AttributeSets = AttributeSets.removeRetAttribute(getContext(), Kind);
 }
 
-void Function::removeRetAttrs(const AttrBuilder &Attrs) {
-  AttributeSets = AttributeSets.removeRetAttributes(getContext(), Attrs);
-}
-
 void Function::removeRetAttrs(const SmallAttrBuilder &Attrs) {
   AttributeSets = AttributeSets.removeRetAttributes(getContext(), Attrs);
 }
@@ -640,11 +608,6 @@ void Function::removeParamAttr(unsigned ArgNo, Attribute::AttrKind Kind) {
 
 void Function::removeParamAttr(unsigned ArgNo, StringRef Kind) {
   AttributeSets = AttributeSets.removeParamAttribute(getContext(), ArgNo, Kind);
-}
-
-void Function::removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs) {
-  AttributeSets =
-      AttributeSets.removeParamAttributes(getContext(), ArgNo, Attrs);
 }
 
 void Function::removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs) {

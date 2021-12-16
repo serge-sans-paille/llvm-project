@@ -332,7 +332,6 @@ public:
   void addFnAttr(Attribute Attr);
 
   /// Add function attributes to this function.
-  void addFnAttrs(const AttrBuilder &Attrs);
   void addFnAttrs(const SmallAttrBuilder &Attrs);
 
   /// Add return value attributes to this function.
@@ -342,7 +341,6 @@ public:
   void addRetAttr(Attribute Attr);
 
   /// Add return value attributes to this function.
-  void addRetAttrs(const AttrBuilder &Attrs);
   void addRetAttrs(const SmallAttrBuilder &Attrs);
 
   /// adds the attribute to the list of attributes for the given arg.
@@ -352,7 +350,6 @@ public:
   void addParamAttr(unsigned ArgNo, Attribute Attr);
 
   /// adds the attributes to the list of attributes for the given arg.
-  void addParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs);
   void addParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the list of attributes.
@@ -367,7 +364,6 @@ public:
   /// Remove function attribute from this function.
   void removeFnAttr(StringRef Kind);
 
-  void removeFnAttrs(const AttrBuilder &Attrs);
   void removeFnAttrs(const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the return value list of attributes.
@@ -377,7 +373,6 @@ public:
   void removeRetAttr(StringRef Kind);
 
   /// removes the attributes from the return value list of attributes.
-  void removeRetAttrs(const AttrBuilder &Attrs);
   void removeRetAttrs(const SmallAttrBuilder &Attrs);
 
   /// removes the attribute from the list of attributes.
@@ -387,7 +382,6 @@ public:
   void removeParamAttr(unsigned ArgNo, StringRef Kind);
 
   /// removes the attribute from the list of attributes.
-  void removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs);
   void removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs);
 
   /// Return true if the function has the attribute.

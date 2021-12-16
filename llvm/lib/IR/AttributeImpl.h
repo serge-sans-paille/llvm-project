@@ -234,7 +234,6 @@ public:
 
   void operator delete(void *p) { ::operator delete(p); }
 
-  static AttributeSetNode *get(LLVMContext &C, const AttrBuilder &B);
   static AttributeSetNode *get(LLVMContext &C, const SmallAttrBuilder &B);
 
   static AttributeSetNode *get(LLVMContext &C, ArrayRef<Attribute> Attrs);

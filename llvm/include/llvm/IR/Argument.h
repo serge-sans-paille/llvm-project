@@ -153,7 +153,6 @@ public:
   bool hasSExtAttr() const;
 
   /// Add attributes to an argument.
-  void addAttrs(AttrBuilder &B);
   void addAttrs(SmallAttrBuilder &B);
 
   void addAttr(Attribute::AttrKind Kind);
@@ -163,7 +162,6 @@ public:
   /// Remove attributes from an argument.
   void removeAttr(Attribute::AttrKind Kind);
 
-  void removeAttrs(const AttrBuilder &B);
   void removeAttrs(const SmallAttrBuilder &B);
 
   /// Check if an argument has a given attribute.

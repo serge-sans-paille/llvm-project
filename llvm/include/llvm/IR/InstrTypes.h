@@ -1544,9 +1544,6 @@ public:
   }
 
   /// Removes the attributes from the function
-  void removeFnAttrs(const AttrBuilder &AttrsToRemove) {
-    Attrs = Attrs.removeFnAttributes(getContext(), AttrsToRemove);
-  }
   void removeFnAttrs(const SmallAttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeFnAttributes(getContext(), AttrsToRemove);
   }
@@ -1562,10 +1559,6 @@ public:
   }
 
   /// Removes the attributes from the return value
-  void removeRetAttrs(const AttrBuilder &AttrsToRemove) {
-    Attrs = Attrs.removeRetAttributes(getContext(), AttrsToRemove);
-  }
-
   void removeRetAttrs(const SmallAttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeRetAttributes(getContext(), AttrsToRemove);
   }
@@ -1583,9 +1576,6 @@ public:
   }
 
   /// Removes the attributes from the given argument
-  void removeParamAttrs(unsigned ArgNo, const AttrBuilder &AttrsToRemove) {
-    Attrs = Attrs.removeParamAttributes(getContext(), ArgNo, AttrsToRemove);
-  }
   void removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeParamAttributes(getContext(), ArgNo, AttrsToRemove);
   }
