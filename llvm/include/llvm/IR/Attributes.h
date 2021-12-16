@@ -949,6 +949,7 @@ template <> struct DenseMapInfo<AttributeList, void> {
 /// value, however, is not. So this can be used as a quick way to test for
 /// equality, presence of attributes, etc.
 class SmallAttrBuilder {
+  friend AttributeSet;
   LLVMContext &Ctxt;
 
   SmallVector<Attribute> EnumAttrs;
@@ -1107,6 +1108,24 @@ public:
   SmallAttrBuilder &removeEnumAttribute(Attribute A) {
     return removeAttribute(A.getKindAsEnum());
   }
+  iterator removeStringAttributeHelper(Attribute A, iterator Start) {
+	  auto Val = A.getKindAsString();
+    auto R = std::lower_bound(Start, StringAttrs.end(), Val,
+                              StringAttributeComparator{});
+    if (R != StringAttrs.end() && R->hasAttribute(Val)) {
+      return StringAttrs.erase(R);
+    }
+    return R;
+  }
+  iterator removeEnumAttributeHelper(Attribute A, iterator Start) {
+	  auto Val = A.getKindAsEnum();
+    auto R = std::lower_bound(Start, EnumAttrs.end(), Val,
+                              EnumAttributeComparator{});
+    if (R != EnumAttrs.end() && R->hasAttribute(Val)) {
+      return EnumAttrs.erase(R);
+    }
+    return R;
+  }
 
   SmallAttrBuilder &removeAttribute(Attribute A) {
     if (A.isStringAttribute())
@@ -1173,10 +1192,8 @@ public:
   SmallAttrBuilder& remove(Attribute A) {
 	  return removeAttribute(A);
   }
-  std::pair<ArrayRef<Attribute>, ArrayRef<Attribute>> uniquify() const {
-    return std::make_pair(ArrayRef<Attribute>(EnumAttrs),
-                          ArrayRef<Attribute>(StringAttrs));
-  }
+  ArrayRef<Attribute> getEnumAttrs() const { return EnumAttrs;}
+  ArrayRef<Attribute> getStringAttrs() const { return StringAttrs;}
 
   SmallAttrBuilder &addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
 	  addEnumAttributeHelper(Attribute::get(Ctxt, Kind, Ty), EnumAttrs.begin());
