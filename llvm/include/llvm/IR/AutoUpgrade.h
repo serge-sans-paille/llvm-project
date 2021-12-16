@@ -16,7 +16,7 @@
 #include "llvm/ADT/StringRef.h"
 
 namespace llvm {
-  class AttrBuilder;
+  class SmallAttrBuilder;
   class CallInst;
   class Constant;
   class Function;
@@ -96,7 +96,7 @@ namespace llvm {
   std::string UpgradeDataLayoutString(StringRef DL, StringRef Triple);
 
   /// Upgrade attributes that changed format or kind.
-  void UpgradeAttributes(AttrBuilder &B);
+  void UpgradeAttributes(SmallAttrBuilder &B);
 
 } // End llvm namespace
 

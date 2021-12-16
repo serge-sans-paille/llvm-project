@@ -1170,6 +1170,12 @@ public:
   SmallAttrBuilder &addInAllocaAttr(Type *Ty);
   SmallAttrBuilder &addPreallocatedAttr(Type *Ty);
 
+  SmallAttrBuilder &addStackAlignmentAttr(MaybeAlign Align);
+  SmallAttrBuilder &addStackAlignmentAttr(unsigned Align) {
+    return addStackAlignmentAttr(MaybeAlign(Align));
+  }
+  SmallAttrBuilder &addAllocSizeAttrFromRawRepr(uint64_t RawAllocSizeRepr);
+  SmallAttrBuilder &addVScaleRangeAttrFromRawRepr(uint64_t RawVScaleRangeRepr);
 
 
   bool contains(Attribute::AttrKind K) const {
@@ -1179,6 +1185,26 @@ public:
   bool contains(StringRef K) const {
     auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), K, StringAttributeComparator{});
 	  return R!= StringAttrs.end() && R->hasAttribute(K);
+  }
+
+
+  // Iterators for target-dependent attributes.
+  using td_type = decltype(StringAttrs)::value_type;
+  using td_iterator = decltype(StringAttrs)::iterator;
+  using td_const_iterator = decltype(StringAttrs)::const_iterator;
+  using td_range = iterator_range<td_iterator>;
+  using td_const_range = iterator_range<td_const_iterator>;
+
+  td_iterator td_begin() { return StringAttrs.begin(); }
+  td_iterator td_end() { return StringAttrs.end(); }
+
+  td_const_iterator td_begin() const { return StringAttrs.begin(); }
+  td_const_iterator td_end() const { return StringAttrs.end(); }
+
+  td_range td_attrs() { return td_range(td_begin(), td_end()); }
+
+  td_const_range td_attrs() const {
+    return td_const_range(td_begin(), td_end());
   }
 };
 
