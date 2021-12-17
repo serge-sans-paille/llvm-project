@@ -625,6 +625,10 @@ void Function::removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs) {
   AttributeSets =
       AttributeSets.removeParamAttributes(getContext(), ArgNo, Attrs);
 }
+void Function::removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs) {
+  AttributeSets =
+      AttributeSets.removeParamAttributes(getContext(), ArgNo, Attrs);
+}
 
 void Function::addDereferenceableParamAttr(unsigned ArgNo, uint64_t Bytes) {
   AttributeSets =

@@ -1582,6 +1582,9 @@ public:
   void removeParamAttrs(unsigned ArgNo, const AttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeParamAttributes(getContext(), ArgNo, AttrsToRemove);
   }
+  void removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &AttrsToRemove) {
+    Attrs = Attrs.removeParamAttributes(getContext(), ArgNo, AttrsToRemove);
+  }
 
   /// adds the dereferenceable attribute to the list of attributes.
   void addDereferenceableParamAttr(unsigned i, uint64_t Bytes) {

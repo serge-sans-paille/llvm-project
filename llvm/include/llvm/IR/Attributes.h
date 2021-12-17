@@ -1416,6 +1416,7 @@ SmallAttrBuilder typeIncompatible2(Type *Ty);
 /// include attributes like nocapture, which constrain the function
 /// implementation rather than the passed value.
 AttrBuilder getUBImplyingAttributes();
+SmallAttrBuilder getUBImplyingAttributes(LLVMContext& C);
 
 /// \returns Return true if the two functions have compatible target-independent
 /// attributes for inlining purposes.

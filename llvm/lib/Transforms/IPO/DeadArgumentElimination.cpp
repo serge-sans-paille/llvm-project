@@ -287,7 +287,7 @@ bool DeadArgumentEliminationPass::RemoveDeadArgumentsFromCallers(Function &Fn) {
   SmallVector<unsigned, 8> UnusedArgs;
   bool Changed = false;
 
-  AttrBuilder UBImplyingAttributes = AttributeFuncs::getUBImplyingAttributes();
+  SmallAttrBuilder UBImplyingAttributes = AttributeFuncs::getUBImplyingAttributes(Fn.getContext());
   for (Argument &Arg : Fn.args()) {
     if (!Arg.hasSwiftErrorAttr() && Arg.use_empty() &&
         !Arg.hasPassPointeeByValueCopyAttr()) {
@@ -838,14 +838,14 @@ bool DeadArgumentEliminationPass::RemoveDeadStuffFromFunction(Function *F) {
   assert(NRetTy && "No new return type found?");
 
   // The existing function return attributes.
-  AttrBuilder RAttrs(PAL.getRetAttrs());
+  SmallAttrBuilder RAttrs(NRetTy->getContext(), PAL.getRetAttrs());
 
   // Remove any incompatible attributes, but only if we removed all return
   // values. Otherwise, ensure that we don't have any conflicting attributes
   // here. Currently, this should not be possible, but special handling might be
   // required when new return value attributes are added.
   if (NRetTy->isVoidTy())
-    RAttrs.remove(AttributeFuncs::typeIncompatible(NRetTy));
+    RAttrs.remove(AttributeFuncs::typeIncompatible2(NRetTy));
   else
     assert(!RAttrs.overlaps(AttributeFuncs::typeIncompatible(NRetTy)) &&
            "Return attributes no longer compatible?");
@@ -889,8 +889,8 @@ bool DeadArgumentEliminationPass::RemoveDeadStuffFromFunction(Function *F) {
 
     // Adjust the call return attributes in case the function was changed to
     // return void.
-    AttrBuilder RAttrs(CallPAL.getRetAttrs());
-    RAttrs.remove(AttributeFuncs::typeIncompatible(NRetTy));
+    SmallAttrBuilder RAttrs(F->getContext(), CallPAL.getRetAttrs());
+    RAttrs.remove(AttributeFuncs::typeIncompatible2(NRetTy));
     AttributeSet RetAttrs = AttributeSet::get(F->getContext(), RAttrs);
 
     // Declare these outside of the loops, so we can reuse them for the second
@@ -912,7 +912,7 @@ bool DeadArgumentEliminationPass::RemoveDeadStuffFromFunction(Function *F) {
           // this is not an expected case anyway
           ArgAttrVec.push_back(AttributeSet::get(
               F->getContext(),
-              AttrBuilder(Attrs).removeAttribute(Attribute::Returned)));
+              SmallAttrBuilder(F->getContext(), Attrs).removeAttribute(Attribute::Returned)));
         } else {
           // Otherwise, use the original attributes.
           ArgAttrVec.push_back(Attrs);

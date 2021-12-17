@@ -2100,6 +2100,14 @@ AttrBuilder AttributeFuncs::getUBImplyingAttributes() {
   return B;
 }
 
+SmallAttrBuilder AttributeFuncs::getUBImplyingAttributes(LLVMContext& C) {
+  SmallAttrBuilder B(C);
+  B.addAttribute(Attribute::NoUndef);
+  B.addDereferenceableAttr(1);
+  B.addDereferenceableOrNullAttr(1);
+  return B;
+}
+
 template<typename AttrClass>
 static bool isEqual(const Function &Caller, const Function &Callee) {
   return Caller.getFnAttribute(AttrClass::getKind()) ==

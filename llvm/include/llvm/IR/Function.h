@@ -385,6 +385,7 @@ public:
 
   /// removes the attribute from the list of attributes.
   void removeParamAttrs(unsigned ArgNo, const AttrBuilder &Attrs);
+  void removeParamAttrs(unsigned ArgNo, const SmallAttrBuilder &Attrs);
 
   /// Return true if the function has the attribute.
   bool hasFnAttribute(Attribute::AttrKind Kind) const;
