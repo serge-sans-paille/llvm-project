@@ -1846,7 +1846,7 @@ AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   return *this;
 }
 SmallAttrBuilder &SmallAttrBuilder::addByValAttr(Type *Ty) {
-  return addAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::ByVal, Ty));
 }
 
 AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
@@ -1854,7 +1854,7 @@ AttrBuilder &AttrBuilder::addByValAttr(Type *Ty) {
 }
 
 SmallAttrBuilder &SmallAttrBuilder::addStructRetAttr(Type *Ty) {
-  return addAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::StructRet, Ty));
 }
 AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
   return addTypeAttr(Attribute::StructRet, Ty);

@@ -1015,6 +1015,21 @@ class SmallAttrBuilder {
       return EnumAttrs.insert(R, A);
     }
   }
+
+  SmallAttrBuilder& forceEnumAttribute(Attribute A) {
+    auto R =
+        std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A, EnumAttributeComparator{});
+    if (R == EnumAttrs.end()) {
+      EnumAttrs.push_back(A);
+    } else if (R->hasAttribute(A.getKindAsEnum())) {
+      std::swap(*R, A);
+    }
+    else {
+      EnumAttrs.insert(R, A);
+    }
+    return *this;
+  }
+
   iterator addAttributeHelper(Attribute A, iterator Iter) {
     if (A.isStringAttribute()) {
       return addStringAttributeHelper(A, Iter);

@@ -1185,21 +1185,20 @@ static bool MayContainThrowingOrExitingCall(Instruction *Begin,
 
 static SmallAttrBuilder IdentifyValidAttributes(CallBase &CB) {
 
-  AttrBuilder AB(CB.getAttributes(), AttributeList::ReturnIndex);
   SmallAttrBuilder Valid(CB.getContext());
-  if (AB.empty()) {
+  if (!CB.getAttributes().hasRetAttrs()) {
     return Valid;
   }
   // Only allow these white listed attributes to be propagated back to the
   // callee. This is because other attributes may only be valid on the call
   // itself, i.e. attributes such as signext and zeroext.
-  if (auto DerefBytes = AB.getDereferenceableBytes())
+  if (auto DerefBytes = CB.getRetDereferenceableBytes())
     Valid.addDereferenceableAttr(DerefBytes);
-  if (auto DerefOrNullBytes = AB.getDereferenceableOrNullBytes())
+  if (auto DerefOrNullBytes = CB.getRetDereferenceableOrNullBytes())
     Valid.addDereferenceableOrNullAttr(DerefOrNullBytes);
-  if (AB.contains(Attribute::NoAlias))
+  if (CB.returnDoesNotAlias())
     Valid.addAttribute(Attribute::NoAlias);
-  if (AB.contains(Attribute::NonNull))
+  if (CB.isReturnNonNull())
     Valid.addAttribute(Attribute::NonNull);
   return Valid;
 }
