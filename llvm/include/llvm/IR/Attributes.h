@@ -1166,6 +1166,17 @@ public:
   SmallAttrBuilder &addByRefAttr(Type *Ty);
   SmallAttrBuilder &addInAllocaAttr(Type *Ty);
   SmallAttrBuilder &addPreallocatedAttr(Type *Ty);
+
+
+
+  bool contains(Attribute::AttrKind K) const {
+    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), K, EnumAttributeComparator{});
+	  return R!= EnumAttrs.end() && R->hasAttribute(K);
+  }
+  bool contains(StringRef K) const {
+    auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), K, StringAttributeComparator{});
+	  return R!= StringAttrs.end() && R->hasAttribute(K);
+  }
 };
 
 //===----------------------------------------------------------------------===//
