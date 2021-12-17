@@ -1837,6 +1837,9 @@ Type *AttrBuilder::getTypeAttr(Attribute::AttrKind Kind) const {
   assert(TypeIndex && "Not a type attribute");
   return TypeAttrs[*TypeIndex];
 }
+SmallAttrBuilder &SmallAttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Kind, Ty));
+}
 
 AttrBuilder &AttrBuilder::addTypeAttr(Attribute::AttrKind Kind, Type *Ty) {
   Optional<unsigned> TypeIndex = kindToTypeIndex(Kind);
@@ -1863,13 +1866,24 @@ AttrBuilder &AttrBuilder::addStructRetAttr(Type *Ty) {
 AttrBuilder &AttrBuilder::addByRefAttr(Type *Ty) {
   return addTypeAttr(Attribute::ByRef, Ty);
 }
+SmallAttrBuilder &SmallAttrBuilder::addByRefAttr(Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::ByRef, Ty));
+}
 
 AttrBuilder &AttrBuilder::addPreallocatedAttr(Type *Ty) {
   return addTypeAttr(Attribute::Preallocated, Ty);
 }
 
+SmallAttrBuilder &SmallAttrBuilder::addPreallocatedAttr(Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::Preallocated, Ty));
+}
+
 AttrBuilder &AttrBuilder::addInAllocaAttr(Type *Ty) {
   return addTypeAttr(Attribute::InAlloca, Ty);
+}
+
+SmallAttrBuilder &SmallAttrBuilder::addInAllocaAttr(Type *Ty) {
+  return forceEnumAttribute(Attribute::get(Ctxt, Attribute::InAlloca, Ty));
 }
 
 SmallAttrBuilder &SmallAttrBuilder::merge(const SmallAttrBuilder &B) {
@@ -1981,6 +1995,40 @@ bool AttrBuilder::operator==(const AttrBuilder &B) const {
 /// Which attributes cannot be applied to a type.
 AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
   AttrBuilder Incompatible;
+
+  if (!Ty->isIntegerTy())
+    // Attribute that only apply to integers.
+    Incompatible.addAttribute(Attribute::SExt)
+      .addAttribute(Attribute::ZExt);
+
+  if (!Ty->isPointerTy())
+    // Attribute that only apply to pointers.
+    Incompatible.addAttribute(Attribute::Nest)
+        .addAttribute(Attribute::NoAlias)
+        .addAttribute(Attribute::NoCapture)
+        .addAttribute(Attribute::NonNull)
+        .addAttribute(Attribute::ReadNone)
+        .addAttribute(Attribute::ReadOnly)
+        .addAttribute(Attribute::SwiftError)
+        .addAlignmentAttr(1)             // the int here is ignored
+        .addDereferenceableAttr(1)       // the int here is ignored
+        .addDereferenceableOrNullAttr(1) // the int here is ignored
+        .addPreallocatedAttr(Ty)
+        .addInAllocaAttr(Ty)
+        .addByValAttr(Ty)
+        .addStructRetAttr(Ty)
+        .addByRefAttr(Ty)
+        .addTypeAttr(Attribute::ElementType, Ty);
+
+  // Some attributes can apply to all "values" but there are no `void` values.
+  if (Ty->isVoidTy())
+    Incompatible.addAttribute(Attribute::NoUndef);
+
+  return Incompatible;
+}
+
+SmallAttrBuilder AttributeFuncs::typeIncompatible2(Type *Ty) {
+  SmallAttrBuilder Incompatible(Ty->getContext());
 
   if (!Ty->isIntegerTy())
     // Attribute that only apply to integers.

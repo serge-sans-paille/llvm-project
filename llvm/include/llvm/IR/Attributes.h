@@ -1022,7 +1022,7 @@ class SmallAttrBuilder {
     if (R == EnumAttrs.end()) {
       EnumAttrs.push_back(A);
     } else if (R->hasAttribute(A.getKindAsEnum())) {
-      std::swap(*R, A);
+	    *R = A;
     }
     else {
       EnumAttrs.insert(R, A);
@@ -1115,6 +1115,15 @@ public:
     }
     return *this;
   }
+
+  SmallAttrBuilder& remove(const SmallAttrBuilder& B) {
+           for(Attribute A : B.EnumAttrs)
+         	  removeEnumAttribute(A);
+           for(Attribute A : B.StringAttrs)
+         	  removeStringAttribute(A);
+           return *this;
+  }
+
   SmallAttrBuilder &removeStringAttribute(Attribute A) {
     return removeAttribute(A.getKindAsString());
   }
@@ -1150,8 +1159,12 @@ public:
   SmallAttrBuilder &addAlignmentAttr(unsigned Align) {
     return addAlignmentAttr(MaybeAlign(Align));
   }
+  SmallAttrBuilder &addTypeAttr(Attribute::AttrKind Kind, Type *Ty);
   SmallAttrBuilder &addStructRetAttr(Type *Ty);
   SmallAttrBuilder &addByValAttr(Type *Ty);
+  SmallAttrBuilder &addByRefAttr(Type *Ty);
+  SmallAttrBuilder &addInAllocaAttr(Type *Ty);
+  SmallAttrBuilder &addPreallocatedAttr(Type *Ty);
 };
 
 //===----------------------------------------------------------------------===//
@@ -1394,6 +1407,7 @@ namespace AttributeFuncs {
 
 /// Which attributes cannot be applied to a type.
 AttrBuilder typeIncompatible(Type *Ty);
+SmallAttrBuilder typeIncompatible2(Type *Ty);
 
 /// Get param/return attributes which imply immediate undefined behavior if an
 /// invalid value is passed. For example, this includes noundef (where undef

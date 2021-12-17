@@ -500,13 +500,13 @@ CallBase &llvm::promoteCall(CallBase &CB, Function *Callee,
       CB.setArgOperand(ArgNo, Cast);
 
       // Remove any incompatible attributes for the argument.
-      AttrBuilder ArgAttrs(CallerPAL.getParamAttrs(ArgNo));
-      ArgAttrs.remove(AttributeFuncs::typeIncompatible(FormalTy));
+      SmallAttrBuilder ArgAttrs(Ctx, CallerPAL.getParamAttrs(ArgNo));
+      ArgAttrs.remove(AttributeFuncs::typeIncompatible2(FormalTy));
 
       // We may have a different byval/inalloca type.
-      if (ArgAttrs.getByValType())
+      if (CallerPAL.getParamByValType(ArgNo))
         ArgAttrs.addByValAttr(Callee->getParamByValType(ArgNo));
-      if (ArgAttrs.getInAllocaType())
+      if (CallerPAL.getParamInAllocaType(ArgNo))
         ArgAttrs.addInAllocaAttr(Callee->getParamInAllocaType(ArgNo));
 
       NewArgAttrs.push_back(AttributeSet::get(Ctx, ArgAttrs));
