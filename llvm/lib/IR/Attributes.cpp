@@ -1377,7 +1377,7 @@ AttributeList AttributeList::addParamAttribute(LLVMContext &C,
 
   for (unsigned ArgNo : ArgNos) {
     unsigned Index = attrIdxToArrayIdx(ArgNo + FirstArgIndex);
-    AttrBuilder B(AttrSets[Index]);
+    SmallAttrBuilder B(C, AttrSets[Index]);
     B.addAttribute(A);
     AttrSets[Index] = AttributeSet::get(C, B);
   }
@@ -1463,7 +1463,7 @@ AttributeList::removeAttributesAtIndex(LLVMContext &C,
 
 AttributeList AttributeList::addDereferenceableRetAttr(LLVMContext &C,
                                                        uint64_t Bytes) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addDereferenceableAttr(Bytes);
   return addRetAttributes(C, B);
 }
@@ -1471,7 +1471,7 @@ AttributeList AttributeList::addDereferenceableRetAttr(LLVMContext &C,
 AttributeList AttributeList::addDereferenceableParamAttr(LLVMContext &C,
                                                          unsigned Index,
                                                          uint64_t Bytes) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addDereferenceableAttr(Bytes);
   return addParamAttributes(C, Index, B);
 }
@@ -1479,7 +1479,7 @@ AttributeList AttributeList::addDereferenceableParamAttr(LLVMContext &C,
 AttributeList
 AttributeList::addDereferenceableOrNullParamAttr(LLVMContext &C, unsigned Index,
                                                  uint64_t Bytes) const {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addDereferenceableOrNullAttr(Bytes);
   return addParamAttributes(C, Index, B);
 }
@@ -1488,7 +1488,7 @@ AttributeList
 AttributeList::addAllocSizeParamAttr(LLVMContext &C, unsigned Index,
                                      unsigned ElemSizeArg,
                                      const Optional<unsigned> &NumElemsArg) {
-  AttrBuilder B;
+  SmallAttrBuilder B(C);
   B.addAllocSizeAttr(ElemSizeArg, NumElemsArg);
   return addParamAttributes(C, Index, B);
 }
@@ -2202,7 +2202,7 @@ static void adjustCallerSSPLevel(Function &Caller, const Function &Callee) {
   // If upgrading the SSP attribute, clear out the old SSP Attributes first.
   // Having multiple SSP attributes doesn't actually hurt, but it adds useless
   // clutter to the IR.
-  AttrBuilder OldSSPAttr;
+  SmallAttrBuilder OldSSPAttr(Caller.getContext());
   OldSSPAttr.addAttribute(Attribute::StackProtect)
       .addAttribute(Attribute::StackProtectStrong)
       .addAttribute(Attribute::StackProtectReq);

@@ -518,10 +518,10 @@ CallBase &llvm::promoteCall(CallBase &CB, Function *Callee,
   // If the return type of the call site doesn't match that of the callee, cast
   // the returned value to the appropriate type.
   // Remove any incompatible return value attribute.
-  AttrBuilder RAttrs(CallerPAL, AttributeList::ReturnIndex);
+  SmallAttrBuilder RAttrs(Ctx, CallerPAL, AttributeList::ReturnIndex);
   if (!CallSiteRetTy->isVoidTy() && CallSiteRetTy != CalleeRetTy) {
     createRetBitCast(CB, CallSiteRetTy, RetBitCast);
-    RAttrs.remove(AttributeFuncs::typeIncompatible(CalleeRetTy));
+    RAttrs.remove(AttributeFuncs::typeIncompatible2(CalleeRetTy));
     AttributeChanged = true;
   }
 
