@@ -1936,6 +1936,37 @@ AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
   return *this;
 }
 
+
+bool SmallAttrBuilder::overlaps(const SmallAttrBuilder &B) const {
+  // First check if any of the target independent attributes overlap.
+  auto SelfEnumIter = EnumAttrs.begin();
+  auto OtherEnumIter = B.EnumAttrs.begin();
+  while(SelfEnumIter < EnumAttrs.end() && OtherEnumIter < B.EnumAttrs.end()) {
+	  int Cmp = (int)SelfEnumIter->getKindAsEnum() - (int)OtherEnumIter->getKindAsEnum();
+	  if(Cmp < 0)
+		  ++SelfEnumIter;
+	  else if(Cmp > 0) 
+		  ++OtherEnumIter;
+	  else
+		  return true;
+  }
+
+  auto SelfStringIter = StringAttrs.begin();
+  auto OtherStringIter = B.StringAttrs.begin();
+  while(SelfStringIter < StringAttrs.end() && OtherStringIter < B.StringAttrs.end()) {
+	  int Cmp = SelfStringIter->getKindAsString().compare(OtherStringIter->getKindAsString());
+	  if(Cmp < 0)
+		  ++SelfStringIter;
+	  else if(Cmp > 0) 
+		  ++OtherStringIter;
+	  else
+		  return true;
+  }
+
+
+  return false;
+}
+
 bool AttrBuilder::overlaps(const AttrBuilder &B) const {
   // First check if any of the target independent attributes overlap.
   if ((Attrs & B.Attrs).any())

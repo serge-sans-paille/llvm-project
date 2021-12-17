@@ -1137,6 +1137,7 @@ public:
     else
       return removeEnumAttribute(A);
   }
+  bool overlaps(const SmallAttrBuilder &B) const;
 
   unsigned size() const { return EnumAttrs.size() + StringAttrs.size(); }
 

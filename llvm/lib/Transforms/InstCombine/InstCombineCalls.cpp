@@ -2934,8 +2934,8 @@ bool InstCombinerImpl::transformConstExprCastCall(CallBase &Call) {
     }
 
     if (!CallerPAL.isEmpty() && !Caller->use_empty()) {
-      AttrBuilder RAttrs(CallerPAL, AttributeList::ReturnIndex);
-      if (RAttrs.overlaps(AttributeFuncs::typeIncompatible(NewRetTy)))
+      SmallAttrBuilder RAttrs(FT->getContext(), CallerPAL, AttributeList::ReturnIndex);
+      if (RAttrs.overlaps(AttributeFuncs::typeIncompatible2(NewRetTy)))
         return false;   // Attribute not compatible with transformed value.
     }
 
@@ -2980,8 +2980,8 @@ bool InstCombinerImpl::transformConstExprCastCall(CallBase &Call) {
     if (!CastInst::isBitOrNoopPointerCastable(ActTy, ParamTy, DL))
       return false;   // Cannot transform this parameter value.
 
-    if (AttrBuilder(CallerPAL.getParamAttrs(i))
-            .overlaps(AttributeFuncs::typeIncompatible(ParamTy)))
+    if (SmallAttrBuilder(Call.getContext(), CallerPAL.getParamAttrs(i))
+            .overlaps(AttributeFuncs::typeIncompatible2(ParamTy)))
       return false;   // Attribute not compatible with transformed value.
 
     if (Call.isInAllocaArgument(i))
