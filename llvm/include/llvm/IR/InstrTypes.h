@@ -1547,6 +1547,9 @@ public:
   void removeFnAttrs(const AttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeFnAttributes(getContext(), AttrsToRemove);
   }
+  void removeFnAttrs(const SmallAttrBuilder &AttrsToRemove) {
+    Attrs = Attrs.removeFnAttributes(getContext(), AttrsToRemove);
+  }
 
   /// Removes the attribute from the function
   void removeFnAttr(Attribute::AttrKind Kind) {
