@@ -1565,6 +1565,9 @@ public:
   void removeRetAttrs(const AttrBuilder &AttrsToRemove) {
     Attrs = Attrs.removeRetAttributes(getContext(), AttrsToRemove);
   }
+  void removeRetAttrs(const SmallAttrBuilder &AttrsToRemove) {
+    Attrs = Attrs.removeRetAttributes(getContext(), AttrsToRemove);
+  }
 
   /// Removes the attribute from the given argument
   void removeParamAttr(unsigned ArgNo, Attribute::AttrKind Kind) {
