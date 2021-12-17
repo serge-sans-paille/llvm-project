@@ -1136,12 +1136,31 @@ public:
     else
       return removeEnumAttribute(A);
   }
-  SmallAttrBuilder &removeAttributes(AttributeSet AS) {
-	  auto Iter = AS.begin(), End = AS.end();
-    while(Iter != End && !Iter->isStringAttribute())
-	    removeEnumAttribute(*Iter++);
-    while(Iter != End)
-	    removeStringAttribute(*Iter++);
+
+	template<class InputIt1, class InputIt2, class OutputIt, class Cmp>
+	static OutputIt set_difference(InputIt1 first1, InputIt1 last1,
+				InputIt2 first2, InputIt2 last2,
+				OutputIt d_first, Cmp cmp)
+        {
+	while (first1 != last1) {
+		if (first2 == last2) return std::copy(first1, last1, d_first);
+
+		if (cmp(*first1, *first2)) {
+			*d_first++ = *first1++;
+		} else {
+			if (! (cmp(*first2 , *first1))) {
+				++first1;
+			}
+			++first2;
+		}
+	}
+	return d_first;
+        }
+  SmallAttrBuilder &removeAttributes(const SmallAttrBuilder &B) {
+	  auto RE = set_difference(EnumAttrs.begin(), EnumAttrs.end(), B.EnumAttrs.begin(), B.EnumAttrs.end(), EnumAttrs.begin(), EnumAttributeComparator());
+	  EnumAttrs.resize(RE - EnumAttrs.begin());
+	  auto RS = set_difference(StringAttrs.begin(), StringAttrs.end(), B.StringAttrs.begin(), B.StringAttrs.end(), StringAttrs.begin(), StringAttributeComparator());
+	  StringAttrs.resize(RS - StringAttrs.begin());
     return *this;
   }
 

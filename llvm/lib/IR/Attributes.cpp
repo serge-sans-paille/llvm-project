@@ -656,25 +656,14 @@ AttributeSet
 AttributeSet::removeAttributes(LLVMContext &C,
                                const SmallAttrBuilder &Attrs) const {
   SmallAttrBuilder B(C, *this);
-  {
-  auto Start = B.EnumAttrs.begin();
-  for (Attribute A : Attrs.getEnumAttrs())
-    Start = B.removeEnumAttributeHelper(A, Start);
-  }
-  {
-  auto Start = B.StringAttrs.begin();
-  for (Attribute A : Attrs.getStringAttrs())
-    Start = B.removeStringAttributeHelper(A, Start);
-  }
+  B.removeAttributes(Attrs);
   return get(C, B);
 }
 
 AttributeSet
 AttributeSet::removeAttributes(LLVMContext &C,
                                AttributeSet AS) const {
-  SmallAttrBuilder B(C, *this);
-  B.removeAttributes(AS);
-  return get(C, B);
+  return removeAttributes(C, SmallAttrBuilder(C, AS));
 }
 
 unsigned AttributeSet::getNumAttributes() const {
