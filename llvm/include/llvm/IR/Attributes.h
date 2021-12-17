@@ -1161,6 +1161,9 @@ public:
     else
       return removeEnumAttribute(A);
   }
+  SmallAttrBuilder &remove(Attribute A) {
+    return removeAttribute(A);
+  }
   bool overlaps(const SmallAttrBuilder &B) const;
 
   SmallAttrBuilder &removeAttributes(AttributeSet AS) {
