@@ -5595,11 +5595,11 @@ Error BitcodeReader::materialize(GlobalValue *GV) {
 
     // Remove incompatible attributes on function calls.
     if (auto *CI = dyn_cast<CallBase>(&I)) {
-      CI->removeRetAttrs(AttributeFuncs::typeIncompatible(
+      CI->removeRetAttrs(AttributeFuncs::typeIncompatible2(
           CI->getFunctionType()->getReturnType()));
 
       for (unsigned ArgNo = 0; ArgNo < CI->arg_size(); ++ArgNo)
-        CI->removeParamAttrs(ArgNo, AttributeFuncs::typeIncompatible(
+        CI->removeParamAttrs(ArgNo, AttributeFuncs::typeIncompatible2(
                                         CI->getArgOperand(ArgNo)->getType()));
     }
   }
