@@ -681,8 +681,9 @@ AttributeSet::removeAttributes(LLVMContext &C,
 	B.StringAttrs.push_back(A);
     }
     else {
-      if(!Attrs.EnumAttrs[A.getKindAsEnum()].isValid())
-        B.EnumAttrs[A.getKindAsEnum()] = A;
+      if(!Attrs.EnumAttrs[A.getKindAsEnum()].isValid()) {
+	      B.addEnumAttributeHelper(A, B.EnumAttrs.begin());
+      }
     }
   }
 
