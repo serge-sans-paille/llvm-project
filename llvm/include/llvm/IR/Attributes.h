@@ -987,9 +987,10 @@ template <> struct DenseMapInfo<AttributeList, void> {
 
 class SmallAttrBuilder {
   friend AttributeSet;
+  friend AttributeSetNode;
   LLVMContext &Ctxt;
 
-  SmallVector<Attribute> EnumAttrs;
+  std::array<Attribute, Attribute::EndAttrKinds> EnumAttrs;
   SmallVector<Attribute> StringAttrs;
   using iterator = typename SmallVector<Attribute>::iterator;
 
@@ -1025,29 +1026,14 @@ class SmallAttrBuilder {
     }
   }
   iterator addEnumAttributeHelper(Attribute A, iterator Iter) {
-    auto R =
-        std::lower_bound(Iter, EnumAttrs.end(), A, EnumAttributeComparator{});
-    if (R == EnumAttrs.end()) {
-      EnumAttrs.push_back(A);
-      return EnumAttrs.end();
-    } else if (R->hasAttribute(A.getKindAsEnum()))
-      return R;
-    else {
-      return EnumAttrs.insert(R, A);
-    }
+	  if(!EnumAttrs[A.getKindAsEnum()].isValid()) {
+		  EnumAttrs[A.getKindAsEnum()] = A;
+	  }
+	  return Iter;
   }
 
   SmallAttrBuilder& forceEnumAttribute(Attribute A) {
-    auto R =
-        std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A, EnumAttributeComparator{});
-    if (R == EnumAttrs.end()) {
-      EnumAttrs.push_back(A);
-    } else if (R->hasAttribute(A.getKindAsEnum())) {
-	    *R = A;
-    }
-    else {
-      EnumAttrs.insert(R, A);
-    }
+	EnumAttrs[A.getKindAsEnum()] = A;
     return *this;
   }
 
@@ -1075,9 +1061,9 @@ public:
     for (Attribute A : AS)
       if (A.isStringAttribute())
         StringAttrs.push_back(A);
-      else
-        EnumAttrs.push_back(A);
-    assert(llvm::is_sorted(EnumAttrs) && "Expected sorted attributes!");
+      else {
+        EnumAttrs[A.getKindAsEnum()] = A;
+      }
     assert(llvm::is_sorted(StringAttrs) && "Expected sorted attributes!");
   }
 
@@ -1086,20 +1072,15 @@ public:
     for (Attribute A : R)
       if (A.isStringAttribute())
         StringAttrs.push_back(A);
-      else
-        EnumAttrs.push_back(A);
+      else {
+        EnumAttrs[A.getKindAsEnum()] = A;
+      }
     llvm::sort(StringAttrs, StringAttributeComparator());
-    llvm::sort(EnumAttrs, EnumAttributeComparator());
   }
 
   SmallAttrBuilder &addAttribute(Attribute::AttrKind Val) {
-    Attribute A = Attribute::get(Ctxt, Val);
-    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), A,
-                              EnumAttributeComparator{});
-    if (R != EnumAttrs.end() && R->hasAttribute(Val))
-      return *this;
-    else
-      EnumAttrs.insert(R, A);
+	  if(!EnumAttrs[Val].isValid())
+		  EnumAttrs[Val] = Attribute::get(Ctxt, Val);
     return *this;
   }
   SmallAttrBuilder &addAttribute(StringRef K, StringRef V = StringRef()) {
@@ -1125,7 +1106,7 @@ public:
   }
 
   bool hasAttributes() const {
-    return !EnumAttrs.empty() || !StringAttrs.empty();
+    return any_of(EnumAttrs, [](Attribute A) { return A.isValid();}) || !StringAttrs.empty();
   }
 
   SmallAttrBuilder &removeAttribute(StringRef Val) {
@@ -1138,25 +1119,17 @@ public:
   }
 
   SmallAttrBuilder &removeAttribute(Attribute::AttrKind Val) {
-    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Val,
-                              EnumAttributeComparator{});
-    if (R != EnumAttrs.end() && R->hasAttribute(Val)) {
-      EnumAttrs.erase(R);
-    }
+	  EnumAttrs[Val] = Attribute();
     return *this;
   }
 
   SmallAttrBuilder& remove(const SmallAttrBuilder& B) {
-	  {
-	  auto Start = EnumAttrs.begin();
-	  for (Attribute A : B.getEnumAttrs())
-	    Start = removeEnumAttributeHelper(A, Start);
-	  }
-	  {
+		  for(unsigned i = 0; i < Attribute::EndAttrKinds; ++i)
+			  if(EnumAttrs[i].isValid() && B.EnumAttrs[i].isValid())
+				  EnumAttrs[i] = Attribute();
 	  auto Start = StringAttrs.begin();
 	  for (Attribute A : B.getStringAttrs())
 	    Start = removeStringAttributeHelper(A, Start);
-	  }
 	  return *this;
   }
 
@@ -1177,12 +1150,8 @@ public:
   }
   iterator removeEnumAttributeHelper(Attribute A, iterator Start) {
 	  auto Val = A.getKindAsEnum();
-    auto R = std::lower_bound(Start, EnumAttrs.end(), Val,
-                              EnumAttributeComparator{});
-    if (R != EnumAttrs.end() && R->hasAttribute(Val)) {
-      return EnumAttrs.erase(R);
-    }
-    return R;
+	  EnumAttrs[Val] = Attribute();
+	  return Start;
   }
 
   SmallAttrBuilder &removeAttribute(Attribute A) {
@@ -1205,17 +1174,13 @@ public:
     return *this;
   }
 
-  unsigned size() const { return EnumAttrs.size() + StringAttrs.size(); }
+  //unsigned size() const { return EnumAttrs.size() + StringAttrs.size(); }
 
-  bool empty() const { return EnumAttrs.empty(); }
+  bool empty() const { return all_of(EnumAttrs, [](Attribute A) { return !A.isValid();}); }
 
   void clear() {
-    EnumAttrs.clear();
+	  std::fill(EnumAttrs.begin(), EnumAttrs.end(), Attribute());
     StringAttrs.clear();
-  }
-  std::pair<ArrayRef<Attribute>, ArrayRef<Attribute>> uniquify() const {
-    return std::make_pair(ArrayRef<Attribute>(EnumAttrs),
-                          ArrayRef<Attribute>(StringAttrs));
   }
 
   SmallAttrBuilder &addAllocSizeAttr(unsigned ElemSize,
@@ -1239,8 +1204,8 @@ public:
   }
 
   MaybeAlign getStackAlignment() const {
-    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::StackAlignment, EnumAttributeComparator{});
-    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::StackAlignment))? MaybeAlign(R->getValueAsInt()) : None;
+    auto R = EnumAttrs[Attribute::StackAlignment];
+    return R.isValid() ? MaybeAlign(R.getValueAsInt()) : None;
   }
   bool hasAlignmentAttr() const;
   SmallAttrBuilder &addAllocSizeAttrFromRawRepr(uint64_t RawAllocSizeRepr);
@@ -1248,14 +1213,14 @@ public:
   SmallAttrBuilder &addVScaleRangeAttr(unsigned MinValue,
                                   Optional<unsigned> MaxValue);
   MaybeAlign getAlignment() const {
-    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Alignment, EnumAttributeComparator{});
-    return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Alignment))? MaybeAlign(R->getValueAsInt()) : None;
+    auto R = EnumAttrs[Attribute::Alignment];
+    return R.isValid() ? MaybeAlign(R.getValueAsInt()) : None;
   }
 
 
   bool contains(Attribute::AttrKind K) const {
-    auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), K, EnumAttributeComparator{});
-	  return R!= EnumAttrs.end() && R->hasAttribute(K);
+    auto R = EnumAttrs[K];
+	  return R.isValid();
   }
   bool contains(StringRef K) const {
     auto R = std::lower_bound(StringAttrs.begin(), StringAttrs.end(), K, StringAttributeComparator{});
@@ -1282,7 +1247,6 @@ public:
     return td_const_range(td_begin(), td_end());
   }
 
-  ArrayRef<Attribute> getEnumAttrs() const { return EnumAttrs;}
   ArrayRef<Attribute> getStringAttrs() const { return StringAttrs;}
 
 };

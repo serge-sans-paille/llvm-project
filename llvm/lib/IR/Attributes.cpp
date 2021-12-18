@@ -670,9 +670,7 @@ AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
 AttributeSet
 AttributeSet::removeAttributes(LLVMContext &C,
                                const SmallAttrBuilder &Attrs) const {
-  auto const& EnumAttrsToRemove = Attrs.getEnumAttrs();
   auto const& StringAttrsToRemove = Attrs.getStringAttrs();
-  auto EnumAttrsToRemoveIter = EnumAttrsToRemove.begin(), EnumAttrsToRemoveEnd = EnumAttrsToRemove.end();
   auto StringAttrsToRemoveIter = StringAttrsToRemove.begin(), StringAttrsToRemoveEnd = StringAttrsToRemove.end();
 
   SmallAttrBuilder B(C);
@@ -683,9 +681,8 @@ AttributeSet::removeAttributes(LLVMContext &C,
 	B.StringAttrs.push_back(A);
     }
     else {
-      EnumAttrsToRemoveIter = std::lower_bound(EnumAttrsToRemoveIter, EnumAttrsToRemoveEnd, A, SmallAttrBuilder::EnumAttributeComparator());
-      if(EnumAttrsToRemoveIter == EnumAttrsToRemoveEnd || EnumAttrsToRemoveIter->getKindAsEnum() != A.getKindAsEnum())
-        B.EnumAttrs.push_back(A);
+      if(!Attrs.EnumAttrs[A.getKindAsEnum()].isValid())
+        B.EnumAttrs[A.getKindAsEnum()] = A;
     }
   }
 
@@ -901,9 +898,12 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
   LLVMContextImpl *pImpl = C.pImpl;
   FoldingSetNodeID ID;
 
-  assert(llvm::is_sorted(Attrs.getEnumAttrs()) && "Expected sorted attributes!");
-  for (const auto &Attr : B.getEnumAttrs())
-    Attr.Profile(ID);
+  SmallVector<Attribute> EnumAttrs;
+  for (unsigned I = 0; I < (unsigned)Attribute::EndAttrKinds; ++I)
+	  if(B.EnumAttrs[I].isValid()) {
+    B.EnumAttrs[I].Profile(ID);
+    EnumAttrs.push_back(B.EnumAttrs[I]);
+	  }
 
   assert(llvm::is_sorted(Attrs.getStringAttrs()) && "Expected sorted attributes!");
   for (const auto &Attr : B.getStringAttrs())
@@ -917,8 +917,8 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C,
   // new one and insert it.
   if (!PA) {
     // Coallocate entries after the AttributeSetNode itself.
-    void *Mem = ::operator new(totalSizeToAlloc<Attribute>(B.size()));
-    PA = new (Mem) AttributeSetNode(B.getEnumAttrs(), B.getStringAttrs());
+    void *Mem = ::operator new(totalSizeToAlloc<Attribute>(EnumAttrs.size() + B.getStringAttrs().size()));
+    PA = new (Mem) AttributeSetNode(EnumAttrs, B.getStringAttrs());
     pImpl->AttrsSetNodes.InsertNode(PA, InsertPoint);
   }
 
@@ -1950,9 +1950,9 @@ SmallAttrBuilder &SmallAttrBuilder::addInAllocaAttr(Type *Ty) {
 
 SmallAttrBuilder &SmallAttrBuilder::merge(const SmallAttrBuilder &B) {
   {
-    auto Start = EnumAttrs.begin();
-    for (auto A : B.EnumAttrs)
-      Start = addEnumAttributeHelper(A, Start);
+    for (unsigned I = 0; I < Attribute::EndAttrKinds; ++I)
+	    if(B.EnumAttrs[I].isValid() && !EnumAttrs[I].isValid())
+		    EnumAttrs[I] = B.EnumAttrs[I];
   }
   {
     auto Start = StringAttrs.begin();
@@ -2001,17 +2001,9 @@ AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
 
 bool SmallAttrBuilder::overlaps(const SmallAttrBuilder &B) const {
   // First check if any of the target independent attributes overlap.
-  auto SelfEnumIter = EnumAttrs.begin();
-  auto OtherEnumIter = B.EnumAttrs.begin();
-  while(SelfEnumIter < EnumAttrs.end() && OtherEnumIter < B.EnumAttrs.end()) {
-	  int Cmp = (int)SelfEnumIter->getKindAsEnum() - (int)OtherEnumIter->getKindAsEnum();
-	  if(Cmp < 0)
-		  ++SelfEnumIter;
-	  else if(Cmp > 0) 
-		  ++OtherEnumIter;
-	  else
-		  return true;
-  }
+	for(unsigned I = 0; I < Attribute::EndAttrKinds; ++I)
+		if(EnumAttrs[I].isValid() && B.EnumAttrs[I].isValid())
+			return true;
 
   auto SelfStringIter = StringAttrs.begin();
   auto OtherStringIter = B.StringAttrs.begin();
@@ -2067,8 +2059,8 @@ bool AttrBuilder::hasAttributes(AttributeList AL, uint64_t Index) const {
 }
 
 bool SmallAttrBuilder::hasAlignmentAttr() const {
-	auto R = std::lower_bound(EnumAttrs.begin(), EnumAttrs.end(), Attribute::Alignment, EnumAttributeComparator{});
-  return (R != EnumAttrs.end() && R->hasAttribute(Attribute::Alignment));
+	auto R = EnumAttrs[Attribute::Alignment];
+	return R.isValid();
 }
 bool AttrBuilder::hasAlignmentAttr() const {
   return getRawIntAttr(Attribute::Alignment) != 0;
