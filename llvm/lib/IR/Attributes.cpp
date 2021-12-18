@@ -670,17 +670,25 @@ AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
 AttributeSet
 AttributeSet::removeAttributes(LLVMContext &C,
                                const SmallAttrBuilder &Attrs) const {
-  SmallAttrBuilder B(C, *this);
-  {
-  auto Start = B.EnumAttrs.begin();
-  for (Attribute A : Attrs.getEnumAttrs())
-    Start = B.removeEnumAttributeHelper(A, Start);
+  auto const& EnumAttrsToRemove = Attrs.getEnumAttrs();
+  auto const& StringAttrsToRemove = Attrs.getStringAttrs();
+  auto EnumAttrsToRemoveIter = EnumAttrsToRemove.begin(), EnumAttrsToRemoveEnd = EnumAttrsToRemove.end();
+  auto StringAttrsToRemoveIter = StringAttrsToRemove.begin(), StringAttrsToRemoveEnd = StringAttrsToRemove.end();
+
+  SmallAttrBuilder B(C);
+  for (Attribute A : *this) {
+    if (A.isStringAttribute()) {
+      StringAttrsToRemoveIter = std::lower_bound(StringAttrsToRemoveIter, StringAttrsToRemoveEnd, A, SmallAttrBuilder::StringAttributeComparator());
+      if(StringAttrsToRemoveIter == StringAttrsToRemoveEnd || StringAttrsToRemoveIter->getKindAsString() != A.getKindAsString())
+	B.StringAttrs.push_back(A);
+    }
+    else {
+      EnumAttrsToRemoveIter = std::lower_bound(EnumAttrsToRemoveIter, EnumAttrsToRemoveEnd, A, SmallAttrBuilder::EnumAttributeComparator());
+      if(EnumAttrsToRemoveIter == EnumAttrsToRemoveEnd || EnumAttrsToRemoveIter->getKindAsEnum() != A.getKindAsEnum())
+        B.EnumAttrs.push_back(A);
+    }
   }
-  {
-  auto Start = B.StringAttrs.begin();
-  for (Attribute A : Attrs.getStringAttrs())
-    Start = B.removeStringAttributeHelper(A, Start);
-  }
+
   return get(C, B);
 }
 

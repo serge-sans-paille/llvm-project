@@ -993,6 +993,7 @@ class SmallAttrBuilder {
   SmallVector<Attribute> StringAttrs;
   using iterator = typename SmallVector<Attribute>::iterator;
 
+	public:
   struct StringAttributeComparator {
     bool operator()(Attribute A0, Attribute A1) const {
       return A0.getKindAsString() < A1.getKindAsString();
@@ -1009,6 +1010,7 @@ class SmallAttrBuilder {
       return A0.getKindAsEnum() < Kind;
     }
   };
+	private:
   iterator addStringAttributeHelper(Attribute A, iterator Iter) {
     auto R = std::lower_bound(Iter, StringAttrs.end(), A,
                               StringAttributeComparator{});
