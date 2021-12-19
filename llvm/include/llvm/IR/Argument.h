@@ -162,7 +162,7 @@ public:
   /// Remove attributes from an argument.
   void removeAttr(Attribute::AttrKind Kind);
 
-  void removeAttrs(const AttrBuilder &B);
+  void removeAttrs(const AttrRemover &B);
 
   /// Check if an argument has a given attribute.
   bool hasAttribute(Attribute::AttrKind Kind) const;

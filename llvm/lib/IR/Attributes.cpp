@@ -642,7 +642,7 @@ AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
 }
 
 AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
-                                            const AttrBuilder &Attrs) const {
+                                            const AttrRemover &Attrs) const {
   AttrBuilder B(*this);
   // If there is nothing to remove, directly return the original set.
   if (!B.overlaps(Attrs))
@@ -1293,7 +1293,7 @@ AttributeList AttributeList::removeAttributeAtIndex(LLVMContext &C,
 
 AttributeList
 AttributeList::removeAttributesAtIndex(LLVMContext &C, unsigned Index,
-                                       const AttrBuilder &AttrsToRemove) const {
+                                       const AttrRemover &AttrsToRemove) const {
   AttributeSet Attrs = getAttributes(Index);
   AttributeSet NewAttrs = Attrs.removeAttributes(C, AttrsToRemove);
   // If nothing was removed, return the original list.
@@ -1523,6 +1523,103 @@ LLVM_DUMP_METHOD void AttributeList::dump() const { print(dbgs()); }
 #endif
 
 //===----------------------------------------------------------------------===//
+// AttrRemover Method Implementations
+//===----------------------------------------------------------------------===//
+
+// FIXME: Remove this ctor, use AttributeSet.
+AttrRemover::AttrRemover(AttributeList AL, unsigned Index) {
+  AttributeSet AS = AL.getAttributes(Index);
+  for (const auto &A : AS)
+    addAttribute(A);
+}
+
+AttrRemover::AttrRemover(AttributeSet AS) {
+  for (const auto &A : AS)
+    addAttribute(A);
+}
+
+void AttrRemover::clear() {
+  Attrs.reset();
+  TargetDepAttrs.clear();
+}
+
+
+AttrRemover &AttrRemover::addAttribute(Attribute Attr) {
+  if (Attr.isStringAttribute()) {
+    addAttribute(Attr.getKindAsString());
+    return *this;
+  }
+  Attrs[Attr.getKindAsEnum()] = true;
+  return *this;
+}
+
+AttrRemover &AttrRemover::addAttribute(Attribute::AttrKind Val) {
+  Attrs[Val] = true;
+  return *this;
+}
+
+AttrRemover &AttrRemover::addAttribute(StringRef A) {
+  TargetDepAttrs.insert(A);
+  return *this;
+}
+
+AttrRemover &AttrRemover::removeAttribute(Attribute::AttrKind Val) {
+  assert((unsigned)Val < Attribute::EndAttrKinds && "Attribute out of range!");
+  Attrs[Val] = false;
+  return *this;
+}
+
+AttrRemover &AttrRemover::removeAttributes(AttributeList A, uint64_t Index) {
+  remove(A.getAttributes(Index));
+  return *this;
+}
+
+AttrRemover &AttrRemover::removeAttribute(StringRef A) {
+  TargetDepAttrs.erase(A);
+  return *this;
+}
+
+AttrRemover &AttrRemover::merge(const AttrRemover &B) {
+  Attrs |= B.Attrs;
+  TargetDepAttrs.insert(B.td_begin(), B.td_end());
+
+  return *this;
+}
+
+AttrRemover &AttrRemover::remove(const AttrRemover &B) {
+  Attrs &= ~B.Attrs;
+
+  TargetDepAttrs.erase(B.td_begin(), B.td_end());
+
+  return *this;
+}
+
+bool AttrRemover::overlaps(const AttrRemover &B) const {
+  // First check if any of the target independent attributes overlap.
+  if ((Attrs & B.Attrs).any())
+    return true;
+
+  // Then check if any target dependent ones do.
+  for (const auto &I : td_attrs())
+    if (B.contains(I))
+      return true;
+
+  return false;
+}
+
+bool AttrRemover::contains(StringRef A) const {
+  return TargetDepAttrs.find(A) != TargetDepAttrs.end();
+}
+
+bool AttrRemover::operator==(const AttrRemover &B) const {
+  if (Attrs != B.Attrs)
+    return false;
+
+  return TargetDepAttrs == B.TargetDepAttrs;
+
+}
+
+//===----------------------------------------------------------------------===//
 // AttrBuilder Method Implementations
 //===----------------------------------------------------------------------===//
 
@@ -1733,25 +1830,26 @@ AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
   return *this;
 }
 
-AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
-  // FIXME: What if both have an int/type attribute, but they don't match?!
-  for (unsigned Index = 0; Index < Attribute::NumIntAttrKinds; ++Index)
-    if (B.IntAttrs[Index])
-      IntAttrs[Index] = 0;
-
-  for (unsigned Index = 0; Index < Attribute::NumTypeAttrKinds; ++Index)
-    if (B.TypeAttrs[Index])
-      TypeAttrs[Index] = nullptr;
-
+AttrBuilder &AttrBuilder::remove(const AttrRemover &B) {
   Attrs &= ~B.Attrs;
-
-  for (const auto &I : B.td_attrs())
-    TargetDepAttrs.erase(I.first);
-
+  for(auto const& I : B.td_attrs())
+    TargetDepAttrs.erase(I);
   return *this;
 }
 
 bool AttrBuilder::overlaps(const AttrBuilder &B) const {
+  // First check if any of the target independent attributes overlap.
+  if ((Attrs & B.Attrs).any())
+    return true;
+
+  // Then check if any target dependent ones do.
+  for (const auto &I : td_attrs())
+    if (B.contains(I.first))
+      return true;
+
+  return false;
+}
+bool AttrBuilder::overlaps(const AttrRemover &B) const {
   // First check if any of the target independent attributes overlap.
   if ((Attrs & B.Attrs).any())
     return true;
@@ -1808,8 +1906,8 @@ bool AttrBuilder::operator==(const AttrBuilder &B) const {
 //===----------------------------------------------------------------------===//
 
 /// Which attributes cannot be applied to a type.
-AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
-  AttrBuilder Incompatible;
+AttrRemover AttributeFuncs::typeIncompatible(Type *Ty) {
+  AttrRemover Incompatible;
 
   if (!Ty->isIntegerTy())
     // Attribute that only apply to integers.
@@ -1825,15 +1923,15 @@ AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
         .addAttribute(Attribute::ReadNone)
         .addAttribute(Attribute::ReadOnly)
         .addAttribute(Attribute::SwiftError)
-        .addAlignmentAttr(1)             // the int here is ignored
-        .addDereferenceableAttr(1)       // the int here is ignored
-        .addDereferenceableOrNullAttr(1) // the int here is ignored
-        .addPreallocatedAttr(Ty)
-        .addInAllocaAttr(Ty)
-        .addByValAttr(Ty)
-        .addStructRetAttr(Ty)
-        .addByRefAttr(Ty)
-        .addTypeAttr(Attribute::ElementType, Ty);
+        .addAttribute(Attribute::Alignment)
+        .addAttribute(Attribute::Dereferenceable)
+        .addAttribute(Attribute::DereferenceableOrNull)
+        .addAttribute(Attribute::Preallocated)
+        .addAttribute(Attribute::InAlloca)
+        .addAttribute(Attribute::ByVal)
+        .addAttribute(Attribute::StructRet)
+        .addAttribute(Attribute::ByRef)
+        .addAttribute(Attribute::ElementType);
 
   // Some attributes can apply to all "values" but there are no `void` values.
   if (Ty->isVoidTy())
@@ -1842,11 +1940,11 @@ AttrBuilder AttributeFuncs::typeIncompatible(Type *Ty) {
   return Incompatible;
 }
 
-AttrBuilder AttributeFuncs::getUBImplyingAttributes() {
-  AttrBuilder B;
+AttrRemover AttributeFuncs::getUBImplyingAttributes() {
+  AttrRemover B;
   B.addAttribute(Attribute::NoUndef);
-  B.addDereferenceableAttr(1);
-  B.addDereferenceableOrNullAttr(1);
+  B.addAttribute(Attribute::Dereferenceable);
+  B.addAttribute(Attribute::DereferenceableOrNull);
   return B;
 }
 
@@ -1886,7 +1984,7 @@ static void adjustCallerSSPLevel(Function &Caller, const Function &Callee) {
   // If upgrading the SSP attribute, clear out the old SSP Attributes first.
   // Having multiple SSP attributes doesn't actually hurt, but it adds useless
   // clutter to the IR.
-  AttrBuilder OldSSPAttr;
+  AttrRemover OldSSPAttr;
   OldSSPAttr.addAttribute(Attribute::StackProtect)
       .addAttribute(Attribute::StackProtectStrong)
       .addAttribute(Attribute::StackProtectReq);

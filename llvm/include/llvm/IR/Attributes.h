@@ -28,12 +28,14 @@
 #include <cassert>
 #include <cstdint>
 #include <map>
+#include <set>
 #include <string>
 #include <utility>
 
 namespace llvm {
 
 class AttrBuilder;
+class AttrRemover;
 class AttributeImpl;
 class AttributeListImpl;
 class AttributeSetNode;
@@ -318,7 +320,7 @@ public:
   /// Remove the specified attributes from this set. Returns a new set because
   /// attribute sets are immutable.
   LLVM_NODISCARD AttributeSet
-  removeAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const;
+  removeAttributes(LLVMContext &C, const AttrRemover &AttrsToRemove) const;
 
   /// Return the number of attributes in this set.
   unsigned getNumAttributes() const;
@@ -575,7 +577,7 @@ public:
   /// Remove the specified attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeAttributesAtIndex(
-      LLVMContext &C, unsigned Index, const AttrBuilder &AttrsToRemove) const;
+      LLVMContext &C, unsigned Index, const AttrRemover &AttrsToRemove) const;
 
   /// Remove all attributes at the specified index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
@@ -599,7 +601,7 @@ public:
   /// Remove the specified attribute at the function index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList
-  removeFnAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
+  removeFnAttributes(LLVMContext &C, const AttrRemover &AttrsToRemove) const {
     return removeAttributesAtIndex(C, FunctionIndex, AttrsToRemove);
   }
 
@@ -626,7 +628,7 @@ public:
   /// Remove the specified attribute at the return value index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList
-  removeRetAttributes(LLVMContext &C, const AttrBuilder &AttrsToRemove) const {
+  removeRetAttributes(LLVMContext &C, const AttrRemover &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ReturnIndex, AttrsToRemove);
   }
 
@@ -648,7 +650,7 @@ public:
   /// Remove the specified attribute at the specified arg index from this
   /// attribute list. Returns a new list because attribute lists are immutable.
   LLVM_NODISCARD AttributeList removeParamAttributes(
-      LLVMContext &C, unsigned ArgNo, const AttrBuilder &AttrsToRemove) const {
+      LLVMContext &C, unsigned ArgNo, const AttrRemover &AttrsToRemove) const {
     return removeAttributesAtIndex(C, ArgNo + FirstArgIndex, AttrsToRemove);
   }
 
@@ -928,6 +930,112 @@ template <> struct DenseMapInfo<AttributeList> {
 /// create an Attribute object. The object itself is uniquified. The Builder's
 /// value, however, is not. So this can be used as a quick way to test for
 /// equality, presence of attributes, etc.
+class AttrRemover {
+  friend class AttrBuilder;
+  std::bitset<Attribute::EndAttrKinds> Attrs;
+  std::set<SmallString<32>, std::less<>> TargetDepAttrs;
+
+public:
+  AttrRemover() = default;
+
+  AttrRemover(const Attribute &A) {
+    addAttribute(A);
+  }
+
+  AttrRemover(AttributeList AS, unsigned Idx);
+  AttrRemover(AttributeSet AS);
+
+  void clear();
+
+  /// Add an attribute to the builder.
+  AttrRemover &addRemover(Attribute::AttrKind Val) {
+    assert((unsigned)Val < Attribute::EndAttrKinds &&
+           "Attribute out of range!");
+    assert(Attribute::isEnumAttrKind(Val) &&
+           "Adding integer/type attribute without an argument!");
+    Attrs[Val] = true;
+    return *this;
+  }
+
+  /// Add the Attribute object to the builder.
+  AttrRemover &addAttribute(Attribute A);
+
+  AttrRemover &addAttribute(Attribute::AttrKind Val);
+
+  /// Add the target-dependent attribute to the builder.
+  AttrRemover &addAttribute(StringRef A);
+
+  /// Remove an attribute from the builder.
+  AttrRemover &removeAttribute(Attribute::AttrKind Val);
+
+  /// Remove the attributes from the builder.
+  AttrRemover &removeAttributes(AttributeList A, uint64_t WithoutIndex);
+
+  /// Remove the target-dependent attribute to the builder.
+  AttrRemover &removeAttribute(StringRef A);
+
+  /// Add the attributes from the builder.
+  AttrRemover &merge(const AttrRemover &B);
+
+  /// Remove the attributes from the builder.
+  AttrRemover &remove(const AttrRemover &B);
+
+  /// Return true if the builder has any attribute that's in the
+  /// specified builder.
+  bool overlaps(const AttrRemover &B) const;
+
+  /// Return true if the builder has the specified attribute.
+  bool contains(Attribute::AttrKind A) const {
+    assert((unsigned)A < Attribute::EndAttrKinds && "Attribute out of range!");
+    return Attrs[A];
+  }
+
+  /// Return true if the builder has the specified target-dependent
+  /// attribute.
+  bool contains(StringRef A) const;
+
+  /// Return true if the builder has IR-level attributes.
+  bool hasAttributes() const;
+
+  /// Return true if the builder has any attribute that's in the
+  /// specified attribute.
+  bool hasAttributes(AttributeList A, uint64_t Index) const;
+
+  /// Return true if the builder contains no target-independent
+  /// attributes.
+  bool empty() const { return Attrs.none(); }
+
+  // Iterators for target-dependent attributes.
+  using td_type = decltype(TargetDepAttrs)::value_type;
+  using td_iterator = decltype(TargetDepAttrs)::iterator;
+  using td_const_iterator = decltype(TargetDepAttrs)::const_iterator;
+  using td_range = iterator_range<td_iterator>;
+  using td_const_range = iterator_range<td_const_iterator>;
+
+  td_iterator td_begin() { return TargetDepAttrs.begin(); }
+  td_iterator td_end() { return TargetDepAttrs.end(); }
+
+  td_const_iterator td_begin() const { return TargetDepAttrs.begin(); }
+  td_const_iterator td_end() const { return TargetDepAttrs.end(); }
+
+  td_range td_attrs() { return td_range(td_begin(), td_end()); }
+
+  td_const_range td_attrs() const {
+    return td_const_range(td_begin(), td_end());
+  }
+
+  bool td_empty() const { return TargetDepAttrs.empty(); }
+
+  bool operator==(const AttrRemover &B) const;
+  bool operator!=(const AttrRemover &B) const { return !(*this == B); }
+};
+
+//===----------------------------------------------------------------------===//
+/// \class
+/// This class is used in conjunction with the Attribute::get method to
+/// create an Attribute object. The object itself is uniquified. The Builder's
+/// value, however, is not. So this can be used as a quick way to test for
+/// equality, presence of attributes, etc.
 class AttrBuilder {
   std::bitset<Attribute::EndAttrKinds> Attrs;
   std::map<SmallString<32>, SmallString<32>, std::less<>> TargetDepAttrs;
@@ -978,11 +1086,12 @@ public:
   AttrBuilder &merge(const AttrBuilder &B);
 
   /// Remove the attributes from the builder.
-  AttrBuilder &remove(const AttrBuilder &B);
+  AttrBuilder &remove(const AttrRemover &B);
 
   /// Return true if the builder has any attribute that's in the
   /// specified builder.
   bool overlaps(const AttrBuilder &B) const;
+  bool overlaps(const AttrRemover &B) const;
 
   /// Return true if the builder has the specified attribute.
   bool contains(Attribute::AttrKind A) const {
@@ -1158,14 +1267,14 @@ public:
 namespace AttributeFuncs {
 
 /// Which attributes cannot be applied to a type.
-AttrBuilder typeIncompatible(Type *Ty);
+AttrRemover typeIncompatible(Type *Ty);
 
 /// Get param/return attributes which imply immediate undefined behavior if an
 /// invalid value is passed. For example, this includes noundef (where undef
 /// implies UB), but not nonnull (where null implies poison). It also does not
 /// include attributes like nocapture, which constrain the function
 /// implementation rather than the passed value.
-AttrBuilder getUBImplyingAttributes();
+AttrRemover getUBImplyingAttributes();
 
 /// \returns Return true if the two functions have compatible target-independent
 /// attributes for inlining purposes.
