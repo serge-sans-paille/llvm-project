@@ -922,6 +922,13 @@ template <> struct DenseMapInfo<AttributeList> {
   }
 };
 
+class AttributeKey {
+  StringRef S;
+  public:
+  explicit AttributeKey(StringRef S) : S(S) {}
+  StringRef str() const { return S; }
+};
+
 //===----------------------------------------------------------------------===//
 /// \class
 /// This class is used in conjunction with the Attribute::get method to
@@ -929,8 +936,9 @@ template <> struct DenseMapInfo<AttributeList> {
 /// value, however, is not. So this can be used as a quick way to test for
 /// equality, presence of attributes, etc.
 class AttrBuilder {
+  SmallVector<SmallString<32>> StringBuffers;
   std::bitset<Attribute::EndAttrKinds> Attrs;
-  std::map<SmallString<32>, SmallString<32>, std::less<>> TargetDepAttrs;
+  std::map<StringRef, SmallString<32>, std::less<>> TargetDepAttrs;
   std::array<uint64_t, Attribute::NumIntAttrKinds> IntAttrs = {};
   std::array<Type *, Attribute::NumTypeAttrKinds> TypeAttrs = {};
 
@@ -965,7 +973,12 @@ public:
   AttrBuilder &addAttribute(Attribute A);
 
   /// Add the target-dependent attribute to the builder.
-  AttrBuilder &addAttribute(StringRef A, StringRef V = StringRef());
+  AttrBuilder &addAttribute(AttributeKey A, StringRef V = StringRef());
+  template<size_t N>
+  AttrBuilder &addAttribute(const char (&A)[N], StringRef V = StringRef()) {
+    TargetDepAttrs[A] = V;
+    return *this;
+  }
 
   /// Remove an attribute from the builder.
   AttrBuilder &removeAttribute(Attribute::AttrKind Val);

@@ -600,13 +600,13 @@ std::vector<std::string> codegen::getFeatureList() {
 }
 
 void codegen::renderBoolStringAttr(AttrBuilder &B, StringRef Name, bool Val) {
-  B.addAttribute(Name, Val ? "true" : "false");
+  B.addAttribute(AttributeKey(Name), Val ? "true" : "false");
 }
 
 #define HANDLE_BOOL_ATTR(CL, AttrName)                                         \
   do {                                                                         \
     if (CL->getNumOccurrences() > 0 && !F.hasFnAttribute(AttrName))            \
-      renderBoolStringAttr(NewAttrs, AttrName, *CL);                           \
+      NewAttrs.addAttribute(AttrName, *CL?"true":"false");                           \
   } while (0)
 
 /// Set function attributes of function \p F based on CPU, Features, and command

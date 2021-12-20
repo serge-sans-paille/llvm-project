@@ -1893,7 +1893,7 @@ void CodeGenModule::getDefaultFunctionAttributes(StringRef Name,
   for (StringRef Attr : CodeGenOpts.DefaultFunctionAttrs) {
     StringRef Var, Value;
     std::tie(Var, Value) = Attr.split('=');
-    FuncAttrs.addAttribute(Var, Value);
+    FuncAttrs.addAttribute(llvm::AttributeKey(Var), Value);
   }
 }
 
@@ -1919,7 +1919,7 @@ static void addNoBuiltinAttributes(llvm::AttrBuilder &FuncAttrs,
     SmallString<32> AttributeName;
     AttributeName += "no-builtin-";
     AttributeName += BuiltinName;
-    FuncAttrs.addAttribute(AttributeName);
+    FuncAttrs.addAttribute(llvm::AttributeKey(AttributeName));
   };
 
   // First, handle the language options passed through -fno-builtin.

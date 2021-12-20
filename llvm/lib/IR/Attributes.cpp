@@ -606,7 +606,7 @@ AttributeSet AttributeSet::addAttribute(LLVMContext &C,
 AttributeSet AttributeSet::addAttribute(LLVMContext &C, StringRef Kind,
                                         StringRef Value) const {
   AttrBuilder B;
-  B.addAttribute(Kind, Value);
+  B.addAttribute(AttributeKey(Kind), Value);
   return addAttributes(C, AttributeSet::get(C, B));
 }
 
@@ -1196,7 +1196,7 @@ AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
   AttrBuilder B;
-  B.addAttribute(Kind, Value);
+  B.addAttribute(AttributeKey(Kind), Value);
   return addAttributesAtIndex(C, Index, B);
 }
 
@@ -1541,6 +1541,7 @@ AttrBuilder::AttrBuilder(AttributeSet AS) {
 void AttrBuilder::clear() {
   Attrs.reset();
   TargetDepAttrs.clear();
+  StringBuffers.clear();
   IntAttrs = {};
   TypeAttrs = {};
 }
@@ -1561,7 +1562,7 @@ AttrBuilder::kindToTypeIndex(Attribute::AttrKind Kind) const {
 
 AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
   if (Attr.isStringAttribute()) {
-    addAttribute(Attr.getKindAsString(), Attr.getValueAsString());
+    TargetDepAttrs[Attr.getKindAsString()] = Attr.getValueAsString();
     return *this;
   }
 
@@ -1576,8 +1577,9 @@ AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
   return *this;
 }
 
-AttrBuilder &AttrBuilder::addAttribute(StringRef A, StringRef V) {
-  TargetDepAttrs[A] = V;
+AttrBuilder &AttrBuilder::addAttribute(AttributeKey A, StringRef V) {
+  StringBuffers.push_back(A.str());
+  TargetDepAttrs[StringBuffers.back()] = V;
   return *this;
 }
 
@@ -1727,8 +1729,15 @@ AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
 
   Attrs |= B.Attrs;
 
-  for (const auto &I : B.td_attrs())
-    TargetDepAttrs[I.first] = I.second;
+  for (const auto &I : B.td_attrs()) {
+    auto R = TargetDepAttrs.find(I.first);
+    if(R == TargetDepAttrs.end()) {
+      addAttribute(AttributeKey(I.first), I.second);
+    }
+    else {
+      R->second = I.second;
+    }
+  }
 
   return *this;
 }
