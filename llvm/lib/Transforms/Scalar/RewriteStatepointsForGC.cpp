@@ -1377,7 +1377,7 @@ static AttributeList legalizeCallAttributes(LLVMContext &Ctx,
     return AL;
 
   // Remove the readonly, readnone, and statepoint function attributes.
-  AttrBuilder FnAttrs = AL.getFnAttrs();
+  AttrBuilder FnAttrs(AL.getFnAttrs());
   for (auto Attr : FnAttrsToStrip)
     FnAttrs.removeAttribute(Attr);
 
@@ -1387,8 +1387,7 @@ static AttributeList legalizeCallAttributes(LLVMContext &Ctx,
   }
 
   // Just skip parameter and return attributes for now
-  return AttributeList::get(Ctx, AttributeList::FunctionIndex,
-                            AttributeSet::get(Ctx, FnAttrs));
+  return AttributeList::get(Ctx, AttributeList::FunctionIndex, FnAttrs);
 }
 
 /// Helper function to place all gc relocates necessary for the given

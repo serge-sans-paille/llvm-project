@@ -1146,6 +1146,16 @@ AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
 }
 
 AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
+                                 AttributeSet AS) {
+  if (!AS.hasAttributes())
+    return {};
+  Index = attrIdxToArrayIdx(Index);
+  SmallVector<AttributeSet, 8> AttrSets(Index + 1);
+  AttrSets[Index] = AS;
+  return getImpl(C, AttrSets);
+}
+
+AttributeList AttributeList::get(LLVMContext &C, unsigned Index,
                                  ArrayRef<Attribute::AttrKind> Kinds) {
   SmallVector<std::pair<unsigned, Attribute>, 8> Attrs;
   for (const auto K : Kinds)
@@ -1256,6 +1266,29 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
 
   AttrBuilder Merged(getAttributes(Index));
   Merged.merge(B);
+  return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
+}
+
+AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
+                                                  unsigned Index,
+                                                  AttributeSet AS) const {
+  if (!AS.hasAttributes())
+    return *this;
+
+  if (!pImpl)
+    return AttributeList::get(C, {{Index, AS}});
+
+#ifndef NDEBUG
+  // FIXME it is not obvious how this should work for alignment. For now, say
+  // we can't change a known alignment.
+  const MaybeAlign OldAlign = getAttributes(Index).getAlignment();
+  const MaybeAlign NewAlign = AS.getAlignment();
+  assert((!OldAlign || !NewAlign || OldAlign == NewAlign) &&
+         "Attempt to change alignment!");
+#endif
+
+  AttrBuilder Merged(getAttributes(Index));
+  Merged.merge(AS);
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
 
@@ -1612,7 +1645,13 @@ AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
 }
 
 AttrBuilder &AttrBuilder::removeAttributes(AttributeList A, uint64_t Index) {
-  remove(A.getAttributes(Index));
+  removeAttributes(A.getAttributes(Index));
+  return *this;
+}
+
+AttrBuilder &AttrBuilder::removeAttributes(AttributeSet AS) {
+  for(Attribute A: AS)
+    remove(A);
   return *this;
 }
 
@@ -1755,6 +1794,12 @@ AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
   return *this;
 }
 
+AttrBuilder &AttrBuilder::merge(AttributeSet AS) {
+  for(Attribute A : AS)
+    addAttribute(A);
+  return *this;
+}
+
 AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
   // FIXME: What if both have an int/type attribute, but they don't match?!
   for (unsigned Index = 0; Index < Attribute::NumIntAttrKinds; ++Index)
@@ -1771,6 +1816,13 @@ AttrBuilder &AttrBuilder::remove(const AttrBuilder &B) {
     TargetDepAttrs.erase(I.first);
 
   return *this;
+}
+
+AttrBuilder &AttrBuilder::remove(Attribute A) {
+  if(A.isStringAttribute())
+    return removeAttribute(A.getKindAsString());
+  else
+    return removeAttribute(A.getKindAsEnum());
 }
 
 bool AttrBuilder::overlaps(const AttrBuilder &B) const {
