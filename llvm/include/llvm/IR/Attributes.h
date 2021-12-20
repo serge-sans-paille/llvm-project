@@ -27,6 +27,7 @@
 #include <bitset>
 #include <cassert>
 #include <cstdint>
+#include <forward_list>
 #include <map>
 #include <string>
 #include <utility>
@@ -936,7 +937,7 @@ class AttributeKey {
 /// value, however, is not. So this can be used as a quick way to test for
 /// equality, presence of attributes, etc.
 class AttrBuilder {
-  SmallVector<SmallString<32>> StringBuffers;
+  std::forward_list<SmallString<32>> StringBuffers;
   std::bitset<Attribute::EndAttrKinds> Attrs;
   std::map<StringRef, SmallString<32>, std::less<>> TargetDepAttrs;
   std::array<uint64_t, Attribute::NumIntAttrKinds> IntAttrs = {};

@@ -1578,8 +1578,8 @@ AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
 }
 
 AttrBuilder &AttrBuilder::addAttribute(AttributeKey A, StringRef V) {
-  StringBuffers.push_back(A.str());
-  TargetDepAttrs[StringBuffers.back()] = V;
+  StringBuffers.push_front(A.str());
+  TargetDepAttrs[StringBuffers.front()] = V;
   return *this;
 }
 
