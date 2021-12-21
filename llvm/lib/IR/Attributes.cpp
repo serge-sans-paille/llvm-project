@@ -596,6 +596,10 @@ bool AttributeImpl::operator<(const AttributeImpl &AI) const {
 // AttributeSet Definition
 //===----------------------------------------------------------------------===//
 
+AttributeSet AttributeSet::get(LLVMContext &C, Attribute A) {
+  return AttributeSet(AttributeSetNode::get(C, A));
+}
+
 AttributeSet AttributeSet::get(LLVMContext &C, const AttrBuilder &B) {
   return AttributeSet(AttributeSetNode::get(C, B));
 }
@@ -607,16 +611,12 @@ AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
 AttributeSet AttributeSet::addAttribute(LLVMContext &C,
                                         Attribute::AttrKind Kind) const {
   if (hasAttribute(Kind)) return *this;
-  AttrBuilder B(C);
-  B.addAttribute(Kind);
-  return addAttributes(C, AttributeSet::get(C, B));
+  return addAttributes(C, AttributeSet::get(C, Attribute::get(C, Kind)));
 }
 
 AttributeSet AttributeSet::addAttribute(LLVMContext &C, StringRef Kind,
                                         StringRef Value) const {
-  AttrBuilder B(C);
-  B.addAttribute(Kind, Value);
-  return addAttributes(C, AttributeSet::get(C, B));
+  return addAttributes(C, AttributeSet::get(C, Attribute::get(C, Kind, Value)));
 }
 
 AttributeSet AttributeSet::addAttributes(LLVMContext &C,
@@ -627,11 +627,51 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
   if (!AS.hasAttributes())
     return *this;
 
-  AttrBuilder B(C, AS);
-  for (const auto &I : *this)
-    B.addAttribute(I);
+  // It is more efficient to merge the two sorted Attribute array we have at
+  // that point rather than creating an AttrBuilder to to the merge.
 
- return get(C, B);
+  SmallVector<Attribute, 8> SortedAttrs;
+  auto SelfIter = begin(), SelfEnd = end();
+  auto OtherIter = AS.begin(), OtherEnd = AS.end();
+
+  // Comparator that only compares key and treat Attribute with the same key but
+  // different value as equivalent.
+  auto Cmp = [](Attribute A0, Attribute A1) {
+    if (A0.isStringAttribute()) {
+      if (A1.isStringAttribute())
+        return strcmp(A0.getKindAsString().data(), A1.getKindAsString().data());
+      else
+        return +1;
+    } else {
+      if (A1.isStringAttribute())
+        return -1;
+      else
+        return (int)A0.getKindAsEnum() - (int)A1.getKindAsEnum();
+    }
+  };
+
+  // This is close to std::set_union + std::unique in a row.
+  while (OtherIter < OtherEnd && SelfIter < SelfEnd) {
+    int C = Cmp(*OtherIter, *SelfIter);
+    if (C < 0) {
+      SortedAttrs.push_back(*OtherIter);
+      ++OtherIter;
+    } else if (C == 0) {
+      // In case of equality, the new version is honored.
+      SortedAttrs.push_back(*OtherIter);
+      ++OtherIter;
+      ++SelfIter;
+    } else {
+      SortedAttrs.push_back(*SelfIter);
+      ++SelfIter;
+    }
+  }
+  if (OtherIter < OtherEnd)
+    SortedAttrs.append(OtherIter, OtherEnd);
+  else
+    SortedAttrs.append(SelfIter, SelfEnd);
+
+  return AttributeSet(AttributeSetNode::getSorted(C, SortedAttrs));
 }
 
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
@@ -765,6 +805,9 @@ LLVM_DUMP_METHOD void AttributeSet::dump() const {
 //===----------------------------------------------------------------------===//
 // AttributeSetNode Definition
 //===----------------------------------------------------------------------===//
+AttributeSetNode *AttributeSetNode::get(LLVMContext &C, Attribute A) {
+  return getSorted(C, {A});
+}
 
 AttributeSetNode::AttributeSetNode(ArrayRef<Attribute> Attrs)
     : NumAttrs(Attrs.size()) {
@@ -1208,26 +1251,23 @@ AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                    Attribute::AttrKind Kind) const {
   if (hasAttributeAtIndex(Index, Kind))
     return *this;
+
   AttributeSet Attrs = getAttributes(Index);
-  // TODO: Insert at correct position and avoid sort.
-  SmallVector<Attribute, 8> NewAttrs(Attrs.begin(), Attrs.end());
-  NewAttrs.push_back(Attribute::get(C, Kind));
-  return setAttributesAtIndex(C, Index, AttributeSet::get(C, NewAttrs));
+  return setAttributesAtIndex(C, Index, Attrs.addAttribute(C, Kind));
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
-  AttrBuilder B(C);
-  B.addAttribute(Kind, Value);
-  return addAttributesAtIndex(C, Index, B);
+  return addAttributeAtIndex(C, Index, Attribute::get(C, Kind, Value));
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  Attribute A) const {
-  AttrBuilder B(C);
-  B.addAttribute(A);
-  return addAttributesAtIndex(C, Index, B);
+  AttrBuilder B(C, getAttributes(Index));
+  B.merge(A);
+  getAttributes(Index);
+  return setAttributesAtIndex(C, Index, AttributeSet::get(C, B));
 }
 
 AttributeList AttributeList::setAttributesAtIndex(LLVMContext &C,
@@ -1261,6 +1301,29 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
 
   AttrBuilder Merged(C, getAttributes(Index));
   Merged.merge(B);
+  return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
+}
+
+AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
+                                                  unsigned Index,
+                                                  AttributeSet AS) const {
+  if (!AS.hasAttributes())
+    return *this;
+
+  if (!pImpl)
+    return AttributeList::get(C, {{Index, AS}});
+
+#ifndef NDEBUG
+  // FIXME it is not obvious how this should work for alignment. For now, say
+  // we can't change a known alignment.
+  const MaybeAlign OldAlign = getAttributes(Index).getAlignment();
+  const MaybeAlign NewAlign = AS.getAlignment();
+  assert((!OldAlign || !NewAlign || OldAlign == NewAlign) &&
+         "Attempt to change alignment!");
+#endif
+
+  AttrBuilder Merged(C, getAttributes(Index));
+  Merged.merge(AS);
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
 
@@ -1616,11 +1679,6 @@ AttrBuilder &AttrBuilder::addAttribute(StringRef A, StringRef V) {
   return addAttribute(Attribute::get(Ctx, A, V));
 }
 
-AttrBuilder &AttrBuilder::removeAttributes(AttributeList AL, uint64_t Index) {
-  remove(AttributeMask(AL.getAttributes(Index)));
-  return *this;
-}
-
 AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
   assert((unsigned)Val < Attribute::EndAttrKinds && "Attribute out of range!");
   Attrs[Val] = false;
@@ -1630,6 +1688,17 @@ AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
   else if (Optional<unsigned> IntIndex = kindToIntIndex(Val))
     IntAttrs[*IntIndex] = 0;
 
+  return *this;
+}
+
+AttrBuilder &AttrBuilder::removeAttributes(AttributeList A, uint64_t Index) {
+  removeAttributes(A.getAttributes(Index));
+  return *this;
+}
+
+AttrBuilder &AttrBuilder::removeAttributes(AttributeSet AS) {
+  for (Attribute A : AS)
+    remove(A);
   return *this;
 }
 
@@ -1775,7 +1844,35 @@ AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
   return *this;
 }
 
+AttrBuilder &AttrBuilder::merge(AttributeSet AS) {
+  for (Attribute A : AS)
+    merge(A);
+  return *this;
+}
+
+AttrBuilder &AttrBuilder::merge(Attribute A) {
+  if (A.isStringAttribute()) {
+    auto It = lower_bound(TargetDepAttrs, A, StringAttributeComparator());
+    if (It != TargetDepAttrs.end() && It->hasAttribute(A.getKindAsString()))
+      std::swap(*It, A);
+    else
+      TargetDepAttrs.insert(It, A);
+  } else {
+    auto Kind = A.getKindAsEnum();
+    if (!Attrs[Kind]) {
+      Attrs[Kind] = true;
+      if (A.isIntAttribute()) {
+        IntAttrs[*kindToIntIndex(Kind)] = A.getValueAsInt();
+      } else if (A.isTypeAttribute()) {
+        TypeAttrs[*kindToTypeIndex(Kind)] = A.getValueAsType();
+      }
+    }
+  }
+  return *this;
+}
+
 AttrBuilder &AttrBuilder::remove(const AttributeMask &AM) {
+  // FIXME: What if both have an int/type attribute, but they don't match?!
   for (unsigned Index = 0; Index < Attribute::NumIntAttrKinds; ++Index)
     if (AM.contains((Attribute::AttrKind)Index))
       IntAttrs[Index] = 0;
@@ -1790,6 +1887,13 @@ AttrBuilder &AttrBuilder::remove(const AttributeMask &AM) {
            [&AM](Attribute A) { return AM.contains(A.getKindAsString()); });
 
   return *this;
+}
+
+AttrBuilder &AttrBuilder::remove(Attribute A) {
+  if (A.isStringAttribute())
+    return removeAttribute(A.getKindAsString());
+  else
+    return removeAttribute(A.getKindAsEnum());
 }
 
 bool AttrBuilder::overlaps(const AttributeMask &AM) const {

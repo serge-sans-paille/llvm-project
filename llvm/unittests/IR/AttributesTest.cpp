@@ -55,7 +55,7 @@ TEST(Attributes, Ordering) {
 
   AttributeList SetA = AttributeList::get(C, ASs);
   AttributeList SetB =
-      SetA.removeParamAttributes(C, 0, ASs[1].getParamAttrs(0));
+      SetA.removeParamAttributes(C, 0, AttributeMask(ASs[1].getParamAttrs(0)));
   EXPECT_NE(SetA, SetB);
 }
 

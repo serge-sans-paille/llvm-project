@@ -288,6 +288,7 @@ public:
   AttributeSet(const AttributeSet &) = default;
   ~AttributeSet() = default;
 
+  static AttributeSet get(LLVMContext &C, Attribute A);
   static AttributeSet get(LLVMContext &C, const AttrBuilder &B);
   static AttributeSet get(LLVMContext &C, ArrayRef<Attribute> Attrs);
 
@@ -485,6 +486,9 @@ public:
   LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
                                                     unsigned Index,
                                                     const AttrBuilder &B) const;
+  LLVM_NODISCARD AttributeList addAttributesAtIndex(LLVMContext &C,
+                                                    unsigned Index,
+                                                    AttributeSet AS) const;
 
   /// Add a function attribute to the list. Returns a new list because
   /// attribute lists are immutable.
@@ -514,6 +518,11 @@ public:
     return addAttributesAtIndex(C, FunctionIndex, B);
   }
 
+  LLVM_NODISCARD AttributeList addFnAttributes(LLVMContext &C,
+                                               AttributeSet AS) const {
+    return addAttributesAtIndex(C, FunctionIndex, AS);
+  }
+
   /// Add a return value attribute to the list. Returns a new list because
   /// attribute lists are immutable.
   LLVM_NODISCARD AttributeList addRetAttribute(LLVMContext &C,
@@ -533,6 +542,10 @@ public:
   LLVM_NODISCARD AttributeList addRetAttributes(LLVMContext &C,
                                                 const AttrBuilder &B) const {
     return addAttributesAtIndex(C, ReturnIndex, B);
+  }
+  LLVM_NODISCARD AttributeList addRetAttributes(LLVMContext &C,
+                                                AttributeSet AS) const {
+    return addAttributesAtIndex(C, ReturnIndex, AS);
   }
 
   /// Add an argument attribute to the list. Returns a new list because
@@ -562,6 +575,11 @@ public:
                                                   unsigned ArgNo,
                                                   const AttrBuilder &B) const {
     return addAttributesAtIndex(C, ArgNo + FirstArgIndex, B);
+  }
+  LLVM_NODISCARD AttributeList addParamAttributes(LLVMContext &C,
+                                                  unsigned ArgNo,
+                                                  AttributeSet AS) const {
+    return addAttributesAtIndex(C, ArgNo + FirstArgIndex, AS);
   }
 
   /// Remove the specified attribute at the specified index from this
@@ -1052,11 +1070,23 @@ public:
   /// Remove the attributes from the builder.
   AttrBuilder &removeAttributes(AttributeList A, uint64_t WithoutIndex);
 
+  /// Remove the attributes from the builder.
+  AttrBuilder &removeAttributes(AttributeSet AS);
+
   /// Add the attributes from the builder.
   AttrBuilder &merge(const AttrBuilder &B);
 
+  /// Add the attributes from the builder.
+  AttrBuilder &merge(AttributeSet AS);
+
+  /// Add the attributes from the builder.
+  AttrBuilder &merge(Attribute A);
+
   /// Remove the attributes from the builder.
   AttrBuilder &remove(const AttributeMask &AM);
+
+  /// Remove the attribute from the builder.
+  AttrBuilder &remove(Attribute A);
 
   /// Return true if the builder has any attribute that's in the
   /// specified builder.

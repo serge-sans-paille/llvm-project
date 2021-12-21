@@ -1377,8 +1377,7 @@ static AttributeList legalizeCallAttributes(LLVMContext &Ctx,
   }
 
   // Just skip parameter and return attributes for now
-  return AttributeList::get(Ctx, AttributeList::FunctionIndex,
-                            AttributeSet::get(Ctx, FnAttrs));
+  return AttributeList::get(Ctx, AttributeList::FunctionIndex, FnAttrs);
 }
 
 /// Helper function to place all gc relocates necessary for the given
