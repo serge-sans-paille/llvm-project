@@ -607,14 +607,14 @@ AttributeSet AttributeSet::get(LLVMContext &C, ArrayRef<Attribute> Attrs) {
 AttributeSet AttributeSet::addAttribute(LLVMContext &C,
                                         Attribute::AttrKind Kind) const {
   if (hasAttribute(Kind)) return *this;
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addAttribute(Kind);
   return addAttributes(C, AttributeSet::get(C, B));
 }
 
 AttributeSet AttributeSet::addAttribute(LLVMContext &C, StringRef Kind,
                                         StringRef Value) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributes(C, AttributeSet::get(C, B));
 }
@@ -627,7 +627,7 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
   if (!AS.hasAttributes())
     return *this;
 
-  AttrBuilder B(AS);
+  AttrBuilder B(C, AS);
   for (const auto &I : *this)
     B.addAttribute(I);
 
@@ -637,7 +637,7 @@ AttributeSet AttributeSet::addAttributes(LLVMContext &C,
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
                                              Attribute::AttrKind Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
+  AttrBuilder B(C, *this);
   B.removeAttribute(Kind);
   return get(C, B);
 }
@@ -645,14 +645,14 @@ AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
 AttributeSet AttributeSet::removeAttribute(LLVMContext &C,
                                              StringRef Kind) const {
   if (!hasAttribute(Kind)) return *this;
-  AttrBuilder B(*this);
+  AttrBuilder B(C, *this);
   B.removeAttribute(Kind);
   return get(C, B);
 }
 
 AttributeSet AttributeSet::removeAttributes(LLVMContext &C,
                                             const AttributeMask &Attrs) const {
-  AttrBuilder B(*this);
+  AttrBuilder B(C, *this);
   // If there is nothing to remove, directly return the original set.
   if (!B.overlaps(Attrs))
     return *this;
@@ -836,7 +836,7 @@ AttributeSetNode *AttributeSetNode::get(LLVMContext &C, const AttrBuilder &B) {
 
   // Add target-dependent (string) attributes.
   for (const auto &TDA : B.td_attrs())
-    Attrs.emplace_back(Attribute::get(C, TDA.first, TDA.second));
+    Attrs.push_back(TDA);
 
   return getSorted(C, Attrs);
 }
@@ -1194,9 +1194,9 @@ AttributeList AttributeList::get(LLVMContext &C,
 
   SmallVector<AttributeSet, 8> NewAttrSets(MaxSize);
   for (unsigned I = 0; I < MaxSize; ++I) {
-    AttrBuilder CurBuilder;
+    AttrBuilder CurBuilder(C);
     for (const auto &List : Attrs)
-      CurBuilder.merge(List.getAttributes(I - 1));
+      CurBuilder.merge(AttrBuilder(C, List.getAttributes(I - 1)));
     NewAttrSets[I] = AttributeSet::get(C, CurBuilder);
   }
 
@@ -1218,14 +1218,14 @@ AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  StringRef Kind,
                                                  StringRef Value) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addAttribute(Kind, Value);
   return addAttributesAtIndex(C, Index, B);
 }
 
 AttributeList AttributeList::addAttributeAtIndex(LLVMContext &C, unsigned Index,
                                                  Attribute A) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addAttribute(A);
   return addAttributesAtIndex(C, Index, B);
 }
@@ -1259,7 +1259,7 @@ AttributeList AttributeList::addAttributesAtIndex(LLVMContext &C,
          "Attempt to change alignment!");
 #endif
 
-  AttrBuilder Merged(getAttributes(Index));
+  AttrBuilder Merged(C, getAttributes(Index));
   Merged.merge(B);
   return setAttributesAtIndex(C, Index, AttributeSet::get(C, Merged));
 }
@@ -1276,7 +1276,7 @@ AttributeList AttributeList::addParamAttribute(LLVMContext &C,
 
   for (unsigned ArgNo : ArgNos) {
     unsigned Index = attrIdxToArrayIdx(ArgNo + FirstArgIndex);
-    AttrBuilder B(AttrSets[Index]);
+    AttrBuilder B(C, AttrSets[Index]);
     B.addAttribute(A);
     AttrSets[Index] = AttributeSet::get(C, B);
   }
@@ -1339,7 +1339,7 @@ AttributeList::removeAttributesAtIndex(LLVMContext &C,
 
 AttributeList AttributeList::addDereferenceableRetAttr(LLVMContext &C,
                                                        uint64_t Bytes) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addDereferenceableAttr(Bytes);
   return addRetAttributes(C, B);
 }
@@ -1347,7 +1347,7 @@ AttributeList AttributeList::addDereferenceableRetAttr(LLVMContext &C,
 AttributeList AttributeList::addDereferenceableParamAttr(LLVMContext &C,
                                                          unsigned Index,
                                                          uint64_t Bytes) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addDereferenceableAttr(Bytes);
   return addParamAttributes(C, Index, B);
 }
@@ -1355,7 +1355,7 @@ AttributeList AttributeList::addDereferenceableParamAttr(LLVMContext &C,
 AttributeList
 AttributeList::addDereferenceableOrNullParamAttr(LLVMContext &C, unsigned Index,
                                                  uint64_t Bytes) const {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addDereferenceableOrNullAttr(Bytes);
   return addParamAttributes(C, Index, B);
 }
@@ -1364,7 +1364,7 @@ AttributeList
 AttributeList::addAllocSizeParamAttr(LLVMContext &C, unsigned Index,
                                      unsigned ElemSizeArg,
                                      const Optional<unsigned> &NumElemsArg) {
-  AttrBuilder B;
+  AttrBuilder B(C);
   B.addAllocSizeAttr(ElemSizeArg, NumElemsArg);
   return addParamAttributes(C, Index, B);
 }
@@ -1549,13 +1549,13 @@ LLVM_DUMP_METHOD void AttributeList::dump() const { print(dbgs()); }
 //===----------------------------------------------------------------------===//
 
 // FIXME: Remove this ctor, use AttributeSet.
-AttrBuilder::AttrBuilder(AttributeList AL, unsigned Index) {
+AttrBuilder::AttrBuilder(LLVMContext& Ctx, AttributeList AL, unsigned Index) : Ctx(Ctx) {
   AttributeSet AS = AL.getAttributes(Index);
   for (const auto &A : AS)
     addAttribute(A);
 }
 
-AttrBuilder::AttrBuilder(AttributeSet AS) {
+AttrBuilder::AttrBuilder(LLVMContext& Ctx, AttributeSet AS) : Ctx(Ctx) {
   for (const auto &A : AS)
     addAttribute(A);
 }
@@ -1583,7 +1583,11 @@ AttrBuilder::kindToTypeIndex(Attribute::AttrKind Kind) const {
 
 AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
   if (Attr.isStringAttribute()) {
-    addAttribute(Attr.getKindAsString(), Attr.getValueAsString());
+    auto It = lower_bound(TargetDepAttrs, Attr, StringAttributeComparator());
+    if (It != TargetDepAttrs.end() && It->hasAttribute(Attr.getKindAsString()))
+      std::swap(*It, Attr);
+    else
+      TargetDepAttrs.insert(It, Attr);
     return *this;
   }
 
@@ -1598,14 +1602,13 @@ AttrBuilder &AttrBuilder::addAttribute(Attribute Attr) {
   return *this;
 }
 
-AttrBuilder &AttrBuilder::addAttribute(StringRef A, StringRef V) {
-  TargetDepAttrs[A] = V;
-  return *this;
-}
-
 AttrBuilder &AttrBuilder::removeAttributes(AttributeList AL, uint64_t Index) {
   remove(AttributeMask(AL.getAttributes(Index)));
   return *this;
+}
+
+AttrBuilder &AttrBuilder::addAttribute(StringRef A, StringRef V) {
+  return addAttribute(Attribute::get(Ctx, A, V));
 }
 
 AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
@@ -1621,7 +1624,9 @@ AttrBuilder &AttrBuilder::removeAttribute(Attribute::AttrKind Val) {
 }
 
 AttrBuilder &AttrBuilder::removeAttribute(StringRef A) {
-  TargetDepAttrs.erase(A);
+  auto It = lower_bound(TargetDepAttrs, A, StringAttributeComparator());
+  if (It != TargetDepAttrs.end() && It->hasAttribute(A))
+    TargetDepAttrs.erase(It);
   return *this;
 }
 
@@ -1753,8 +1758,9 @@ AttrBuilder &AttrBuilder::merge(const AttrBuilder &B) {
 
   Attrs |= B.Attrs;
 
+  // TODO: Inefficient...
   for (const auto &I : B.td_attrs())
-    TargetDepAttrs[I.first] = I.second;
+    addAttribute(I);
 
   return *this;
 }
@@ -1771,8 +1777,9 @@ AttrBuilder &AttrBuilder::remove(const AttributeMask &AM) {
 
   Attrs &= ~AM.attrs();
 
+  // TODO: Inefficient...
   for (const auto &I : AM.td_attrs())
-    TargetDepAttrs.erase(I);
+    removeAttribute(I);
 
   return *this;
 }
@@ -1784,13 +1791,14 @@ bool AttrBuilder::overlaps(const AttributeMask &AM) const {
 
   // Then check if any target dependent ones do.
   for (const auto &I : td_attrs())
-    if (AM.contains(I.first))
+    if (AM.contains(I.getKindAsString()))
       return true;
   return false;
 }
 
 bool AttrBuilder::contains(StringRef A) const {
-  return TargetDepAttrs.find(A) != TargetDepAttrs.end();
+  auto It = lower_bound(TargetDepAttrs, A, StringAttributeComparator());
+  return It != TargetDepAttrs.end() && It->hasAttribute(A);
 }
 
 bool AttrBuilder::hasAttributes() const {
@@ -1821,11 +1829,8 @@ bool AttrBuilder::operator==(const AttrBuilder &B) const {
   if (Attrs != B.Attrs)
     return false;
 
-  for (const auto &TDA : TargetDepAttrs)
-    if (B.TargetDepAttrs.find(TDA.first) == B.TargetDepAttrs.end())
-      return false;
-
-  return IntAttrs == B.IntAttrs && TypeAttrs == B.TypeAttrs;
+  return IntAttrs == B.IntAttrs && TypeAttrs == B.TypeAttrs &&
+         TargetDepAttrs == B.TargetDepAttrs;
 }
 
 //===----------------------------------------------------------------------===//
