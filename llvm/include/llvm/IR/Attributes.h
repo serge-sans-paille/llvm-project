@@ -936,7 +936,7 @@ template <> struct DenseMapInfo<AttributeList, void> {
 /// from an existing AttrBuilder, AttributeSet or AttributeList.
 class AttributeMask {
   std::bitset<Attribute::EndAttrKinds> Attrs;
-  std::set<SmallString<32>, std::less<>> TargetDepAttrs;
+  SmallVector<SmallString<32>> TargetDepAttrs;
 
 public:
   AttributeMask() = default;
@@ -967,7 +967,8 @@ public:
 
   /// Add the target-dependent attribute to the builder.
   AttributeMask &addAttribute(StringRef A) {
-    TargetDepAttrs.insert(A);
+    assert(find(TargetDepAttrs, A) == TargetDepAttrs.end() && "not adding an existing attribute");
+    TargetDepAttrs.push_back(A);
     return *this;
   }
 
@@ -979,7 +980,7 @@ public:
 
   /// Return true if the builder has the specified target-dependent
   /// attribute.
-  bool contains(StringRef A) const { return TargetDepAttrs.count(A); }
+  bool contains(StringRef A) const { return count(TargetDepAttrs, A); }
 
   using td_const_iterator = decltype(TargetDepAttrs)::const_iterator;
   using td_const_range = iterator_range<td_const_iterator>;

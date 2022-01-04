@@ -1790,8 +1790,8 @@ bool AttrBuilder::overlaps(const AttributeMask &AM) const {
     return true;
 
   // Then check if any target dependent ones do.
-  for (const auto &I : td_attrs())
-    if (AM.contains(I.getKindAsString()))
+  for (StringRef I : AM.td_attrs())
+    if (contains(I))
       return true;
   return false;
 }
