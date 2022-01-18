@@ -30,7 +30,7 @@ namespace llvm {
 namespace codeview {
 
 class TypeIndex;
-class GUID;
+struct GUID;
 
 class CodeViewRecordStreamer {
 public:
