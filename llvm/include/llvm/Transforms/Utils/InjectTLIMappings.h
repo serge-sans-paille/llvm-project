@@ -13,10 +13,14 @@
 #ifndef LLVM_TRANSFORMS_UTILS_INJECTTLIMAPPINGS_H
 #define LLVM_TRANSFORMS_UTILS_INJECTTLIMAPPINGS_H
 
+#include "llvm/Pass.h"
+#include "llvm/PassRegistry.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/InitializePasses.h"
 
 namespace llvm {
+class Function;
+
 class InjectTLIMappings : public PassInfoMixin<InjectTLIMappings> {
 public:
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);

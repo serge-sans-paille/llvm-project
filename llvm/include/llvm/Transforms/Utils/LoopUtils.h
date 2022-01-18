@@ -13,9 +13,8 @@
 #ifndef LLVM_TRANSFORMS_UTILS_LOOPUTILS_H
 #define LLVM_TRANSFORMS_UTILS_LOOPUTILS_H
 
-#include "llvm/ADT/StringRef.h"
 #include "llvm/Analysis/IVDescriptors.h"
-#include "llvm/Analysis/TargetTransformInfo.h"
+#include "llvm/Pass.h"
 #include "llvm/Transforms/Utils/ValueMapper.h"
 
 namespace llvm {
@@ -23,7 +22,6 @@ namespace llvm {
 template <typename T> class DomTreeNodeBase;
 using DomTreeNode = DomTreeNodeBase<BasicBlock>;
 class AAResults;
-class AliasSet;
 class AliasSetTracker;
 class BasicBlock;
 class BlockFrequencyInfo;
@@ -37,10 +35,10 @@ class MemorySSAUpdater;
 class OptimizationRemarkEmitter;
 class PredIteratorCache;
 class ScalarEvolution;
-class ScalarEvolutionExpander;
 class SCEV;
 class SCEVExpander;
 class TargetLibraryInfo;
+class TargetTransformInfo;
 class LPPassManager;
 class Instruction;
 struct RuntimeCheckingPtrGroup;

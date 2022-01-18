@@ -15,9 +15,7 @@
 #define LLVM_ANALYSIS_LOOPCACHEANALYSIS_H
 
 #include "llvm/Analysis/LoopAnalysisManager.h"
-#include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
-#include "llvm/Support/raw_ostream.h"
 
 namespace llvm {
 
@@ -27,6 +25,8 @@ class LPMUpdater;
 class ScalarEvolution;
 class SCEV;
 class TargetTransformInfo;
+class Instruction;
+class raw_ostream;
 
 using CacheCostTy = int64_t;
 using LoopVectorTy = SmallVector<Loop *, 8>;

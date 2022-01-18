@@ -13,9 +13,9 @@
 #ifndef LLVM_TRANSFORMS_UTILS_SIZEOPTS_H
 #define LLVM_TRANSFORMS_UTILS_SIZEOPTS_H
 
-#include "llvm/Analysis/BlockFrequencyInfo.h"
 #include "llvm/Analysis/ProfileSummaryInfo.h"
 #include "llvm/Support/CommandLine.h"
+#include <cassert>
 
 namespace llvm {
 extern cl::opt<bool> EnablePGSO;

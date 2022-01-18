@@ -39,7 +39,6 @@
 #include "llvm/IR/ValueHandle.h"
 #include "llvm/IR/ValueMap.h"
 #include "llvm/Support/CFGDiff.h"
-#include <utility>
 
 namespace llvm {
 

@@ -15,9 +15,7 @@
 #ifndef LLVM_TRANSFORMS_UTILS_SIMPLIFYINDVAR_H
 #define LLVM_TRANSFORMS_UTILS_SIMPLIFYINDVAR_H
 
-#include "llvm/Analysis/ScalarEvolutionExpressions.h"
-#include "llvm/IR/ConstantRange.h"
-#include "llvm/IR/ValueHandle.h"
+#include "llvm/ADT/SmallVector.h"
 
 namespace llvm {
 
@@ -29,6 +27,8 @@ class PHINode;
 class ScalarEvolution;
 class SCEVExpander;
 class TargetTransformInfo;
+class Type;
+class WeakTrackingVH;
 
 /// Interface for visiting interesting IV users that are recognized but not
 /// simplified by this utility.

@@ -18,7 +18,7 @@
 
 namespace llvm {
 
-class FunctionPass;
+class Function;
 
 /// Run instruction simplification across each instruction in the function.
 ///

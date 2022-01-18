@@ -14,6 +14,8 @@
 
 #include "llvm/Analysis/LoopUnrollAnalyzer.h"
 #include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/InstructionSimplify.h"
+#include "llvm/Analysis/ScalarEvolutionExpressions.h"
 
 using namespace llvm;
 

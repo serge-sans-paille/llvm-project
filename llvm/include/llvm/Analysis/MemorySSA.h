@@ -93,7 +93,6 @@
 #include "llvm/IR/Use.h"
 #include "llvm/IR/User.h"
 #include "llvm/IR/Value.h"
-#include "llvm/IR/ValueHandle.h"
 #include "llvm/Pass.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/CommandLine.h"
@@ -109,7 +108,6 @@ namespace llvm {
 /// Enables memory ssa as a dependency for loop passes.
 extern cl::opt<bool> EnableMSSALoopDependency;
 
-class AllocaInst;
 class Function;
 class Instruction;
 class MemoryAccess;

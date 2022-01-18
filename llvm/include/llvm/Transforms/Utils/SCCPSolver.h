@@ -18,11 +18,8 @@
 #include "llvm/Analysis/DomTreeUpdater.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/Analysis/ValueLattice.h"
-#include "llvm/Analysis/ValueLatticeUtils.h"
-#include "llvm/IR/InstVisitor.h"
 #include "llvm/Transforms/Utils/PredicateInfo.h"
-#include <cassert>
-#include <utility>
+#include "llvm/IR/InstVisitor.h"
 #include <vector>
 
 namespace llvm {

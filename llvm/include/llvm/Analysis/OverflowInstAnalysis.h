@@ -14,8 +14,6 @@
 #ifndef LLVM_ANALYSIS_OVERFLOWINSTANALYSIS_H
 #define LLVM_ANALYSIS_OVERFLOWINSTANALYSIS_H
 
-#include "llvm/IR/InstrTypes.h"
-
 namespace llvm {
 class Value;
 class Use;

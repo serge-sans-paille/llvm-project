@@ -17,14 +17,16 @@
 #define LLVM_TRANSFORMS_UTILS_ASSUMEBUNDLEBUILDER_H
 
 #include "llvm/Analysis/AssumeBundleQueries.h"
-#include "llvm/IR/Attributes.h"
-#include "llvm/IR/Instruction.h"
+#include "llvm/ADT/ArrayRef.h"
 #include "llvm/IR/PassManager.h"
 
 namespace llvm {
-class IntrinsicInst;
+class AssumeInst;
 class AssumptionCache;
 class DominatorTree;
+class Function;
+class FunctionPass;
+class Instruction;
 
 /// Build a call to llvm.assume to preserve informations that can be derived
 /// from the given instruction.

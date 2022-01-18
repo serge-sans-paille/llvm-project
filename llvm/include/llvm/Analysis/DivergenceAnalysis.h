@@ -17,6 +17,10 @@
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/Analysis/SyncDependenceAnalysis.h"
+#include "llvm/IR/PassManager.h"
+#include "llvm/IR/Use.h"
+
+#include <memory>
 #include <vector>
 
 namespace llvm {

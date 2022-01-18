@@ -10,9 +10,12 @@
 #define LLVM_TRANSFORMS_SCALAR_LOOPINTERCHANGE_H
 
 #include "llvm/IR/PassManager.h"
-#include "llvm/Transforms/Scalar/LoopPassManager.h"
+#include "llvm/Analysis/LoopAnalysisManager.h"
 
 namespace llvm {
+
+class LPMUpdater;
+class LoopNest;
 
 struct LoopInterchangePass : public PassInfoMixin<LoopInterchangePass> {
   PreservedAnalyses run(LoopNest &L, LoopAnalysisManager &AM,

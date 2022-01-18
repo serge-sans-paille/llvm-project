@@ -6,10 +6,24 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "llvm/ADT/SmallSet.h"
-#include "llvm/ADT/SmallString.h"
 #include "llvm/Analysis/VectorUtils.h"
-
+#include "llvm/ADT/ArrayRef.h"           // for ArrayRef
+#include "llvm/ADT/None.h"               // for None, llvm
+#include "llvm/ADT/Optional.h"           // for Optional
+#include "llvm/ADT/STLExtras.h"          // for all_of, drop_begin
+#include "llvm/ADT/STLForwardCompat.h"   // for remove_cvref_t
+#include "llvm/ADT/SmallVector.h"        // for SmallVector, SmallVectorTemp...
+#include "llvm/ADT/StringRef.h"          // for StringRef, operator==
+#include "llvm/ADT/StringSwitch.h"       // for StringSwitch
+#include "llvm/ADT/iterator_range.h"     // for iterator_range
+#include "llvm/IR/DerivedTypes.h"        // for VectorType, FunctionType
+#include "llvm/IR/Function.h"            // for Function
+#include "llvm/IR/Module.h"              // for Module
+#include "llvm/Support/Alignment.h"      // for Align
+#include "llvm/Support/Casting.h"        // for dyn_cast
+#include "llvm/Support/ErrorHandling.h"  // for llvm_unreachable
+#include "llvm/Support/MathExtras.h"     // for isPowerOf2_64
+#include "llvm/Support/TypeSize.h"       // for ElementCount, UnivariateLine...
 using namespace llvm;
 
 namespace {

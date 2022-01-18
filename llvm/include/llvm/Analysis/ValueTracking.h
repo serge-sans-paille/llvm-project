@@ -21,7 +21,6 @@
 #include "llvm/IR/DataLayout.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/Intrinsics.h"
-#include "llvm/IR/Operator.h"
 #include <cassert>
 #include <cstdint>
 
@@ -35,6 +34,7 @@ class DominatorTree;
 class GEPOperator;
 class IntrinsicInst;
 class LoadInst;
+class Operator;
 class WithOverflowInst;
 struct KnownBits;
 class Loop;

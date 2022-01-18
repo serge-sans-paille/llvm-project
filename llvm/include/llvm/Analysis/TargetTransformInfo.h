@@ -28,7 +28,6 @@
 #include "llvm/Pass.h"
 #include "llvm/Support/AtomicOrdering.h"
 #include "llvm/Support/BranchProbability.h"
-#include "llvm/Support/DataTypes.h"
 #include "llvm/Support/InstructionCost.h"
 #include <functional>
 
@@ -43,7 +42,6 @@ class BlockFrequencyInfo;
 class DominatorTree;
 class BranchInst;
 class CallBase;
-class ExtractElementInst;
 class Function;
 class GlobalValue;
 class InstCombiner;

@@ -17,10 +17,8 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/MapVector.h"
-#include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/ADT/SetVector.h"
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/Analysis/InstructionPrecedenceTracking.h"
 #include "llvm/IR/Dominators.h"
 #include "llvm/IR/InstrTypes.h"
 #include "llvm/IR/PassManager.h"
@@ -39,11 +37,9 @@ class AssumptionCache;
 class BasicBlock;
 class BranchInst;
 class CallInst;
-class Constant;
 class ExtractValueInst;
 class Function;
 class FunctionPass;
-class IntrinsicInst;
 class LoadInst;
 class LoopInfo;
 class MemDepResult;
@@ -55,6 +51,8 @@ class OptimizationRemarkEmitter;
 class PHINode;
 class TargetLibraryInfo;
 class Value;
+class ImplicitControlFlowTracking;
+
 /// A private "module" namespace for types and utilities used by GVN. These
 /// are implementation details and should not be used by clients.
 namespace gvn LLVM_LIBRARY_VISIBILITY {

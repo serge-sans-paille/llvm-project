@@ -36,7 +36,6 @@
 #include "llvm/IR/Instruction.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/IntrinsicInst.h"
-#include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/IR/Use.h"
@@ -53,7 +52,6 @@
 #include "llvm/Support/GraphWriter.h"
 #include <algorithm>
 #include <cassert>
-#include <cstdlib>
 #include <iterator>
 #include <memory>
 #include <utility>

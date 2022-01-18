@@ -56,7 +56,6 @@
 #include "llvm/ADT/ilist_node.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
-#include "llvm/IR/Value.h"
 #include "llvm/IR/ValueHandle.h"
 #include "llvm/Pass.h"
 
@@ -67,6 +66,7 @@ class DominatorTree;
 class Function;
 class IntrinsicInst;
 class raw_ostream;
+class Value;
 
 enum PredicateType { PT_Branch, PT_Assume, PT_Switch };
 

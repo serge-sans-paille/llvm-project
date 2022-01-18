@@ -13,9 +13,9 @@
 //
 //===----------------------------------------------------------------------===//
 #include "llvm/Analysis/RegionPass.h"
+#include "llvm/Analysis/RegionInfo.h"
 #include "llvm/IR/OptBisect.h"
 #include "llvm/IR/PassTimingInfo.h"
-#include "llvm/IR/StructuralHash.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Timer.h"
 #include "llvm/Support/raw_ostream.h"

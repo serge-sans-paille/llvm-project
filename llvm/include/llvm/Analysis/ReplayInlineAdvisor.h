@@ -11,14 +11,11 @@
 
 #include "llvm/ADT/StringSet.h"
 #include "llvm/Analysis/InlineAdvisor.h"
-#include "llvm/IR/LLVMContext.h"
 
 namespace llvm {
-class BasicBlock;
 class CallBase;
-class Function;
+class LLVMContext;
 class Module;
-class OptimizationRemarkEmitter;
 
 /// Replay inline advisor that uses optimization remarks from inlining of
 /// previous build to guide current inlining. This is useful for inliner tuning.

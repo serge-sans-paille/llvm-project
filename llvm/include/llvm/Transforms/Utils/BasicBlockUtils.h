@@ -16,13 +16,16 @@
 
 // FIXME: Move to this file: BasicBlock::removePredecessor, BB::splitBasicBlock
 
+#include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/Twine.h"
+#include "llvm/IR/Dominators.h"
+#include "llvm/IR/Instruction.h"
+#include "llvm/Support/GenericDomTree.h"  // for DominatorTreeBase<>::Update...
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SetVector.h"
-#include "llvm/Analysis/DomTreeUpdater.h"
-#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Support/GenericDomTree.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/CFG.h"
-#include "llvm/IR/InstrTypes.h"
 #include <cassert>
 
 namespace llvm {
@@ -32,7 +35,10 @@ class BranchProbabilityInfo;
 class DominatorTree;
 class DomTreeUpdater;
 class Function;
-class Instruction;
+class BranchInst;
+class LandingPadInst;
+class PHINode;
+class Loop;
 class LoopInfo;
 class MDNode;
 class MemoryDependenceResults;

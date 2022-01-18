@@ -35,13 +35,12 @@
 #include "llvm/IR/Intrinsics.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/Use.h"
-#include "llvm/IR/User.h"
 #include "llvm/Support/Casting.h"
-#include <algorithm>
 #include <cassert>
 #include <type_traits>
 
 namespace llvm {
+class CallBase;
 
 namespace detail {
 
