@@ -21,9 +21,9 @@
 #include "llvm/Support/Chrono.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/FileSystem.h"
-#include "llvm/Support/MemoryBuffer.h"
-#include <algorithm>
+#include "llvm/Support/MemoryBufferRef.h"
 #include <cassert>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <string>

@@ -10,11 +10,18 @@
 #define LLVM_TEXTAPI_MACHO_SYMBOL_H
 
 #include "llvm/ADT/BitmaskEnum.h"
+#include "llvm/ADT/iterator_range.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Error.h"
+#include "llvm/ADT/SmallVector.h"
+#include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/TextAPI/ArchitectureSet.h"
 #include "llvm/TextAPI/Target.h"
+
+#include <cstdint>
+#include <functional>
+#include <tuple>
+#include <utility>
 
 namespace llvm {
 namespace MachO {

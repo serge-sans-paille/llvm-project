@@ -14,14 +14,15 @@
 #define LLVM_OBJECT_TAPIUNIVERSAL_H
 
 #include "llvm/Object/Binary.h"
-#include "llvm/Object/TapiFile.h"
 #include "llvm/Support/Error.h"
-#include "llvm/Support/MemoryBuffer.h"
+#include "llvm/Support/MemoryBufferRef.h"
 #include "llvm/TextAPI/Architecture.h"
 #include "llvm/TextAPI/InterfaceFile.h"
 
 namespace llvm {
 namespace object {
+
+class TapiFile;
 
 class TapiUniversal : public Binary {
 public:

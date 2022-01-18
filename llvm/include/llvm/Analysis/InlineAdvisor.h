@@ -10,7 +10,6 @@
 #define LLVM_ANALYSIS_INLINEADVISOR_H
 
 #include "llvm/Analysis/InlineCost.h"
-#include "llvm/Analysis/Utils/ImportedFunctionsInliningStatistics.h"
 #include "llvm/Config/llvm-config.h"
 #include "llvm/IR/PassManager.h"
 #include <memory>
@@ -21,6 +20,8 @@ class BasicBlock;
 class CallBase;
 class Function;
 class Module;
+class ImportedFunctionsInliningStatistics;
+class OptimizationRemark;
 class OptimizationRemarkEmitter;
 
 /// There are 3 scenarios we can use the InlineAdvisor:

@@ -14,6 +14,7 @@
 #define LLVM_LIB_TARGET_SPARC_MCTARGETDESC_SPARCMCTARGETDESC_H
 
 #include "llvm/Support/DataTypes.h"
+#include "llvm/MC/MCInstrInfo.h"
 
 #include <memory>
 

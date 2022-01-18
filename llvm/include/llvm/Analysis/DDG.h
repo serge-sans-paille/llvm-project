@@ -18,7 +18,7 @@
 #include "llvm/Analysis/DependenceAnalysis.h"
 #include "llvm/Analysis/DependenceGraphBuilder.h"
 #include "llvm/Analysis/LoopAnalysisManager.h"
-#include "llvm/IR/Instructions.h"
+#include "llvm/IR/Instruction.h"
 
 namespace llvm {
 class DDGNode;

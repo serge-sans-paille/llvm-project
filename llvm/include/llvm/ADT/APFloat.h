@@ -39,7 +39,6 @@ class StringRef;
 class APFloat;
 class raw_ostream;
 
-template <typename T> class Expected;
 template <typename T> class SmallVectorImpl;
 
 /// Enum that represents what fraction of the LSB truncated bits of an fp number

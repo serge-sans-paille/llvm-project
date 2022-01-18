@@ -9,7 +9,7 @@
 #ifndef LLVM_OBJECT_DECOMPRESSOR_H
 #define LLVM_OBJECT_DECOMPRESSOR_H
 
-#include "llvm/ADT/SmallString.h"
+#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Object/ObjectFile.h"
 

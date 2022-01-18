@@ -14,6 +14,7 @@
 #define LLVM_LIB_TARGET_MIPS_MCTARGETDESC_MIPSMCTARGETDESC_H
 
 #include "llvm/Support/DataTypes.h"
+#include "llvm/MC/MCInstrInfo.h"
 
 #include <memory>
 
@@ -21,7 +22,6 @@ namespace llvm {
 class MCAsmBackend;
 class MCCodeEmitter;
 class MCContext;
-class MCInstrInfo;
 class MCObjectTargetWriter;
 class MCRegisterInfo;
 class MCSubtargetInfo;

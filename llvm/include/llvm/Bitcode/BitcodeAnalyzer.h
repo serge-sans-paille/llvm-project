@@ -14,15 +14,17 @@
 #define LLVM_BITCODE_BITCODEANALYZER_H
 
 #include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/None.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Bitstream/BitstreamReader.h"
 #include "llvm/Support/Error.h"
-#include "llvm/Support/raw_ostream.h"
 #include <map>
 #include <vector>
 
 namespace llvm {
+
+class raw_ostream;
 
 /// CurStreamTypeType - A type for CurStreamType
 enum CurStreamTypeType {

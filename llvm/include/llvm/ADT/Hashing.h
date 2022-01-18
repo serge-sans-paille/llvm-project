@@ -44,15 +44,17 @@
 #ifndef LLVM_ADT_HASHING_H
 #define LLVM_ADT_HASHING_H
 
-#include "llvm/Support/DataTypes.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/SwapByteOrder.h"
 #include "llvm/Support/type_traits.h"
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 #include <cstring>
+#include <iterator>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 namespace llvm {

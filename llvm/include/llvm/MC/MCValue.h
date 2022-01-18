@@ -14,8 +14,7 @@
 #define LLVM_MC_MCVALUE_H
 
 #include "llvm/MC/MCExpr.h"
-#include "llvm/Support/DataTypes.h"
-#include <cassert>
+#include <cstdint>
 
 namespace llvm {
 class raw_ostream;

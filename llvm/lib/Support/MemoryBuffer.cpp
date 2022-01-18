@@ -13,24 +13,21 @@
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/Config/config.h"
-#include "llvm/Support/AutoConvert.h"
 #include "llvm/Support/Errc.h"
-#include "llvm/Support/Errno.h"
+#include "llvm/Support/Error.h"
+#include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/MathExtras.h"
-#include "llvm/Support/Path.h"
 #include "llvm/Support/Process.h"
 #include "llvm/Support/Program.h"
 #include "llvm/Support/SmallVectorMemoryBuffer.h"
 #include <cassert>
-#include <cerrno>
 #include <cstring>
+#include <utility>
 #include <new>
 #include <sys/types.h>
 #include <system_error>
-#if !defined(_MSC_VER) && !defined(__MINGW32__)
-#include <unistd.h>
-#else
+#if defined(_MSC_VER) || defined(__MINGW32__)
 #include <io.h>
 #endif
 using namespace llvm;

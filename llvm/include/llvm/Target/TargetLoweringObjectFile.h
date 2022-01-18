@@ -15,6 +15,7 @@
 #define LLVM_TARGET_TARGETLOWERINGOBJECTFILE_H
 
 #include "llvm/MC/MCObjectFileInfo.h"
+#include "llvm/Support/Alignment.h"
 #include <cstdint>
 
 namespace llvm {

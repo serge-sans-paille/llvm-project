@@ -19,7 +19,6 @@
 #include "llvm/MC/MCInstrItineraries.h"
 #include "llvm/MC/MCSchedule.h"
 #include "llvm/MC/SubtargetFeature.h"
-#include <algorithm>
 #include <cassert>
 #include <cstdint>
 #include <string>

@@ -13,10 +13,10 @@
 #ifndef LLVM_SUPPORT_BRANCHPROBABILITY_H
 #define LLVM_SUPPORT_BRANCHPROBABILITY_H
 
-#include "llvm/Support/DataTypes.h"
 #include <algorithm>
 #include <cassert>
-#include <climits>
+#include <cstdint>
+#include <iterator>
 #include <numeric>
 
 namespace llvm {

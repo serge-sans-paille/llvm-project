@@ -25,7 +25,6 @@
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/Program.h"
 #include "llvm/Support/raw_ostream.h"
-#include <cassert>
 #include <system_error>
 #include <string>
 #include <vector>

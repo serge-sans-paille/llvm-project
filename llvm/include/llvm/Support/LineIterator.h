@@ -11,9 +11,9 @@
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/Support/DataTypes.h"
 #include "llvm/Support/MemoryBufferRef.h"
 #include <iterator>
+#include <cstdint>
 
 namespace llvm {
 

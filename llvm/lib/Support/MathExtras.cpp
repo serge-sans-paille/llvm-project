@@ -14,8 +14,6 @@
 
 #ifdef _MSC_VER
 #include <limits>
-#else
-#include <math.h>
 #endif
 
 namespace llvm {

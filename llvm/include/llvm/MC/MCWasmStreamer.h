@@ -14,7 +14,7 @@
 #include "llvm/MC/MCDirectives.h"
 #include "llvm/MC/MCObjectStreamer.h"
 #include "llvm/MC/MCObjectWriter.h"
-#include "llvm/Support/DataTypes.h"
+#include <cstdint>
 
 namespace llvm {
 class MCExpr;

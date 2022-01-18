@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "ARMMCTargetDesc.h"
+#include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCAsmBackend.h"
 #include "llvm/MC/MCCodeEmitter.h"
 #include "llvm/MC/MCObjectWriter.h"

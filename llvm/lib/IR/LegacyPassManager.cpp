@@ -33,7 +33,6 @@
 #include "llvm/Support/Timer.h"
 #include "llvm/Support/raw_ostream.h"
 #include <algorithm>
-#include <unordered_set>
 using namespace llvm;
 
 // See PassManagers.h for Pass Manager infrastructure overview.

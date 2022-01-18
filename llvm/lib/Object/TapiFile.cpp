@@ -13,7 +13,6 @@
 #include "llvm/Object/TapiFile.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Object/Error.h"
-#include "llvm/Support/MemoryBuffer.h"
 #include "llvm/TextAPI/Symbol.h"
 
 using namespace llvm;

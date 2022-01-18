@@ -11,13 +11,17 @@
 
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/MC/MCParser/MCAsmLexer.h"
+#include "llvm/MC/MCAsmMacro.h"
 #include "llvm/MC/MCParser/MCAsmParser.h"
 #include "llvm/Support/SMLoc.h"
 
 namespace llvm {
 
 class Twine;
+class MCAsmLexer;
+class MCContext;
+class MCStreamer;
+class SourceMgr;
 
 /// Generic interface for extending the MCAsmParser,
 /// which is implemented by target and object file assembly parser

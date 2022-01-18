@@ -10,6 +10,7 @@
 #define LLVM_MC_MCINSTPRINTER_H
 
 #include "llvm/Support/Format.h"
+#include "llvm/MC/MCInstrInfo.h"
 #include <cstdint>
 
 namespace llvm {
@@ -17,7 +18,6 @@ namespace llvm {
 class MCAsmInfo;
 class MCInst;
 class MCOperand;
-class MCInstrInfo;
 class MCInstrAnalysis;
 class MCRegisterInfo;
 class MCSubtargetInfo;

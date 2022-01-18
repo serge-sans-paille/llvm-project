@@ -14,13 +14,14 @@
 #define LLVM_LIB_TARGET_MSP430_MCTARGETDESC_MSP430MCTARGETDESC_H
 
 #include "llvm/Support/DataTypes.h"
+#include "llvm/MC/MCInstrInfo.h"
+
 #include <memory>
 
 namespace llvm {
 class Target;
 class MCAsmBackend;
 class MCCodeEmitter;
-class MCInstrInfo;
 class MCSubtargetInfo;
 class MCRegisterInfo;
 class MCContext;

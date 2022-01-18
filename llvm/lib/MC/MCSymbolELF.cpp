@@ -8,7 +8,7 @@
 
 #include "llvm/MC/MCSymbolELF.h"
 #include "llvm/BinaryFormat/ELF.h"
-#include "llvm/MC/MCFixupKindInfo.h"
+#include "llvm/Support/ErrorHandling.h"
 
 namespace llvm {
 

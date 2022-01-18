@@ -15,12 +15,11 @@
 #define LLVM_ANALYSIS_ASSUMEBUNDLEQUERIES_H
 
 #include "llvm/IR/Attributes.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/IR/IntrinsicInst.h"
 #include "llvm/ADT/DenseMap.h"
+#include "llvm/IR/IntrinsicInst.h"
 
 namespace llvm {
-class IntrinsicInst;
+class Instruction;
 class AssumptionCache;
 class DominatorTree;
 

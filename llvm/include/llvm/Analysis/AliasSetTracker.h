@@ -28,7 +28,6 @@
 #include "llvm/Support/Casting.h"
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
 #include <iterator>
 #include <vector>
 

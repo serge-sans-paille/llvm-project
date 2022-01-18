@@ -23,11 +23,10 @@
 #include "llvm/Object/SymbolicFile.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/Error.h"
-#include "llvm/Support/MemoryBuffer.h"
+#include "llvm/Support/MemoryBufferRef.h"
 #include <cassert>
 #include <cstdint>
 #include <memory>
-#include <system_error>
 
 namespace llvm {
 

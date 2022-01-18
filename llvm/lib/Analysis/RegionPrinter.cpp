@@ -20,6 +20,7 @@
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/GraphWriter.h"
 #ifndef NDEBUG
 #include "llvm/IR/LegacyPassManager.h"
 #endif

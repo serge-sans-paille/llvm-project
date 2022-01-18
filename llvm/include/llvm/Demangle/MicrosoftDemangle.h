@@ -12,7 +12,6 @@
 #include "llvm/Demangle/DemangleConfig.h"
 #include "llvm/Demangle/MicrosoftDemangleNodes.h"
 #include "llvm/Demangle/StringView.h"
-#include "llvm/Demangle/Utility.h"
 
 #include <utility>
 

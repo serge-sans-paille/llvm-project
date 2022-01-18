@@ -44,10 +44,12 @@
 #ifndef LLVM_MC_MCPSEUDOPROBE_H
 #define LLVM_MC_MCPSEUDOPROBE_H
 
-#include "llvm/ADT/MapVector.h"
+#include "llvm/ADT/SmallVector.h"
 #include "llvm/MC/MCSection.h"
-#include <functional>
+#include <cassert>
+#include <cstdint>
 #include <map>
+#include <tuple>
 #include <vector>
 
 namespace llvm {

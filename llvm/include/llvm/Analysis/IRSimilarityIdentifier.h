@@ -51,12 +51,17 @@
 
 #include "llvm/IR/InstVisitor.h"
 #include "llvm/IR/Instructions.h"
-#include "llvm/IR/Module.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Pass.h"
 #include "llvm/Support/Allocator.h"
 
 namespace llvm {
+class DbgInfoIntrinsic;
+class IntrinsicInst;
+class Module;
+class Type;
+class raw_ostream;
+
 namespace IRSimilarity {
 
 struct IRInstructionDataList;

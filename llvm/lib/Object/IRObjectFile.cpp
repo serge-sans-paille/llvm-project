@@ -11,17 +11,12 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Object/IRObjectFile.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/BinaryFormat/Magic.h"
 #include "llvm/Bitcode/BitcodeReader.h"
-#include "llvm/IR/GVMaterializer.h"
-#include "llvm/IR/LLVMContext.h"
-#include "llvm/IR/Mangler.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Object/ObjectFile.h"
-#include "llvm/Support/MemoryBuffer.h"
-#include "llvm/Support/TargetRegistry.h"
 #include "llvm/Support/raw_ostream.h"
+
 using namespace llvm;
 using namespace object;
 

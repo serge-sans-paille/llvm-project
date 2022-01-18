@@ -11,9 +11,9 @@
 
 #include "llvm/ADT/StringRef.h"
 #include "llvm/MC/MCExpr.h"
-#include "llvm/MC/MCInstrInfo.h"
-#include "llvm/MC/MCParser/MCAsmLexer.h"
+#include "llvm/MC/MCAsmMacro.h"
 #include "llvm/MC/MCParser/MCParsedAsmOperand.h"
+#include "llvm/MC/MCParser/MCAsmParser.h"
 #include "llvm/MC/MCParser/MCAsmParserExtension.h"
 #include "llvm/MC/MCTargetOptions.h"
 #include "llvm/MC/SubtargetFeature.h"
@@ -23,9 +23,13 @@
 
 namespace llvm {
 
+class MCContext;
 class MCInst;
+class MCInstrInfo;
 class MCStreamer;
 class MCSubtargetInfo;
+class MCSymbol;
+
 template <typename T> class SmallVectorImpl;
 
 using OperandVector = SmallVectorImpl<std::unique_ptr<MCParsedAsmOperand>>;

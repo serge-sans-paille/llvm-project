@@ -1,4 +1,7 @@
 #include "llvm/DebugInfo/CodeView/ContinuationRecordBuilder.h"
+#include "llvm/DebugInfo/CodeView/GUID.h"
+#include "llvm/DebugInfo/CodeView/TypeIndex.h"
+#include "llvm/DebugInfo/CodeView/TypeRecord.h"
 
 using namespace llvm;
 using namespace llvm::codeview;

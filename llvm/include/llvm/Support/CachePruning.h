@@ -15,6 +15,7 @@
 #define LLVM_SUPPORT_CACHEPRUNING_H
 
 #include "llvm/ADT/Optional.h"
+#include <cstdint>
 #include <chrono>
 
 namespace llvm {

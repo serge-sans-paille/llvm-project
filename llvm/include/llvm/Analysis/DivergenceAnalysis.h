@@ -17,17 +17,19 @@
 
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/Analysis/SyncDependenceAnalysis.h"
-#include "llvm/IR/Function.h"
-#include "llvm/Pass.h"
 #include <vector>
 
 namespace llvm {
-class Module;
-class Value;
+class BasicBlock;
+class DominatorTree;
+class Function;
 class Instruction;
 class Loop;
-class raw_ostream;
+class LoopInfo;
+class PostDominatorTree;
 class TargetTransformInfo;
+class Value;
+class raw_ostream;
 
 /// \brief Generic divergence analysis for reducible CFGs.
 ///

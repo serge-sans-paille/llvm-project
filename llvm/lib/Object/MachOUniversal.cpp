@@ -11,13 +11,20 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Object/MachOUniversal.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/Twine.h"
 #include "llvm/Object/Archive.h"
+#include "llvm/Object/Error.h"
 #include "llvm/Object/IRObjectFile.h"
 #include "llvm/Object/MachO.h"
 #include "llvm/Object/ObjectFile.h"
-#include "llvm/Support/Casting.h"
+#include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/Host.h"
-#include "llvm/Support/MemoryBuffer.h"
+#include "llvm/Support/SwapByteOrder.h"
+
+#include <cstring>
+#include <type_traits>
+#include <utility>
 
 using namespace llvm;
 using namespace object;

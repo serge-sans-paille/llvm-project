@@ -28,8 +28,7 @@
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/Support/FormatVariadic.h"
-#include "llvm/Support/GraphWriter.h"
-
+#include "llvm/Support/DOTGraphTraits.h"
 namespace llvm {
 class CFGViewerPass : public PassInfoMixin<CFGViewerPass> {
 public:

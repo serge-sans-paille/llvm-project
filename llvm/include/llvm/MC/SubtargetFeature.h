@@ -20,7 +20,6 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/Support/MathExtras.h"
 #include <array>
-#include <bitset>
 #include <initializer_list>
 #include <string>
 #include <vector>

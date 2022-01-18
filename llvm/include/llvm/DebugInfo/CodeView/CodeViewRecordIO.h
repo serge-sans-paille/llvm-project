@@ -9,17 +9,18 @@
 #ifndef LLVM_DEBUGINFO_CODEVIEW_CODEVIEWRECORDIO_H
 #define LLVM_DEBUGINFO_CODEVIEW_CODEVIEWRECORDIO_H
 
-#include "llvm/ADT/APSInt.h"
 #include "llvm/ADT/None.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/SmallVector.h"
+#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/Twine.h"
 #include "llvm/DebugInfo/CodeView/CodeViewError.h"
-#include "llvm/DebugInfo/CodeView/GUID.h"
-#include "llvm/DebugInfo/CodeView/TypeIndex.h"
 #include "llvm/Support/BinaryStreamReader.h"
 #include "llvm/Support/BinaryStreamWriter.h"
 #include "llvm/Support/Error.h"
+#include <string>
+#include <vector>
 #include <cassert>
 #include <cstdint>
 #include <type_traits>
@@ -27,6 +28,9 @@
 namespace llvm {
 
 namespace codeview {
+
+class TypeIndex;
+class GUID;
 
 class CodeViewRecordStreamer {
 public:

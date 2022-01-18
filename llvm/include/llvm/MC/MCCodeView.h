@@ -13,14 +13,17 @@
 #ifndef LLVM_MC_MCCODEVIEW_H
 #define LLVM_MC_MCCODEVIEW_H
 
+#include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/MC/MCFragment.h"
-#include "llvm/MC/MCObjectStreamer.h"
 #include <map>
 #include <vector>
 
 namespace llvm {
+class MCAsmLayout;
 class MCContext;
 class MCObjectStreamer;
 class MCStreamer;

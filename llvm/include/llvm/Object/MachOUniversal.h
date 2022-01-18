@@ -16,7 +16,6 @@
 #include "llvm/ADT/Triple.h"
 #include "llvm/ADT/iterator_range.h"
 #include "llvm/BinaryFormat/MachO.h"
-#include "llvm/Object/Archive.h"
 #include "llvm/Object/Binary.h"
 #include "llvm/Object/MachO.h"
 
@@ -26,6 +25,7 @@ class Module;
 class LLVMContext;
 
 namespace object {
+class Archive;
 class IRObjectFile;
 
 class MachOUniversalBinary : public Binary {

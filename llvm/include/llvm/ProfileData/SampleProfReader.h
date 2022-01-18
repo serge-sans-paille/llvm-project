@@ -230,7 +230,6 @@
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/IR/DiagnosticInfo.h"
-#include "llvm/IR/Function.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/ProfileSummary.h"
 #include "llvm/ProfileData/GCOV.h"
@@ -240,7 +239,6 @@
 #include "llvm/Support/ErrorOr.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/SymbolRemappingReader.h"
-#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -249,6 +247,8 @@
 
 namespace llvm {
 
+class Function;
+class Module;
 class raw_ostream;
 class Twine;
 

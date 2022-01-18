@@ -19,13 +19,11 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
-#include "llvm/MC/MCSection.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/MD5.h"
 #include <cassert>
 #include <cstdint>
 #include <string>
-#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -36,6 +34,7 @@ class MCAsmBackend;
 class MCContext;
 class MCDwarfLineStr;
 class MCObjectStreamer;
+class MCSection;
 class MCStreamer;
 class MCSymbol;
 class raw_ostream;

@@ -17,8 +17,8 @@
 #include "llvm/MC/MCFixup.h"
 #include "llvm/MC/MCInst.h"
 #include "llvm/Support/Alignment.h"
-#include "llvm/Support/Casting.h"
 #include "llvm/Support/SMLoc.h"
+#include <cassert>
 #include <cstdint>
 #include <utility>
 

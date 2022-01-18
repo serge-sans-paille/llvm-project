@@ -19,11 +19,8 @@
 #include "llvm/Support/raw_ostream.h"
 #include <cerrno>
 #include <chrono>
-#include <ctime>
 #include <memory>
 #include <random>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <system_error>
 #include <thread>
 #include <tuple>

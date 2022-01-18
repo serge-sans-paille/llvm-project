@@ -63,8 +63,6 @@
 
 namespace llvm {
 
-template <typename ThisT, typename ParentT> class RTTIExtends;
-
 /// Base class for the extensible RTTI hierarchy.
 ///
 /// This class defines virtual methods, dynamicClassID and isA, that enable

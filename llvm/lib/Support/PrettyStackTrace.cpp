@@ -13,7 +13,9 @@
 
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm-c/ErrorHandling.h"
+#ifdef __APPLE__
 #include "llvm/ADT/SmallString.h"
+#endif
 #include "llvm/Config/config.h"
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/SaveAndRestore.h"

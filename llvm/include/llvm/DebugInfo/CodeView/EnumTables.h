@@ -16,6 +16,7 @@
 #include <cstdint>
 
 namespace llvm {
+
 namespace codeview {
 
 ArrayRef<EnumEntry<SymbolKind>> getSymbolTypeNames();

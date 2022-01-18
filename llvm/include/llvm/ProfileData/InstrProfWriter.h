@@ -19,7 +19,6 @@
 #include "llvm/ProfileData/InstrProf.h"
 #include "llvm/Support/Endian.h"
 #include "llvm/Support/Error.h"
-#include "llvm/Support/MemoryBuffer.h"
 #include <cstdint>
 #include <memory>
 
@@ -29,6 +28,7 @@ namespace llvm {
 class InstrProfRecordWriterTrait;
 class ProfOStream;
 class raw_fd_ostream;
+class MemoryBuffer;
 
 class InstrProfWriter {
 public:

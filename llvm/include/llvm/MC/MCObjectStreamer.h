@@ -11,7 +11,6 @@
 
 #include "llvm/ADT/SetVector.h"
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/MC/MCAssembler.h"
 #include "llvm/MC/MCSection.h"
 #include "llvm/MC/MCStreamer.h"
 
@@ -23,8 +22,7 @@ class MCExpr;
 class MCFragment;
 class MCDataFragment;
 class MCAsmBackend;
-class raw_ostream;
-class raw_pwrite_stream;
+class MCObjectWriter;
 
 /// Streaming object file generation interface.
 ///

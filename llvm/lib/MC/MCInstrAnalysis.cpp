@@ -9,9 +9,8 @@
 #include "llvm/MC/MCInstrAnalysis.h"
 
 #include "llvm/ADT/APInt.h"
-#include "llvm/MC/MCInst.h"
-#include "llvm/MC/MCInstrDesc.h"
-#include "llvm/MC/MCInstrInfo.h"
+#include "llvm/ADT/None.h"
+#include "llvm/ADT/iterator_range.h"
 #include <cstdint>
 
 using namespace llvm;
