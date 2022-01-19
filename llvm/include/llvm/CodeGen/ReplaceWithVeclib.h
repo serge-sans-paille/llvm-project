@@ -14,10 +14,15 @@
 #ifndef LLVM_CODEGEN_REPLACEWITHVECLIB_H
 #define LLVM_CODEGEN_REPLACEWITHVECLIB_H
 
+#include "llvm/Pass.h"
+#include "llvm/PassRegistry.h"
 #include "llvm/IR/PassManager.h"
 #include "llvm/InitializePasses.h"
 
 namespace llvm {
+
+class Function;
+
 struct ReplaceWithVeclib : public PassInfoMixin<ReplaceWithVeclib> {
   PreservedAnalyses run(Function &F, FunctionAnalysisManager &AM);
 };

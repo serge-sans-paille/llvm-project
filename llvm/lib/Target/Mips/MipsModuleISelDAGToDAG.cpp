@@ -10,6 +10,7 @@
 
 #include "Mips.h"
 #include "MipsTargetMachine.h"
+#include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/CodeGen/StackProtector.h"
 #include "llvm/Support/Debug.h"

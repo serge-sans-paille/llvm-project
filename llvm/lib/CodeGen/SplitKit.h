@@ -28,12 +28,12 @@
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/SlotIndexes.h"
-#include "llvm/MC/LaneBitmask.h"
 #include "llvm/Support/Compiler.h"
 #include <utility>
 
 namespace llvm {
 
+struct LaneBitmask;
 class AAResults;
 class LiveIntervals;
 class LiveRangeEdit;

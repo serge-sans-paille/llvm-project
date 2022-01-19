@@ -9,10 +9,10 @@
 #ifndef LLVM_LIB_CODEGEN_LIVEDEBUGVALUES_LIVEDEBUGVALUES_H
 #define LLVM_LIB_CODEGEN_LIVEDEBUGVALUES_LIVEDEBUGVALUES_H
 
-#include "llvm/CodeGen/MachineFunction.h"
-#include "llvm/CodeGen/TargetPassConfig.h"
-
 namespace llvm {
+
+class MachineFunction;
+class TargetPassConfig;
 
 // Inline namespace for types / symbols shared between different
 // LiveDebugValues implementations.

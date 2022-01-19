@@ -25,13 +25,10 @@
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineOperand.h"
 #include "llvm/CodeGen/MachineOutliner.h"
-#include "llvm/CodeGen/RegisterClassInfo.h"
-#include "llvm/CodeGen/VirtRegMap.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/Support/BranchProbability.h"
 #include "llvm/Support/ErrorHandling.h"
 #include <cassert>
-#include <cstddef>
 #include <cstdint>
 #include <utility>
 #include <vector>
@@ -56,10 +53,12 @@ class ScheduleHazardRecognizer;
 class SDNode;
 class SelectionDAG;
 class RegScavenger;
+class RegisterClassInfo;
 class TargetRegisterClass;
 class TargetRegisterInfo;
 class TargetSchedModel;
 class TargetSubtargetInfo;
+class VirtRegMap;
 
 template <class T> class SmallVectorImpl;
 

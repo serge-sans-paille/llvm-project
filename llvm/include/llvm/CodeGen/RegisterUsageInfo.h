@@ -20,16 +20,18 @@
 
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMap.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/InitializePasses.h"
 #include "llvm/Pass.h"
+#include "llvm/PassRegistry.h"
+#include "llvm/InitializePasses.h"
 #include <cstdint>
 #include <vector>
 
 namespace llvm {
 
 class Function;
+class Module;
 class LLVMTargetMachine;
+class raw_ostream;
 
 class PhysicalRegisterUsageInfo : public ImmutablePass {
 public:

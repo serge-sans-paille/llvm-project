@@ -15,6 +15,7 @@
 #include "AMDGPU.h"
 #include "MCTargetDesc/AMDGPUMCTargetDesc.h"
 #include "R600Subtarget.h"
+#include "llvm/CodeGen/MachineFunctionPass.h"
 
 using namespace llvm;
 

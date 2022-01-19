@@ -24,9 +24,7 @@
 #include "llvm/IR/DebugLoc.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/InstrTypes.h"
-#include "llvm/IR/IntrinsicInst.h"
 #include "llvm/Support/MachineValueType.h"
-#include <algorithm>
 #include <cstdint>
 #include <utility>
 
@@ -39,6 +37,7 @@ class Constant;
 class ConstantFP;
 class DataLayout;
 class FunctionLoweringInfo;
+class IntrinsicInst;
 class LoadInst;
 class MachineConstantPool;
 class MachineFrameInfo;
