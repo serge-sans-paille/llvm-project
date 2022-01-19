@@ -10,13 +10,15 @@
 #define LLVM_DEBUGINFO_DWARF_DWARFDEBUGARANGES_H
 
 #include "llvm/ADT/DenseSet.h"
-#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
+#include "llvm/ADT/STLExtras.h"
+#include "llvm/Support/Error.h"
 #include <cstdint>
 #include <vector>
 
 namespace llvm {
 
 class DWARFContext;
+class DWARFDataExtractor;
 
 class DWARFDebugAranges {
 public:

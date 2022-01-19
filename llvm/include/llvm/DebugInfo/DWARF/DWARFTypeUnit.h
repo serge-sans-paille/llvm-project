@@ -11,8 +11,6 @@
 
 #include "llvm/ADT/StringRef.h"
 #include "llvm/DebugInfo/DWARF/DWARFUnit.h"
-#include "llvm/DebugInfo/DWARF/DWARFUnitIndex.h"
-#include "llvm/Support/DataExtractor.h"
 #include <cstdint>
 
 namespace llvm {
@@ -20,6 +18,7 @@ namespace llvm {
 class DWARFContext;
 class DWARFDebugAbbrev;
 struct DWARFSection;
+struct DIDumpOptions;
 class raw_ostream;
 
 class DWARFTypeUnit : public DWARFUnit {

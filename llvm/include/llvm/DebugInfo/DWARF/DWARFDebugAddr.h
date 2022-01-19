@@ -11,15 +11,13 @@
 
 #include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/DebugInfo/DIContext.h"
-#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
-#include "llvm/Support/Errc.h"
 #include "llvm/Support/Error.h"
 #include <cstdint>
-#include <map>
 #include <vector>
 
 namespace llvm {
 
+class DWARFDataExtractor;
 class Error;
 class raw_ostream;
 

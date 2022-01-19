@@ -11,13 +11,14 @@
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/DebugInfo/DIContext.h"
 #include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
-#include "llvm/DebugInfo/DWARF/DWARFLocationExpression.h"
-#include "llvm/DebugInfo/DWARF/DWARFRelocMap.h"
 #include <cstdint>
 
 namespace llvm {
+struct DIDumpOptions;
+class DWARFObject;
+struct DWARFLocationExpression;
+namespace object { struct SectionedAddress;}
 class DWARFUnit;
 class MCRegisterInfo;
 class raw_ostream;

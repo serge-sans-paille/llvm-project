@@ -13,6 +13,7 @@
 #include "llvm/DWP/DWP.h"
 #include "llvm/DWP/DWPError.h"
 #include "llvm/MC/MCContext.h"
+#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
 #include "llvm/MC/MCObjectFileInfo.h"
 #include "llvm/MC/MCTargetOptionsCommandFlags.h"
 #include "llvm/Object/Decompressor.h"

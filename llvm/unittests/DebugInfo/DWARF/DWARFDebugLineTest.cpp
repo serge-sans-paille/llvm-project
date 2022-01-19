@@ -8,6 +8,7 @@
 
 #include "DwarfGenerator.h"
 #include "DwarfUtils.h"
+#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
 #include "llvm/DebugInfo/DWARF/DWARFContext.h"
 #include "llvm/DebugInfo/DWARF/DWARFDebugLine.h"
 #include "llvm/Object/ObjectFile.h"

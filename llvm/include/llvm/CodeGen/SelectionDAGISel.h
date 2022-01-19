@@ -16,7 +16,6 @@
 
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/SelectionDAG.h"
-#include "llvm/CodeGen/TargetSubtargetInfo.h"
 #include "llvm/IR/BasicBlock.h"
 #include <memory>
 
@@ -28,6 +27,8 @@ class MachineRegisterInfo;
 class MachineFunction;
 class OptimizationRemarkEmitter;
 class TargetLowering;
+class TargetInstrInfo;
+class TargetMachine;
 class TargetLibraryInfo;
 class FunctionLoweringInfo;
 class SwiftErrorValueTracking;

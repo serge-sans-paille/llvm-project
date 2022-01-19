@@ -9,8 +9,10 @@
 #ifndef LLVM_DEBUGINFO_DWARF_DWARFADDRESSRANGE_H
 #define LLVM_DEBUGINFO_DWARF_DWARFADDRESSRANGE_H
 
+#include "llvm/Object/ObjectFile.h"
 #include "llvm/DebugInfo/DIContext.h"
 #include <cstdint>
+#include <cassert>
 #include <tuple>
 #include <vector>
 

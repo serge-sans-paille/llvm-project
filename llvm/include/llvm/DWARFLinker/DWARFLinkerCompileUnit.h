@@ -10,6 +10,7 @@
 #define LLVM_DWARFLINKER_DWARFLINKERCOMPILEUNIT_H
 
 #include "llvm/ADT/IntervalMap.h"
+#include "llvm/ADT/DenseMap.h"
 #include "llvm/CodeGen/DIE.h"
 #include "llvm/DebugInfo/DWARF/DWARFUnit.h"
 #include "llvm/Support/DataExtractor.h"

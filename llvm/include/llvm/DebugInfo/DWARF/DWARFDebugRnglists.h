@@ -12,9 +12,7 @@
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/BinaryFormat/Dwarf.h"
-#include "llvm/DebugInfo/DIContext.h"
-#include "llvm/DebugInfo/DWARF/DWARFDataExtractor.h"
-#include "llvm/DebugInfo/DWARF/DWARFDebugRangeList.h"
+#include "llvm/DebugInfo/DWARF/DWARFAddressRange.h"
 #include "llvm/DebugInfo/DWARF/DWARFListTable.h"
 #include <cstdint>
 
@@ -22,6 +20,9 @@ namespace llvm {
 
 class Error;
 class raw_ostream;
+class DWARFDataExtractor;
+struct DIDumpOptions;
+namespace object { struct SectionedAddress;}
 class DWARFUnit;
 
 /// A class representing a single range list entry.
