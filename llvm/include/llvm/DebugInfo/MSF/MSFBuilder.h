@@ -20,7 +20,7 @@
 namespace llvm {
 class FileBufferByteStream;
 namespace msf {
-class MSFLayout;
+struct MSFLayout;
 
 class MSFBuilder {
 public:
