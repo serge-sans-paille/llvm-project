@@ -19,8 +19,9 @@
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineInstr.h"
-#include "llvm/Support/GenericDomTree.h"
+#include "llvm/CodeGen/MachineInstrBundleIterator.h"
 #include "llvm/Support/GenericDomTreeConstruction.h"
+#include "llvm/Support/GenericDomTree.h"
 #include <cassert>
 #include <memory>
 

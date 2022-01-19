@@ -11,13 +11,12 @@
 /// DILocalVariable which mir-debugifiy generated before.
 //===----------------------------------------------------------------------===//
 
-#include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
+#include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/IR/DebugInfo.h"
 #include "llvm/InitializePasses.h"
-#include "llvm/Support/CommandLine.h"
-#include "llvm/Transforms/Utils/Debugify.h"
 
 #define DEBUG_TYPE "mir-check-debugify"
 

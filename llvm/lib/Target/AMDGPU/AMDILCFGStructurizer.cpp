@@ -11,6 +11,7 @@
 #include "R600RegisterInfo.h"
 #include "R600Subtarget.h"
 #include "llvm/ADT/SCCIterator.h"
+#include "llvm/ADT/DepthFirstIterator.h"
 #include "llvm/ADT/Statistic.h"
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
@@ -18,6 +19,8 @@
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/MachinePostDominators.h"
 #include "llvm/InitializePasses.h"
+
+#include <deque>
 
 using namespace llvm;
 

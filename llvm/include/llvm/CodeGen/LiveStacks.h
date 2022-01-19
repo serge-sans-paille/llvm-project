@@ -15,18 +15,22 @@
 #ifndef LLVM_CODEGEN_LIVESTACKS_H
 #define LLVM_CODEGEN_LIVESTACKS_H
 
+#include "llvm/PassRegistry.h"
+#include "llvm/InitializePasses.h"
 #include "llvm/CodeGen/LiveInterval.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
-#include "llvm/InitializePasses.h"
-#include "llvm/Pass.h"
 #include <cassert>
 #include <map>
 #include <unordered_map>
 
 namespace llvm {
 
+class AnalysisUsage;
+class MachineFunction;
+class Module;
 class TargetRegisterClass;
 class TargetRegisterInfo;
+class raw_ostream;
 
 class LiveStacks : public MachineFunctionPass {
   const TargetRegisterInfo *TRI;

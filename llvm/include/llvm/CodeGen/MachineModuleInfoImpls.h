@@ -16,12 +16,11 @@
 
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/ADT/StringSet.h"
+#include "llvm/MC/MCSymbol.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
 #include <cassert>
 
 namespace llvm {
-
-class MCSymbol;
 
 /// MachineModuleInfoMachO - This is a MachineModuleInfoImpl implementation
 /// for MachO targets.

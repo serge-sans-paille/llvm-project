@@ -15,14 +15,15 @@
 #ifndef LLVM_CODEGEN_MACHINEINSTR_H
 #define LLVM_CODEGEN_MACHINEINSTR_H
 
+#include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/ADT/PointerSumType.h"
 #include "llvm/ADT/SmallSet.h"
 #include "llvm/ADT/ilist.h"
 #include "llvm/ADT/ilist_node.h"
 #include "llvm/ADT/iterator_range.h"
-#include "llvm/CodeGen/MachineMemOperand.h"
 #include "llvm/CodeGen/MachineOperand.h"
+#include "llvm/CodeGen/MachineMemOperand.h"
 #include "llvm/CodeGen/TargetOpcodes.h"
 #include "llvm/IR/DebugLoc.h"
 #include "llvm/IR/InlineAsm.h"
@@ -39,12 +40,14 @@
 namespace llvm {
 
 class AAResults;
-template <typename T> class ArrayRef;
 class DIExpression;
+class DILabel;
 class DILocalVariable;
+class Instruction;
 class MachineBasicBlock;
 class MachineFunction;
 class MachineRegisterInfo;
+class MDNode;
 class ModuleSlotTracker;
 class raw_ostream;
 template <typename T> class SmallVectorImpl;

@@ -16,21 +16,18 @@
 #include "llvm/ADT/DenseMap.h"
 #include "llvm/CodeGen/Register.h"
 #include "llvm/IR/Intrinsics.h"
-#include "llvm/Support/DataTypes.h"
-#include "llvm/Support/LowLevelTypeImpl.h"
 #include <cassert>
 
 namespace llvm {
 
 class BlockAddress;
-class Constant;
 class ConstantFP;
 class ConstantInt;
 class GlobalValue;
+class LLT;
 class MachineBasicBlock;
 class MachineInstr;
 class MachineRegisterInfo;
-class MCCFIInstruction;
 class MDNode;
 class ModuleSlotTracker;
 class TargetIntrinsicInfo;

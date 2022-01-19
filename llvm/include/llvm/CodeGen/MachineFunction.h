@@ -26,6 +26,7 @@
 #include "llvm/ADT/iterator.h"
 #include "llvm/Analysis/EHPersonalities.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
+#include "llvm/MC/MCDwarf.h"
 #include "llvm/CodeGen/MachineInstr.h"
 #include "llvm/CodeGen/MachineMemOperand.h"
 #include "llvm/Support/Allocator.h"

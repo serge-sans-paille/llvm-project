@@ -15,13 +15,17 @@
 #ifndef LLVM_CODEGEN_MACHINEOUTLINER_H
 #define LLVM_CODEGEN_MACHINEOUTLINER_H
 
-#include "llvm/CodeGen/LivePhysRegs.h"
 #include "llvm/CodeGen/LiveRegUnits.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
+#include "llvm/CodeGen/MachineInstrBundleIterator.h"
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
-#include "llvm/CodeGen/TargetRegisterInfo.h"
 
 namespace llvm {
+
+class MachineInstr;
+class TargetRegisterInfo;
+
 namespace outliner {
 
 /// Represents how an instruction should be mapped by the outliner.
