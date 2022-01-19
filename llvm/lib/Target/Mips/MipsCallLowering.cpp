@@ -16,6 +16,7 @@
 #include "MipsCCState.h"
 #include "MipsMachineFunction.h"
 #include "MipsTargetMachine.h"
+#include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/Analysis.h"
 #include "llvm/CodeGen/GlobalISel/MachineIRBuilder.h"
 

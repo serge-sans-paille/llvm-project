@@ -13,8 +13,15 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/CodeGen/CommandFlags.h"
+#include "llvm/ADT/Triple.h"
+#include "llvm/IR/Attributes.h"
+#include "llvm/IR/BasicBlock.h"
+#include "llvm/IR/Function.h"
+#include "llvm/IR/Instructions.h"
+#include "llvm/IR/IntrinsicInst.h"
 #include "llvm/IR/Module.h"
 #include "llvm/MC/SubtargetFeature.h"
+#include "llvm/MC/MCTargetOptionsCommandFlags.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/Host.h"
 #include "llvm/Support/MemoryBuffer.h"

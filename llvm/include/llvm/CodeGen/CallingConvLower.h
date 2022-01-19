@@ -15,18 +15,16 @@
 #define LLVM_CODEGEN_CALLINGCONVLOWER_H
 
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/Register.h"
 #include "llvm/CodeGen/TargetCallingConv.h"
 #include "llvm/IR/CallingConv.h"
-#include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/Support/Alignment.h"
+#include "llvm/Support/MachineValueType.h"
 
 namespace llvm {
 
 class CCState;
 class MachineFunction;
-class MVT;
 class TargetRegisterInfo;
 
 /// CCValAssign - Represent assignment of one arg/retval to a location.

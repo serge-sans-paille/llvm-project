@@ -23,12 +23,9 @@
 namespace llvm {
 
 class raw_ostream;
-class Error;
 class StringRef;
 
 namespace ifs {
-
-struct IFSStub;
 
 const VersionTuple IFSVersionCurrent(3, 0);
 

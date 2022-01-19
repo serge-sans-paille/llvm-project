@@ -8,7 +8,9 @@
 
 #include "llvm/InterfaceStub/IFSStub.h"
 #include "llvm/BinaryFormat/ELF.h"
-#include "llvm/Support/Error.h"
+#include "llvm/Support/ErrorHandling.h"
+
+#include <algorithm>
 
 using namespace llvm;
 using namespace llvm::ifs;

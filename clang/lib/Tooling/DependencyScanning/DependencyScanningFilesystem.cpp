@@ -8,6 +8,7 @@
 
 #include "clang/Tooling/DependencyScanning/DependencyScanningFilesystem.h"
 #include "clang/Lex/DependencyDirectivesSourceMinimizer.h"
+#include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/Threading.h"
 

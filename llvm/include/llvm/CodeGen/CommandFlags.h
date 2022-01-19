@@ -16,11 +16,7 @@
 #define LLVM_CODEGEN_COMMANDFLAGS_H
 
 #include "llvm/ADT/FloatingPointMode.h"
-#include "llvm/ADT/StringExtras.h"
-#include "llvm/ADT/Triple.h"
-#include "llvm/IR/Instructions.h"
-#include "llvm/IR/Intrinsics.h"
-#include "llvm/MC/MCTargetOptionsCommandFlags.h"
+#include "llvm/MC/MCTargetOptions.h"
 #include "llvm/Support/CodeGen.h"
 #include "llvm/Target/TargetOptions.h"
 #include <string>
@@ -28,6 +24,9 @@
 
 namespace llvm {
 
+class AttrBuilder;
+class Function;
+class Triple;
 class Module;
 
 namespace codegen {

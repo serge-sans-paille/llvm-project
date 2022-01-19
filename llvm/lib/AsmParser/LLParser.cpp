@@ -47,7 +47,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iterator>
 #include <vector>
 
 using namespace llvm;
