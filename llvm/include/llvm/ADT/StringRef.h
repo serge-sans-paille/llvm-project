@@ -13,7 +13,6 @@
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/ADT/STLFunctionalExtras.h"
 #include "llvm/Support/Compiler.h"
-#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstring>
@@ -198,16 +197,7 @@ namespace llvm {
     /// compare - Compare two strings; the result is -1, 0, or 1 if this string
     /// is lexicographically less than, equal to, or greater than the \p RHS.
     LLVM_NODISCARD
-    int compare(StringRef RHS) const {
-      // Check the prefix for a mismatch.
-      if (int Res = compareMemory(Data, RHS.Data, std::min(Length, RHS.Length)))
-        return Res < 0 ? -1 : 1;
-
-      // Otherwise the prefixes match, so we only need to check the lengths.
-      if (Length == RHS.Length)
-        return 0;
-      return Length < RHS.Length ? -1 : 1;
-    }
+    int compare(StringRef RHS) const;
 
     /// Compare two strings, ignoring case.
     LLVM_NODISCARD
@@ -312,15 +302,7 @@ namespace llvm {
     /// \returns The index of the first occurrence of \p C, or npos if not
     /// found.
     LLVM_NODISCARD
-    size_t find(char C, size_t From = 0) const {
-      size_t FindBegin = std::min(From, Length);
-      if (FindBegin < Length) { // Avoid calling memchr with nullptr.
-        // Just forward to memchr, which is faster than a hand-rolled loop.
-        if (const void *P = ::memchr(Data + FindBegin, C, Length - FindBegin))
-          return static_cast<const char *>(P) - Data;
-      }
-      return npos;
-    }
+    size_t find(char C, size_t From = 0) const;
 
     /// Search for the first character \p C in the string, ignoring case.
     ///

@@ -26,7 +26,6 @@
 #include <cassert>
 #include <cctype>
 #include <map>
-#include <memory>
 #include <new>
 #include <string>
 #include <system_error>

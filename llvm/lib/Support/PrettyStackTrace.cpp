@@ -24,7 +24,6 @@
 #include <cassert>
 #include <cstdarg>
 #include <cstdio>
-#include <cstring>
 #include <tuple>
 
 #ifdef HAVE_CRASHREPORTERCLIENT_H

@@ -21,7 +21,6 @@
 #include "llvm/Support/NativeFormatting.h"
 
 #include <type_traits>
-#include <vector>
 
 namespace llvm {
 namespace detail {

@@ -14,6 +14,7 @@
 #include "llvm/ADT/edit_distance.h"
 #include "llvm/ADT/STLIteratorExtras.h"
 #include "llvm/Support/Error.h"
+#include <algorithm>
 #include <bitset>
 
 using namespace llvm;
@@ -35,6 +36,18 @@ static int ascii_strncasecmp(const char *LHS, const char *RHS, size_t Length) {
   return 0;
 }
 
+int StringRef::compare(StringRef RHS) const {
+  // Check the prefix for a mismatch.
+  if (int Res = compareMemory(Data, RHS.Data, std::min(Length, RHS.Length)))
+    return Res < 0 ? -1 : 1;
+
+  // Otherwise the prefixes match, so we only need to check the lengths.
+  if (Length == RHS.Length)
+    return 0;
+  return Length < RHS.Length ? -1 : 1;
+}
+
+
 int StringRef::compare_insensitive(StringRef RHS) const {
   if (int Res = ascii_strncasecmp(Data, RHS.Data, std::min(Length, RHS.Length)))
     return Res;
@@ -52,6 +65,17 @@ bool StringRef::endswith_insensitive(StringRef Suffix) const {
   return Length >= Suffix.Length &&
       ascii_strncasecmp(end() - Suffix.Length, Suffix.Data, Suffix.Length) == 0;
 }
+
+size_t StringRef::find(char C, size_t From) const {
+  size_t FindBegin = std::min(From, Length);
+  if (FindBegin < Length) { // Avoid calling memchr with nullptr.
+    // Just forward to memchr, which is faster than a hand-rolled loop.
+    if (const void *P = ::memchr(Data + FindBegin, C, Length - FindBegin))
+      return static_cast<const char *>(P) - Data;
+  }
+  return npos;
+}
+
 
 size_t StringRef::find_insensitive(char C, size_t From) const {
   char L = toLower(C);

@@ -10,7 +10,7 @@
 
 #include "llvm/ADT/STLForwardCompat.h"
 
-#include <functional>
+#include <cstdint>
 #include <type_traits>
 #include <utility>
 

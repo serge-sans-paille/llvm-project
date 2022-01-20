@@ -17,10 +17,10 @@
 #include "llvm/Support/Error.h"
 #include "llvm/Support/FileOutputBuffer.h"
 #include "llvm/Support/MemoryBuffer.h"
-#include <algorithm>
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <vector>
 
 namespace llvm {
 
@@ -117,7 +117,7 @@ public:
       return EC;
 
     uint8_t *DataPtr = const_cast<uint8_t *>(Data.data());
-    ::memcpy(DataPtr + Offset, Buffer.data(), Buffer.size());
+    std::memcpy(DataPtr + Offset, Buffer.data(), Buffer.size());
     return Error::success();
   }
 
@@ -186,7 +186,7 @@ public:
     if (RequiredSize > Data.size())
       Data.resize(RequiredSize);
 
-    ::memcpy(Data.data() + Offset, Buffer.data(), Buffer.size());
+    std::memcpy(Data.data() + Offset, Buffer.data(), Buffer.size());
     return Error::success();
   }
 

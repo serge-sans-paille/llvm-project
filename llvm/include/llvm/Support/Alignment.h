@@ -23,6 +23,7 @@
 
 #include "llvm/ADT/Optional.h"
 #include "llvm/Support/MathExtras.h"
+#include <algorithm>
 #include <cassert>
 #ifndef NDEBUG
 #include <string>
