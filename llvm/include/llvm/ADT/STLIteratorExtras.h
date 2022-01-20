@@ -16,9 +16,9 @@
 #ifndef LLVM_ADT_STLITERATOREXTRAS_H
 #define LLVM_ADT_STLITERATOREXTRAS_H
 
+#include "llvm/ADT/Identity.h"
 #include "llvm/ADT/Optional.h"
 #include "llvm/ADT/STLForwardCompat.h"
-#include "llvm/ADT/STLFunctionalExtras.h"
 #include "llvm/ADT/STLTypeTraitsExtras.h"
 #include "llvm/ADT/iterator.h"
 #include "llvm/ADT/iterator_range.h"

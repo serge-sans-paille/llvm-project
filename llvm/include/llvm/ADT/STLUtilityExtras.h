@@ -16,31 +16,24 @@
 #ifndef LLVM_ADT_STLUTILITY_EXTRAS_H
 #define LLVM_ADT_STLUTILITY_EXTRAS_H
 
-#include "llvm/ADT/STLForwardCompat.h"
-#include "llvm/ADT/STLIteratorExtras.h"
+#include "llvm/ADT/iterator.h"
 #include "llvm/ADT/STLTypeTraitsExtras.h"
-#include "llvm/Config/abi-breaking.h"
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <initializer_list>
+#include <functional>
 #include <iterator>
 #include <limits>
-#include <memory>
 #include <tuple>
 #include <type_traits>
 #include <utility>
-
-#ifdef EXPENSIVE_CHECKS
-#include <random> // for std::mt19937
-#endif
 
 namespace llvm {
 
 
 //===----------------------------------------------------------------------===//
-//     Extra additions to <memory>
+//     Extra additions to <utility>
 //===----------------------------------------------------------------------===//
 
 struct FreeDeleter {

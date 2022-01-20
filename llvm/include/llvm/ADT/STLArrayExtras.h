@@ -16,29 +16,7 @@
 #ifndef LLVM_ADT_STLARRAYEXTRAS_H
 #define LLVM_ADT_STLARRAYEXTRAS_H
 
-#include "llvm/ADT/STLForwardCompat.h"
-#include "llvm/ADT/STLIteratorExtras.h"
-#include "llvm/ADT/STLTypeTraitsExtras.h"
-#include "llvm/ADT/iterator.h"
-#include "llvm/ADT/iterator_range.h"
-#include "llvm/Config/abi-breaking.h"
-#include "llvm/Support/ErrorHandling.h"
-#include <algorithm>
-#include <cassert>
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
-#include <initializer_list>
 #include <iterator>
-#include <limits>
-#include <memory>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-
-#ifdef EXPENSIVE_CHECKS
-#include <random> // for std::mt19937
-#endif
 
 namespace llvm {
 
@@ -51,6 +29,7 @@ namespace llvm {
 // standard libraries.
 template <class Iterator, class RNG>
 void shuffle(Iterator first, Iterator last, RNG &&g) {
+  using std::swap;  // Not using std::iter_swap to avoid <algorithm>
   // It would be better to use a std::uniform_int_distribution,
   // but that would be stdlib dependent.
   typedef
@@ -60,7 +39,7 @@ void shuffle(Iterator first, Iterator last, RNG &&g) {
     // Avoid self-assignment due to incorrect assertions in libstdc++
     // containers (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85828).
     if (offset != difference_type(0))
-      std::iter_swap(first, first + offset);
+      std::swap(*first, *(first + offset));
   }
 }
 

@@ -15,7 +15,7 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/StringSwitch.h"
 #include "llvm/ADT/STLAlgorithmExtras.h"
-#include "llvm/Support/ARMBuildAttributes.h"
+#include "llvm/ADT/Triple.h"
 
 using namespace llvm;
 using namespace AMDGPU;

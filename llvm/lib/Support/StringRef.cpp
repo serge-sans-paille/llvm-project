@@ -12,6 +12,7 @@
 #include "llvm/ADT/Hashing.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/edit_distance.h"
+#include "llvm/ADT/STLIteratorExtras.h"
 #include "llvm/Support/Error.h"
 #include <bitset>
 

@@ -16,12 +16,12 @@
 
 // FIXME: vector is used because that's what clang uses for subtarget feature
 // lists, but SmallVector would probably be better
-#include "llvm/ADT/Triple.h"
+#include "llvm/ADT/StringRef.h"
 #include "llvm/Support/RISCVISAInfo.h"
 #include <vector>
 
 namespace llvm {
-class StringRef;
+class Triple;
 
 // Target specific information in their own namespaces.
 // (ARM/AArch64/X86 are declared in ARM/AArch64/X86TargetParser.h)

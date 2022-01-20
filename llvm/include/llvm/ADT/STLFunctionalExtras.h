@@ -20,17 +20,6 @@ namespace llvm {
 //     Extra additions to <functional>
 //===----------------------------------------------------------------------===//
 
-template <class Ty> struct identity {
-  using argument_type = Ty;
-
-  Ty &operator()(Ty &self) const {
-    return self;
-  }
-  const Ty &operator()(const Ty &self) const {
-    return self;
-  }
-};
-
 /// An efficient, type-erasing, non-owning reference to a callable. This is
 /// intended for use as the type of a function parameter that is not used
 /// after the function in question returns.
