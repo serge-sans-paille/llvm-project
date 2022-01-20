@@ -15,6 +15,7 @@
 #ifndef LLVM_ADT_STRINGMAPENTRY_H
 #define LLVM_ADT_STRINGMAPENTRY_H
 
+#include "llvm/ADT/None.h"
 #include "llvm/ADT/StringRef.h"
 
 namespace llvm {

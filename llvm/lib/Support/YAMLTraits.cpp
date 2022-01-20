@@ -7,10 +7,10 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Support/YAMLTraits.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringExtras.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/Support/Casting.h"
 #include "llvm/Support/Errc.h"

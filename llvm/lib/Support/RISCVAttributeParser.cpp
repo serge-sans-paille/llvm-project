@@ -8,6 +8,7 @@
 
 #include "llvm/Support/RISCVAttributeParser.h"
 #include "llvm/ADT/StringExtras.h"
+#include "llvm/ADT/STLArrayExtras.h"
 
 using namespace llvm;
 

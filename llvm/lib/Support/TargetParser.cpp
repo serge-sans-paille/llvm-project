@@ -14,6 +14,7 @@
 #include "llvm/Support/TargetParser.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/StringSwitch.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/ARMBuildAttributes.h"
 
 using namespace llvm;

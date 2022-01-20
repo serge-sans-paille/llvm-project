@@ -14,10 +14,10 @@
 
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/ADT/ArrayRef.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Twine.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/ErrorOr.h"
 #include "llvm/Support/Locale.h"
 #include "llvm/Support/MemoryBuffer.h"

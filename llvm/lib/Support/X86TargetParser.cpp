@@ -12,6 +12,8 @@
 
 #include "llvm/Support/X86TargetParser.h"
 #include "llvm/ADT/StringSwitch.h"
+#include "llvm/ADT/STLArrayExtras.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include <numeric>
 
 using namespace llvm;

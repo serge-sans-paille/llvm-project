@@ -15,7 +15,6 @@
 #define LLVM_SUPPORT_FORMATPROVIDERS_H
 
 #include "llvm/ADT/Optional.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringSwitch.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/Support/FormatVariadicDetails.h"

@@ -15,7 +15,6 @@
 #define LLVM_ADT_TYPESWITCH_H
 
 #include "llvm/ADT/Optional.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/Casting.h"
 
 namespace llvm {

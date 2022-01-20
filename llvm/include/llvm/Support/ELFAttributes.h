@@ -10,6 +10,7 @@
 #define LLVM_SUPPORT_ELFATTRIBUTES_H
 
 #include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/Optional.h"
 #include "llvm/ADT/StringRef.h"
 
 namespace llvm {

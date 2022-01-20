@@ -8,6 +8,7 @@
 
 #include "llvm/Support/ELFAttributes.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 
 using namespace llvm;
 

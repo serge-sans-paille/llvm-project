@@ -144,11 +144,11 @@ void llvm::write_hex(raw_ostream &S, uint64_t N, HexPrintStyle Style,
   unsigned NumChars =
       std::max(static_cast<unsigned>(W), std::max(1u, Nibbles) + PrefixChars);
 
-  char NumberBuffer[kMaxWidth];
-  ::memset(NumberBuffer, '0', llvm::array_lengthof(NumberBuffer));
+  std::array<char, kMaxWidth> NumberBuffer;
+  ::memset(NumberBuffer.data(), '0', NumberBuffer.size());
   if (Prefix)
     NumberBuffer[1] = 'x';
-  char *EndPtr = NumberBuffer + NumChars;
+  char *EndPtr = NumberBuffer.begin() + NumChars;
   char *CurPtr = EndPtr;
   while (N) {
     unsigned char x = static_cast<unsigned char>(N) % 16;
@@ -156,7 +156,7 @@ void llvm::write_hex(raw_ostream &S, uint64_t N, HexPrintStyle Style,
     N /= 16;
   }
 
-  S.write(NumberBuffer, NumChars);
+  S.write(NumberBuffer.data(), NumChars);
 }
 
 void llvm::write_double(raw_ostream &S, double N, FloatStyle Style,

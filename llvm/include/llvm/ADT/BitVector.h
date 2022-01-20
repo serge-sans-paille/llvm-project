@@ -16,6 +16,7 @@
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/ADT/iterator_range.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/MathExtras.h"
 #include <algorithm>
 #include <cassert>

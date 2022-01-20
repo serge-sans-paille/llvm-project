@@ -27,10 +27,10 @@
 
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/Optional.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLUtilityExtras.h"
 #include "llvm/Support/FormatCommon.h"
 #include "llvm/Support/FormatVariadicDetails.h"
 #include "llvm/Support/raw_ostream.h"

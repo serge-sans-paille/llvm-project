@@ -7,7 +7,7 @@
 //===---------------------------------------------------------------------===//
 
 #include "llvm/Support/JSON.h"
-#include "llvm/ADT/STLExtras.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/ConvertUTF.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/Format.h"

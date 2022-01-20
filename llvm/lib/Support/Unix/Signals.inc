@@ -33,7 +33,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "Unix.h"
-#include "llvm/ADT/STLExtras.h"
+#include "llvm/ADT/STLArrayExtras.h"
 #include "llvm/Config/config.h"
 #include "llvm/Demangle/Demangle.h"
 #include "llvm/Support/ExitCodes.h"

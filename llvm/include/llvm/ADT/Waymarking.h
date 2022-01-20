@@ -109,7 +109,6 @@
 #ifndef LLVM_ADT_WAYMARKING_H
 #define LLVM_ADT_WAYMARKING_H
 
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/Support/PointerLikeTypeTraits.h"
 
 namespace llvm {

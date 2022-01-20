@@ -20,7 +20,6 @@
 #define LLVM_ADT_INDEXEDMAP_H
 
 #include "llvm/ADT/SmallVector.h"
-#include "llvm/ADT/STLExtras.h"
 #include <cassert>
 
 namespace llvm {

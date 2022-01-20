@@ -11,8 +11,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringExtras.h"
+#include "llvm/ADT/STLArrayExtras.h"
 #include "llvm/Config/config.h"
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/Duration.h"

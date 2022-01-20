@@ -9,7 +9,6 @@
 #ifndef LLVM_SUPPORT_PARALLEL_H
 #define LLVM_SUPPORT_PARALLEL_H
 
-#include "llvm/ADT/STLExtras.h"
 #include "llvm/Config/llvm-config.h"
 #include "llvm/Support/Error.h"
 #include "llvm/Support/MathExtras.h"
