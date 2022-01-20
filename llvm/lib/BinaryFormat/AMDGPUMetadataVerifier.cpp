@@ -13,6 +13,7 @@
 
 #include "llvm/BinaryFormat/AMDGPUMetadataVerifier.h"
 #include "llvm/ADT/StringSwitch.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/AMDGPUMetadata.h"
 
 namespace llvm {

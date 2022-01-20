@@ -18,6 +18,7 @@
 #include "llvm/ADT/DenseMapInfo.h"
 #include "llvm/Support/Memory.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 
 namespace llvm {
 namespace jitlink {

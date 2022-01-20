@@ -11,6 +11,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/TextAPI/InterfaceFile.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include <iomanip>
 #include <sstream>
 

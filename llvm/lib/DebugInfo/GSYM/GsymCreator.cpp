@@ -6,6 +6,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/DebugInfo/GSYM/GsymCreator.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/DebugInfo/GSYM/FileWriter.h"
 #include "llvm/DebugInfo/GSYM/Header.h"
 #include "llvm/DebugInfo/GSYM/LineTable.h"

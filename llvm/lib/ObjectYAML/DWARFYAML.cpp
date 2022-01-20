@@ -12,6 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/ObjectYAML/DWARFYAML.h"
+#include "llvm/ADT/STLIteratorExtras.h"
 #include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/Support/Errc.h"
 #include "llvm/Support/Error.h"

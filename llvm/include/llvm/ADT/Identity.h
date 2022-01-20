@@ -1,0 +1,27 @@
+//===- llvm/ADT/STLFunctionalExtras.h - <functional> extensions -*- C++ -*-===//
+//
+// Part of the LLVM Project, under the Apache License v2.0 with LLVM Exceptions.
+// See https://llvm.org/LICENSE.txt for license information.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+//
+
+#ifndef LLVM_ADT_IDENTITY_H
+#define LLVM_ADT_IDENTITY_H
+
+namespace llvm {
+
+template <class Ty> struct identity {
+  using argument_type = Ty;
+
+  Ty &operator()(Ty &self) const {
+    return self;
+  }
+  const Ty &operator()(const Ty &self) const {
+    return self;
+  }
+};
+
+
+} // end namespace llvm
+
+#endif // LLVM_ADT_STLEXTRAS_H

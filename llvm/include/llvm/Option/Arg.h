@@ -16,6 +16,7 @@
 
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Option/Option.h"
 #include <string>
 

@@ -16,6 +16,8 @@
 #ifndef LLVM_ADT_STLTYPETRAITSEXTRAS_H
 #define LLVM_ADT_STLTYPETRAITSEXTRAS_H
 
+#include "llvm/ADT/STLForwardCompat.h"
+#include <iterator>
 #include <type_traits>
 #include <utility>
 

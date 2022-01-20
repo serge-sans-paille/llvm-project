@@ -7,6 +7,8 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/Object/Minidump.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
+#include "llvm/ADT/STLUtilityExtras.h"
 #include "llvm/Object/Error.h"
 #include "llvm/Support/ConvertUTF.h"
 

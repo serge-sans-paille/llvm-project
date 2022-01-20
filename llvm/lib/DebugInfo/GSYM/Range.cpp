@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/DebugInfo/GSYM/Range.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/DebugInfo/GSYM/FileWriter.h"
 #include "llvm/Support/DataExtractor.h"
 #include <algorithm>

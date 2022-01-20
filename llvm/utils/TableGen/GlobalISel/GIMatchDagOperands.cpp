@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "GIMatchDagOperands.h"
+#include "llvm/ADT/STLUtilityExtras.h"
 
 #include "../CodeGenInstruction.h"
 

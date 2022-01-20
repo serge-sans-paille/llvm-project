@@ -18,6 +18,7 @@
 #include "clang/Basic/TargetOptions.h"
 #include "llvm/ADT/StringSet.h"
 #include "llvm/ADT/Triple.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/Compiler.h"
 #include "llvm/Support/TargetParser.h"
 

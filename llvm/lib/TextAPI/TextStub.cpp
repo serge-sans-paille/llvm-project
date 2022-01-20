@@ -15,6 +15,7 @@
 #include "llvm/ADT/BitmaskEnum.h"
 #include "llvm/ADT/SmallString.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/Allocator.h"
 #include "llvm/Support/SourceMgr.h"
 #include "llvm/Support/YAMLTraits.h"

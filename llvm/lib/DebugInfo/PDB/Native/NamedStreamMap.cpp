@@ -9,6 +9,7 @@
 #include "llvm/DebugInfo/PDB/Native/NamedStreamMap.h"
 #include "llvm/ADT/StringMap.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/ADT/iterator_range.h"
 #include "llvm/DebugInfo/PDB/Native/Hash.h"
 #include "llvm/DebugInfo/PDB/Native/HashTable.h"

@@ -13,6 +13,7 @@
 
 #include "llvm/CodeGen/MIRFSDiscriminator.h"
 #include "llvm/ADT/DenseMap.h"
+#include "llvm/ADT/DenseMapInfoTuple.h"
 #include "llvm/ADT/DenseSet.h"
 #include "llvm/Analysis/BlockFrequencyInfoImpl.h"
 #include "llvm/IR/Function.h"

@@ -32,6 +32,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/STLUtilityExtras.h"
 #include "llvm/Support/FormatCommon.h"
+#include "llvm/Support/FormatProviders.h"
 #include "llvm/Support/FormatVariadicDetails.h"
 #include "llvm/Support/raw_ostream.h"
 #include <array>

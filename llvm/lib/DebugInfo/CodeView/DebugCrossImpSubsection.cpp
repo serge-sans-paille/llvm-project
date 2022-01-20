@@ -8,6 +8,7 @@
 
 #include "llvm/DebugInfo/CodeView/DebugCrossImpSubsection.h"
 #include "llvm/ADT/ArrayRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/DebugInfo/CodeView/CodeViewError.h"
 #include "llvm/DebugInfo/CodeView/DebugStringTableSubsection.h"
 #include "llvm/Support/BinaryStreamReader.h"

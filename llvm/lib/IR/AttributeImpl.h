@@ -160,9 +160,9 @@ public:
         ValSize(Val.size()) {
     char *TrailingString = getTrailingObjects<char>();
     // Some users rely on zero-termination.
-    llvm::copy(Kind, TrailingString);
+    std::memcpy(TrailingString, Kind.data(), Kind.size());
     TrailingString[KindSize] = '\0';
-    llvm::copy(Val, &TrailingString[KindSize + 1]);
+    std::memcpy(TrailingString + KindSize + 1, Val.data(), Val.size());
     TrailingString[KindSize + 1 + ValSize] = '\0';
   }
 

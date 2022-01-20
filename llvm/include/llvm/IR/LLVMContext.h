@@ -30,6 +30,7 @@ class Instruction;
 class LLVMContextImpl;
 class Module;
 class OptPassGate;
+template <typename T> class Optional;
 template <typename T> class SmallVectorImpl;
 template <typename T> class StringMapEntry;
 class StringRef;

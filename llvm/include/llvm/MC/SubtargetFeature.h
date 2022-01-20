@@ -18,6 +18,8 @@
 #define LLVM_MC_SUBTARGETFEATURE_H
 
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLArrayExtras.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/MathExtras.h"
 #include <array>
 #include <bitset>

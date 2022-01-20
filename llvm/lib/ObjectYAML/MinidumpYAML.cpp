@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/ObjectYAML/MinidumpYAML.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/Allocator.h"
 
 using namespace llvm;

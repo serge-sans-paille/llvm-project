@@ -19,6 +19,7 @@
 #ifndef LLVM_ADT_SPARSESET_H
 #define LLVM_ADT_SPARSESET_H
 
+#include "llvm/ADT/Identity.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/AllocatorBase.h"
 #include <cassert>

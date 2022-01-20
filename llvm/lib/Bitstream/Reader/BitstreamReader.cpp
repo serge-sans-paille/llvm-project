@@ -8,6 +8,7 @@
 
 #include "llvm/Bitstream/BitstreamReader.h"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include <cassert>
 #include <string>
 

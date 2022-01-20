@@ -7,6 +7,7 @@
 //===----------------------------------------------------------------------===//
 
 #include "llvm/DebugInfo/CodeView/DebugFrameDataSubsection.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/DebugInfo/CodeView/CodeViewError.h"
 
 using namespace llvm;

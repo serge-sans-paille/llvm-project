@@ -9,6 +9,7 @@
 #include "llvm/ExecutionEngine/Orc/TargetProcess/TargetExecutionUtils.h"
 
 #include <vector>
+#include <cstring>
 
 namespace llvm {
 namespace orc {
@@ -23,14 +24,14 @@ int runAsMain(int (*Main)(int, char *[]), ArrayRef<std::string> Args,
 
   if (ProgramName) {
     ArgVStorage.push_back(std::make_unique<char[]>(ProgramName->size() + 1));
-    llvm::copy(*ProgramName, &ArgVStorage.back()[0]);
+    std::memcpy(&ArgVStorage.back()[0], ProgramName->data(), ProgramName->size() + 1);
     ArgVStorage.back()[ProgramName->size()] = '\0';
     ArgV.push_back(ArgVStorage.back().get());
   }
 
   for (const auto &Arg : Args) {
     ArgVStorage.push_back(std::make_unique<char[]>(Arg.size() + 1));
-    llvm::copy(Arg, &ArgVStorage.back()[0]);
+    std::memcpy(&ArgVStorage.back()[0], Arg.data(), Arg.size() + 1);
     ArgVStorage.back()[Arg.size()] = '\0';
     ArgV.push_back(ArgVStorage.back().get());
   }

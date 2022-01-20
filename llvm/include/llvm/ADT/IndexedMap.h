@@ -19,6 +19,7 @@
 #ifndef LLVM_ADT_INDEXEDMAP_H
 #define LLVM_ADT_INDEXEDMAP_H
 
+#include "llvm/ADT/Identity.h"
 #include "llvm/ADT/SmallVector.h"
 #include <cassert>
 

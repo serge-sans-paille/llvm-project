@@ -16,7 +16,6 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <tuple>
 #include <utility>
 
 namespace llvm {
@@ -234,56 +233,6 @@ struct DenseMapInfo<std::pair<T, U>> {
   static bool isEqual(const Pair &LHS, const Pair &RHS) {
     return FirstInfo::isEqual(LHS.first, RHS.first) &&
            SecondInfo::isEqual(LHS.second, RHS.second);
-  }
-};
-
-// Provide DenseMapInfo for all tuples whose members have info.
-template <typename... Ts> struct DenseMapInfo<std::tuple<Ts...>> {
-  using Tuple = std::tuple<Ts...>;
-
-  static inline Tuple getEmptyKey() {
-    return Tuple(DenseMapInfo<Ts>::getEmptyKey()...);
-  }
-
-  static inline Tuple getTombstoneKey() {
-    return Tuple(DenseMapInfo<Ts>::getTombstoneKey()...);
-  }
-
-  template <unsigned I>
-  static unsigned getHashValueImpl(const Tuple &values, std::false_type) {
-    using EltType = typename std::tuple_element<I, Tuple>::type;
-    std::integral_constant<bool, I + 1 == sizeof...(Ts)> atEnd;
-    return detail::combineHashValue(
-        DenseMapInfo<EltType>::getHashValue(std::get<I>(values)),
-        getHashValueImpl<I + 1>(values, atEnd));
-  }
-
-  template <unsigned I>
-  static unsigned getHashValueImpl(const Tuple &, std::true_type) {
-    return 0;
-  }
-
-  static unsigned getHashValue(const std::tuple<Ts...> &values) {
-    std::integral_constant<bool, 0 == sizeof...(Ts)> atEnd;
-    return getHashValueImpl<0>(values, atEnd);
-  }
-
-  template <unsigned I>
-  static bool isEqualImpl(const Tuple &lhs, const Tuple &rhs, std::false_type) {
-    using EltType = typename std::tuple_element<I, Tuple>::type;
-    std::integral_constant<bool, I + 1 == sizeof...(Ts)> atEnd;
-    return DenseMapInfo<EltType>::isEqual(std::get<I>(lhs), std::get<I>(rhs)) &&
-           isEqualImpl<I + 1>(lhs, rhs, atEnd);
-  }
-
-  template <unsigned I>
-  static bool isEqualImpl(const Tuple &, const Tuple &, std::true_type) {
-    return true;
-  }
-
-  static bool isEqual(const Tuple &lhs, const Tuple &rhs) {
-    std::integral_constant<bool, 0 == sizeof...(Ts)> atEnd;
-    return isEqualImpl<0>(lhs, rhs, atEnd);
   }
 };
 

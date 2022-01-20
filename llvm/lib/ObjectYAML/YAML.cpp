@@ -13,6 +13,7 @@
 
 #include "llvm/ObjectYAML/YAML.h"
 #include "llvm/ADT/StringExtras.h"
+#include "llvm/ADT/STLAlgorithmExtras.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cctype>
 #include <cstdint>

@@ -36,6 +36,104 @@ namespace llvm {
 //     Extra additions to <utility>
 //===----------------------------------------------------------------------===//
 
+/// Function object to check whether the first component of a std::pair
+/// compares less than the first component of another std::pair.
+struct less_first {
+  template <typename T> bool operator()(const T &lhs, const T &rhs) const {
+    return std::less<>()(lhs.first, rhs.first);
+  }
+};
+
+/// Function object to check whether the second component of a std::pair
+/// compares less than the second component of another std::pair.
+struct less_second {
+  template <typename T> bool operator()(const T &lhs, const T &rhs) const {
+    return std::less<>()(lhs.second, rhs.second);
+  }
+};
+
+/// \brief Function object to apply a binary function to the first component of
+/// a std::pair.
+template<typename FuncTy>
+struct on_first {
+  FuncTy func;
+
+  template <typename T>
+  decltype(auto) operator()(const T &lhs, const T &rhs) const {
+    return func(lhs.first, rhs.first);
+  }
+};
+
+
+/// Utility type to build an inheritance chain that makes it easy to rank
+/// overload candidates.
+template <int N> struct rank : rank<N - 1> {};
+template <> struct rank<0> {};
+
+/// traits class for checking whether type T is one of any of the given
+/// types in the variadic list.
+template <typename T, typename... Ts>
+using is_one_of = disjunction<std::is_same<T, Ts>...>;
+
+/// traits class for checking whether type T is a base class for all
+///  the given types in the variadic list.
+template <typename T, typename... Ts>
+using are_base_of = conjunction<std::is_base_of<T, Ts>...>;
+
+namespace detail {
+template <typename... Ts> struct Visitor;
+
+template <typename HeadT, typename... TailTs>
+struct Visitor<HeadT, TailTs...> : remove_cvref_t<HeadT>, Visitor<TailTs...> {
+  explicit constexpr Visitor(HeadT &&Head, TailTs &&...Tail)
+      : remove_cvref_t<HeadT>(std::forward<HeadT>(Head)),
+        Visitor<TailTs...>(std::forward<TailTs>(Tail)...) {}
+  using remove_cvref_t<HeadT>::operator();
+  using Visitor<TailTs...>::operator();
+};
+
+template <typename HeadT> struct Visitor<HeadT> : remove_cvref_t<HeadT> {
+  explicit constexpr Visitor(HeadT &&Head)
+      : remove_cvref_t<HeadT>(std::forward<HeadT>(Head)) {}
+  using remove_cvref_t<HeadT>::operator();
+};
+} // namespace detail
+
+
+/// Returns an opaquely-typed Callable object whose operator() overload set is
+/// the sum of the operator() overload sets of each CallableT in CallableTs.
+///
+/// The type of the returned object derives from each CallableT in CallableTs.
+/// The returned object is constructed by invoking the appropriate copy or move
+/// constructor of each CallableT, as selected by overload resolution on the
+/// corresponding argument to makeVisitor.
+///
+/// Example:
+///
+/// \code
+/// auto visitor = makeVisitor([](auto) { return "unhandled type"; },
+///                            [](int i) { return "int"; },
+///                            [](std::string s) { return "str"; });
+/// auto a = visitor(42);    // `a` is now "int".
+/// auto b = visitor("foo"); // `b` is now "str".
+/// auto c = visitor(3.14f); // `c` is now "unhandled type".
+/// \endcode
+///
+/// Example of making a visitor with a lambda which captures a move-only type:
+///
+/// \code
+/// std::unique_ptr<FooHandler> FH = /* ... */;
+/// auto visitor = makeVisitor(
+///     [FH{std::move(FH)}](Foo F) { return FH->handle(F); },
+///     [](int i) { return i; },
+///     [](std::string s) { return atoi(s); });
+/// \endcode
+template <typename... CallableTs>
+constexpr decltype(auto) makeVisitor(CallableTs &&...Callables) {
+  return detail::Visitor<CallableTs...>(std::forward<CallableTs>(Callables)...);
+}
+
+
 struct FreeDeleter {
   void operator()(void* v) {
     ::free(v);

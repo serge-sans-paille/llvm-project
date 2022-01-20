@@ -15,6 +15,7 @@
 
 #include "OSTargets.h"
 #include "clang/Basic/TargetBuiltins.h"
+#include "llvm/Support/ARMTargetParser.h"
 #include "llvm/Support/TargetParser.h"
 
 namespace clang {
