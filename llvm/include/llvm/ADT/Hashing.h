@@ -48,7 +48,6 @@
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/SwapByteOrder.h"
 #include "llvm/Support/type_traits.h"
-#include <algorithm>
 #include <cassert>
 #include <cstring>
 #include <string>
@@ -145,6 +144,8 @@ void set_fixed_execution_hash_seed(uint64_t fixed_value);
 // the header file mainly to allow inlining and constant propagation.
 namespace hashing {
 namespace detail {
+
+void rotate_buffer(char* first, char* n_first, char* last);
 
 inline uint64_t fetch64(const char *p) {
   uint64_t result;
@@ -428,7 +429,7 @@ hash_code hash_combine_range_impl(InputIteratorT first, InputIteratorT last) {
     // Rotate the buffer if we did a partial fill in order to simulate doing
     // a mix of the last 64-bytes. That is how the algorithm works when we
     // have a contiguous byte sequence, and we want to emulate that here.
-    std::rotate(buffer, buffer_ptr, buffer_end);
+    rotate_buffer(buffer, buffer_ptr, buffer_end);
 
     // Mix this chunk into the current state.
     state.mix(buffer);
@@ -578,7 +579,7 @@ public:
     // simulate doing a mix of the last 64-bytes. That is how the algorithm
     // works when we have a contiguous byte sequence, and we want to emulate
     // that here.
-    std::rotate(buffer, buffer_ptr, buffer_end);
+    rotate_buffer(buffer, buffer_ptr, buffer_end);
 
     // Mix this chunk into the current state.
     state.mix(buffer);

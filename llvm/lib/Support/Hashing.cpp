@@ -14,6 +14,8 @@
 
 #include "llvm/ADT/Hashing.h"
 
+#include <algorithm>
+
 using namespace llvm;
 
 // Provide a definition and static initializer for the fixed seed. This
@@ -26,3 +28,8 @@ uint64_t llvm::hashing::detail::fixed_seed_override = 0;
 void llvm::set_fixed_execution_hash_seed(uint64_t fixed_value) {
   hashing::detail::fixed_seed_override = fixed_value;
 }
+
+void llvm::hashing::detail::rotate_buffer(char* first, char* n_first, char* last) {
+  std::rotate(first, n_first, last);
+}
+
