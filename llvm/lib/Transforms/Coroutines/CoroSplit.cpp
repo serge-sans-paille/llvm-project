@@ -27,6 +27,7 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/Twine.h"
 #include "llvm/Analysis/CFG.h"
+#include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/CallGraphSCCPass.h"
 #include "llvm/Analysis/ConstantFolding.h"

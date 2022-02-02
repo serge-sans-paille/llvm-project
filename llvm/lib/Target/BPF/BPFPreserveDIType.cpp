@@ -14,6 +14,7 @@
 #include "BPFCORE.h"
 #include "llvm/IR/DebugInfoMetadata.h"
 #include "llvm/IR/GlobalVariable.h"
+#include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/IR/Instruction.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/IR/Module.h"

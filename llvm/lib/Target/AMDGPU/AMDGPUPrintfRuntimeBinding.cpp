@@ -22,6 +22,7 @@
 #include "llvm/Analysis/InstructionSimplify.h"
 #include "llvm/Analysis/TargetLibraryInfo.h"
 #include "llvm/IR/Dominators.h"
+#include "llvm/ADT/Triple.h"
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Instructions.h"
 #include "llvm/InitializePasses.h"

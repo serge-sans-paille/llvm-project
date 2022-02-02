@@ -38,6 +38,7 @@
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/DerivedTypes.h"
 #include "llvm/IR/Instructions.h"
+#include "llvm/BinaryFormat/Dwarf.h"
 #include "llvm/IR/PatternMatch.h"
 #include "llvm/IR/Type.h"
 #include "llvm/IR/IntrinsicsAArch64.h"
