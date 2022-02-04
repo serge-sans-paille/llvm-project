@@ -209,6 +209,10 @@ CodeGenModule::CodeGenModule(ASTContext &C, const HeaderSearchOptions &HSO,
     ModuleNameHash = (Twine(".__uniq.") +
         Twine(toString(IntHash, /* Radix = */ 10, /* Signed = */false))).str();
   }
+
+  RemoveAttrs.addAttribute("target-cpu");
+  RemoveAttrs.addAttribute("target-features");
+  RemoveAttrs.addAttribute("tune-cpu");
 }
 
 CodeGenModule::~CodeGenModule() {}
@@ -2106,10 +2110,6 @@ void CodeGenModule::setNonAliasAttributes(GlobalDecl GD,
         // We know that GetCPUAndFeaturesAttributes will always have the
         // newest set, since it has the newest possible FunctionDecl, so the
         // new ones should replace the old.
-        llvm::AttributeMask RemoveAttrs;
-        RemoveAttrs.addAttribute("target-cpu");
-        RemoveAttrs.addAttribute("target-features");
-        RemoveAttrs.addAttribute("tune-cpu");
         F->removeFnAttrs(RemoveAttrs);
         F->addFnAttrs(Attrs);
       }

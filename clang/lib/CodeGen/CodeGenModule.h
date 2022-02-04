@@ -490,6 +490,9 @@ private:
   /// A vector of metadata strings for dependent libraries for ELF.
   SmallVector<llvm::MDNode *, 16> ELFDependentLibraries;
 
+  /// A mask for target-specific attributes to remove
+  llvm::AttributeMask RemoveAttrs;
+
   /// @name Cache for Objective-C runtime types
   /// @{
 
