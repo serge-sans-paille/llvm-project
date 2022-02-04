@@ -13,7 +13,6 @@
 #ifndef LLVM_LIB_BITCODE_READER_METADATALOADER_H
 #define LLVM_LIB_BITCODE_READER_METADATALOADER_H
 
-#include "llvm/ADT/SmallVector.h"
 #include "llvm/Support/Error.h"
 
 #include <functional>
@@ -28,6 +27,7 @@ class Instruction;
 class Metadata;
 class Module;
 class Type;
+template <typename T> class SmallVectorImpl;
 
 /// Helper class that handles loading Metadatas and keeping them available.
 class MetadataLoader {
