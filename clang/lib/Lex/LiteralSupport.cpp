@@ -994,7 +994,7 @@ void NumericLiteralParser::ParseDecimalOrOctalCommon(SourceLocation TokLoc){
 /// Determine whether a suffix is a valid ud-suffix. We avoid treating reserved
 /// suffixes as ud-suffixes, because the diagnostic experience is better if we
 /// treat it as an invalid suffix.
-bool NumericLiteralParser::isValidUDSuffix(const LangOptions &LangOpts,
+bool NumericLiteralParser::isValidUDSuffix(const LangOptionsBase &LangOpts,
                                            StringRef Suffix) {
   if (!LangOpts.CPlusPlus11 || Suffix.empty())
     return false;
@@ -2113,7 +2113,7 @@ unsigned StringLiteralParser::getOffsetOfStringByte(const Token &Tok,
 /// Determine whether a suffix is a valid ud-suffix. We avoid treating reserved
 /// suffixes as ud-suffixes, because the diagnostic experience is better if we
 /// treat it as an invalid suffix.
-bool StringLiteralParser::isValidUDSuffix(const LangOptions &LangOpts,
+bool StringLiteralParser::isValidUDSuffix(const LangOptionsBase &LangOpts,
                                           StringRef Suffix) {
   return NumericLiteralParser::isValidUDSuffix(LangOpts, Suffix) ||
          Suffix == "sv";

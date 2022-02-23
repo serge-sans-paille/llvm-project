@@ -32,6 +32,7 @@ class SourceLocation;
 class TargetInfo;
 class SourceManager;
 class LangOptions;
+class LangOptionsBase;
 
 /// Copy characters from Input to Buf, expanding any UCNs.
 void expandUCNs(SmallVectorImpl<char> &Buf, StringRef Input);
@@ -97,7 +98,8 @@ public:
     return SuffixBegin - ThisTokBegin;
   }
 
-  static bool isValidUDSuffix(const LangOptions &LangOpts, StringRef Suffix);
+  static bool isValidUDSuffix(const LangOptionsBase &LangOpts,
+                              StringRef Suffix);
 
   unsigned getRadix() const { return radix; }
 
@@ -275,7 +277,8 @@ public:
     return UDSuffixOffset;
   }
 
-  static bool isValidUDSuffix(const LangOptions &LangOpts, StringRef Suffix);
+  static bool isValidUDSuffix(const LangOptionsBase &LangOpts,
+                              StringRef Suffix);
 
 private:
   void init(ArrayRef<Token> StringToks);
