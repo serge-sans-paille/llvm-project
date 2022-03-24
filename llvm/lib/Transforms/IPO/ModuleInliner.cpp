@@ -15,6 +15,8 @@
 
 #include "llvm/Transforms/IPO/ModuleInliner.h"
 #include "llvm/ADT/ScopeExit.h"
+#include "llvm/Analysis/AliasAnalysis.h"
+#include "llvm/Analysis/ReplayInlineAdvisor.h"
 #include "llvm/ADT/SetVector.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/Statistic.h"

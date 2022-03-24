@@ -23,7 +23,10 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "ObjCARC.h"
+#include "llvm/IR/InstrTypes.h"                       
+#include "llvm/Analysis/ObjCARCAnalysisUtils.h"
+#include "llvm/Pass.h"
+#include "llvm/Analysis/ObjCARCInstKind.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/IR/Constants.h"
 #include "llvm/IR/PassManager.h"

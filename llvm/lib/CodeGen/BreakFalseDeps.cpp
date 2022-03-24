@@ -22,8 +22,10 @@
 #include "llvm/CodeGen/ReachingDefAnalysis.h"
 #include "llvm/CodeGen/RegisterClassInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
+#include "llvm/MC/MCInstrDesc.h"                      
+#include "llvm/MC/MCRegister.h"                       
+#include "llvm/MC/MCRegisterInfo.h"                   
 #include "llvm/InitializePasses.h"
-#include "llvm/MC/MCSymbol.h"
 #include "llvm/Support/Debug.h"
 
 using namespace llvm;
