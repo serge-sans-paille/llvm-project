@@ -925,6 +925,15 @@ public:
   /// Rotate right by rotateAmt.
   APInt rotr(const APInt &rotateAmt) const;
 
+  /// And Not
+  bool isInvertOf(const APInt &RHS) const {
+    if (isSingleWord()) {
+      uint64_t Mask = (WORDTYPE_MAX >> (APINT_BITS_PER_WORD - BitWidth));
+      return U.VAL == (~RHS.U.VAL & Mask);
+    }
+    return isInvertOfSlowCase(RHS);
+  }
+
   /// Concatenate the bits from "NewLSB" onto the bottom of *this.  This is
   /// equivalent to:
   ///   (this->zext(NewWidth) << NewLSB.getBitWidth()) | NewLSB.zext(NewWidth)
@@ -1956,6 +1965,9 @@ private:
 
   /// out-of-line slow case for operator=
   void assignSlowCase(const APInt &RHS);
+
+  /// out-of-line slow case for operator==
+  bool isInvertOfSlowCase(const APInt &RHS) const LLVM_READONLY;
 
   /// out-of-line slow case for operator==
   bool equalSlowCase(const APInt &RHS) const LLVM_READONLY;

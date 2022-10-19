@@ -2395,7 +2395,7 @@ static Value *simplifyOrInst(Value *Op0, Value *Op1, const SimplifyQuery &Q,
   const APInt *C1, *C2;
   if (match(Op0, m_And(m_Value(A), m_APInt(C1))) &&
       match(Op1, m_And(m_Value(B), m_APInt(C2)))) {
-    if (*C1 == ~*C2) {
+    if (C1->isInvertOf(*C2)) {
       // (A & C1)|(B & C2)
       // If we have: ((V + N) & C1) | (V & C2)
       // .. and C2 = ~C1 and C2 is 0+1+ and (N & C2) == 0
@@ -4207,13 +4207,13 @@ static Value *simplifySelectBitTest(Value *TrueVal, Value *FalseVal, Value *X,
   // (X & Y) == 0 ? X & ~Y : X  --> X
   // (X & Y) != 0 ? X & ~Y : X  --> X & ~Y
   if (FalseVal == X && match(TrueVal, m_And(m_Specific(X), m_APInt(C))) &&
-      *Y == ~*C)
+      Y->isInvertOf(*C))
     return TrueWhenUnset ? FalseVal : TrueVal;
 
   // (X & Y) == 0 ? X : X & ~Y  --> X & ~Y
   // (X & Y) != 0 ? X : X & ~Y  --> X
   if (TrueVal == X && match(FalseVal, m_And(m_Specific(X), m_APInt(C))) &&
-      *Y == ~*C)
+      Y->isInvertOf(*C))
     return TrueWhenUnset ? FalseVal : TrueVal;
 
   if (Y->isPowerOf2()) {

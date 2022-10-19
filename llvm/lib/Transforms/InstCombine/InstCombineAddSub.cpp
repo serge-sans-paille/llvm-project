@@ -773,7 +773,7 @@ static Value *checkForNegativeOperand(BinaryOperator &I,
     if (match(X, m_Xor(m_Value(Y), m_APInt(C1)))) {
       // X = XOR(Y, C1), Y = OR(Z, C2), C2 = NOT(C1) ==> X == NOT(AND(Z, C1))
       // ADD(ADD(X, 1), RHS) == ADD(X, ADD(RHS, 1)) == SUB(RHS, AND(Z, C1))
-      if (match(Y, m_Or(m_Value(Z), m_APInt(C2))) && (*C2 == ~(*C1))) {
+      if (match(Y, m_Or(m_Value(Z), m_APInt(C2))) && (C2->isInvertOf(*C1))) {
         Value *NewAnd = Builder.CreateAnd(Z, *C1);
         return Builder.CreateSub(RHS, NewAnd, "sub");
       } else if (match(Y, m_And(m_Value(Z), m_APInt(C2))) && (*C1 == *C2)) {
@@ -1123,7 +1123,7 @@ static Instruction *foldToUnsignedSaturatedAdd(BinaryOperator &I) {
   // add (umin X, ~C), C --> uaddsat X, C
   const APInt *C, *NotC;
   if (match(&I, m_Add(m_UMin(m_Value(X), m_APInt(NotC)), m_APInt(C))) &&
-      *C == ~*NotC)
+      C->isInvertOf(*NotC))
     return CallInst::Create(getUAddSat(), { X, ConstantInt::get(Ty, *C) });
 
   return nullptr;

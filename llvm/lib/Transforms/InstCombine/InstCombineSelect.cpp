@@ -700,7 +700,8 @@ static Instruction *foldSetClearBits(SelectInst &Sel,
 
   // Cond ? (X & ~C) : (X | C) --> (X & ~C) | (Cond ? 0 : C)
   if (match(T, m_And(m_Value(X), m_APInt(NotC))) &&
-      match(F, m_OneUse(m_Or(m_Specific(X), m_APInt(C)))) && *NotC == ~(*C)) {
+      match(F, m_OneUse(m_Or(m_Specific(X), m_APInt(C)))) &&
+      NotC->isInvertOf(*C)) {
     Constant *Zero = ConstantInt::getNullValue(Ty);
     Constant *OrC = ConstantInt::get(Ty, *C);
     Value *NewSel = Builder.CreateSelect(Cond, Zero, OrC, "masksel", &Sel);
@@ -709,7 +710,8 @@ static Instruction *foldSetClearBits(SelectInst &Sel,
 
   // Cond ? (X | C) : (X & ~C) --> (X & ~C) | (Cond ? C : 0)
   if (match(F, m_And(m_Value(X), m_APInt(NotC))) &&
-      match(T, m_OneUse(m_Or(m_Specific(X), m_APInt(C)))) && *NotC == ~(*C)) {
+      match(T, m_OneUse(m_Or(m_Specific(X), m_APInt(C)))) &&
+      NotC->isInvertOf(*C)) {
     Constant *Zero = ConstantInt::getNullValue(Ty);
     Constant *OrC = ConstantInt::get(Ty, *C);
     Value *NewSel = Builder.CreateSelect(Cond, OrC, Zero, "masksel", &Sel);
@@ -842,7 +844,8 @@ static Value *canonicalizeSaturatedAdd(ICmpInst *Cmp, Value *TVal, Value *FVal,
   const APInt *C, *CmpC;
   if (Pred == ICmpInst::ICMP_ULT &&
       match(TVal, m_Add(m_Value(X), m_APInt(C))) && X == Cmp0 &&
-      match(FVal, m_AllOnes()) && match(Cmp1, m_APInt(CmpC)) && *CmpC == ~*C) {
+      match(FVal, m_AllOnes()) && match(Cmp1, m_APInt(CmpC)) &&
+      CmpC->isInvertOf(*C)) {
     // (X u< ~C) ? (X + C) : -1 --> uadd.sat(X, C)
     return Builder.CreateBinaryIntrinsic(
         Intrinsic::uadd_sat, X, ConstantInt::get(X->getType(), *C));

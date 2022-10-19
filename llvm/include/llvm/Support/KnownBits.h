@@ -49,7 +49,7 @@ public:
   /// Returns true if we know the value of all bits.
   bool isConstant() const {
     assert(!hasConflict() && "KnownBits conflict!");
-    return Zero.countPopulation() + One.countPopulation() == getBitWidth();
+    return Zero.isInvertOf(One);
   }
 
   /// Returns the value when all bits have a known value. This just returns One

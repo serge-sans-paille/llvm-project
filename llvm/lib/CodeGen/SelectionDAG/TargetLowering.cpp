@@ -1372,7 +1372,7 @@ bool TargetLowering::SimplifyDemandedBits(
       // the xor. For example, for a 32-bit X:
       // and (xor (srl X, 31), -1), 1 --> xor (srl X, 31), 1
       if (isBitwiseNot(Op0) && Op0.hasOneUse() &&
-          LHSKnown.One == ~RHSC->getAPIntValue()) {
+          LHSKnown.One.isInvertOf(RHSC->getAPIntValue())) {
         SDValue Xor = TLO.DAG.getNode(ISD::XOR, dl, VT, Op0.getOperand(0), Op1);
         return TLO.CombineTo(Op, Xor);
       }

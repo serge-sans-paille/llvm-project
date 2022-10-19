@@ -2891,7 +2891,7 @@ Instruction *InstCombinerImpl::visitOr(BinaryOperator &I) {
     const APInt *C0, *C1;
     if (match(C, m_APInt(C0)) && match(D, m_APInt(C1))) {
       Value *X;
-      if (*C0 == ~*C1) {
+      if (C0->isInvertOf(*C1)) {
         // ((X | B) & MaskC) | (B & ~MaskC) -> (X & MaskC) | B
         if (match(A, m_c_Or(m_Value(X), m_Specific(B))))
           return BinaryOperator::CreateOr(Builder.CreateAnd(X, *C0), B);

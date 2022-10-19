@@ -10670,7 +10670,7 @@ SDValue DAGCombiner::visitSELECT(SDNode *N) {
         N2.getOpcode() == ISD::ADD && Cond0 == N2.getOperand(0)) {
       auto *C = dyn_cast<ConstantSDNode>(N2.getOperand(1));
       auto *NotC = dyn_cast<ConstantSDNode>(Cond1);
-      if (C && NotC && C->getAPIntValue() == ~NotC->getAPIntValue()) {
+      if (C && NotC && C->getAPIntValue().isInvertOf(NotC->getAPIntValue())) {
         // select (setcc Cond0, ~C, ugt), -1, (add Cond0, C) -->
         // uaddo Cond0, C; select uaddo.1, -1, uaddo.0
         //
@@ -11246,7 +11246,7 @@ SDValue DAGCombiner::visitVSELECT(SDNode *N) {
           // canonicalization.
           // x >= ~C ? x+C : ~0 --> uaddsat x, C
           auto MatchUADDSAT = [](ConstantSDNode *Op, ConstantSDNode *Cond) {
-            return Cond->getAPIntValue() == ~Op->getAPIntValue();
+            return Cond->getAPIntValue().isInvertOf(Op->getAPIntValue());
           };
           if (SatCC == ISD::SETULE &&
               ISD::matchBinaryPredicate(OpRHS, CondRHS, MatchUADDSAT))
@@ -24637,7 +24637,7 @@ SDValue DAGCombiner::SimplifySelectCC(const SDLoc &DL, SDValue N0, SDValue N1,
   // Fold select_cc setgt X, -1, C, ~C -> xor (ashr X, BW-1), C
   // Fold select_cc setlt X, 0, C, ~C -> xor (ashr X, BW-1), ~C
   if (!NotExtCompare && N1C && N2C && N3C &&
-      N2C->getAPIntValue() == ~N3C->getAPIntValue() &&
+      N2C->getAPIntValue().isInvertOf(N3C->getAPIntValue()) &&
       ((N1C->isAllOnes() && CC == ISD::SETGT) ||
        (N1C->isZero() && CC == ISD::SETLT)) &&
       !TLI.shouldAvoidTransformToShift(VT, CmpOpVT.getScalarSizeInBits() - 1)) {

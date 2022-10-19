@@ -8725,7 +8725,7 @@ SDValue AArch64TargetLowering::LowerSELECT_CC(ISD::CondCode CC, SDValue LHS,
       // If both TVal and FVal are constants, see if FVal is the
       // inverse/negation/increment of TVal and generate a CSINV/CSNEG/CSINC
       // instead of a CSEL in that case.
-      if (TrueVal == ~FalseVal) {
+      if (TrueVal.isInvertOf(FalseVal)) {
         Opcode = AArch64ISD::CSINV;
       } else if (FalseVal > std::numeric_limits<int64_t>::min() &&
                  TrueVal == -FalseVal) {
