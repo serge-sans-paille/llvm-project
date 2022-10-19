@@ -1661,7 +1661,7 @@ Instruction *InstCombinerImpl::foldICmpXorConstant(ICmpInst &Cmp,
   // Mask constant magic can eliminate an 'xor' with unsigned compares.
   if (Pred == ICmpInst::ICMP_UGT) {
     // (xor X, ~C) >u C --> X <u ~C (when C+1 is a power of 2)
-    if (*XorC == ~C && (C + 1).isPowerOf2())
+    if (XorC->isInvertOf(C) && (C + 1).isPowerOf2())
       return new ICmpInst(ICmpInst::ICMP_ULT, X, Y);
     // (xor X, C) >u C --> X >u C (when C+1 is a power of 2)
     if (*XorC == C && (C + 1).isPowerOf2())

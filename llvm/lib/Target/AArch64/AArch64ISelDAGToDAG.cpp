@@ -2923,7 +2923,7 @@ static bool tryBitfieldInsertOpFromOr(SDNode *N, const APInt &UsefulBits,
   if (And0.hasOneUse() && And1.hasOneUse() &&
       isOpcWithIntImmediate(And0.getNode(), ISD::AND, Mask0Imm) &&
       isOpcWithIntImmediate(And1.getNode(), ISD::AND, Mask1Imm) &&
-      APInt(BitWidth, Mask0Imm) == ~APInt(BitWidth, Mask1Imm) &&
+      APInt(BitWidth, Mask0Imm).isInvertOf(APInt(BitWidth, Mask1Imm)) &&
       (isShiftedMask(Mask0Imm, VT) || isShiftedMask(Mask1Imm, VT))) {
 
     // ORR is commutative, so canonicalize to the form 'or (and X, Mask0Imm),

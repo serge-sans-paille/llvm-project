@@ -2607,6 +2607,17 @@ TEST(APIntTest, LeftShift) {
   EXPECT_EQ(0, neg_one.shl(128));
 }
 
+TEST(APIntTest, isInvertOf) {
+  for (auto BitWidth : {8, 17, 32, 53, 64, 122, 128}) {
+    APInt in_1(BitWidth, 4);
+    APInt in_2(BitWidth, 53);
+    EXPECT_TRUE(in_1.isInvertOf(~in_1));
+    EXPECT_TRUE((~in_1).isInvertOf(in_1));
+    EXPECT_FALSE(in_1.isInvertOf(in_1));
+    EXPECT_FALSE(in_1.isInvertOf(in_2));
+  }
+}
+
 TEST(APIntTest, isSubsetOf) {
   APInt i32_1(32, 1);
   APInt i32_2(32, 2);

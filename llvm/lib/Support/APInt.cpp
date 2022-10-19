@@ -266,6 +266,17 @@ APInt& APInt::operator*=(uint64_t RHS) {
   return clearUnusedBits();
 }
 
+bool APInt::isInvertOfSlowCase(const APInt &RHS) const {
+  WordType *lhs = U.pVal, *rhs = RHS.U.pVal;
+  unsigned WordBits = ((BitWidth - 1) % APINT_BITS_PER_WORD) + 1;
+  size_t e = getNumWords() - 1;
+  for (size_t i = 0; i != e; ++i)
+    if (lhs[i] != ~rhs[i])
+      return false;
+  uint64_t Mask = WORDTYPE_MAX >> (APINT_BITS_PER_WORD - WordBits);
+  return lhs[e] == (~rhs[e] & Mask);
+}
+
 bool APInt::equalSlowCase(const APInt &RHS) const {
   return std::equal(U.pVal, U.pVal + getNumWords(), RHS.U.pVal);
 }
