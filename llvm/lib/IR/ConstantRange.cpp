@@ -1088,6 +1088,9 @@ ConstantRange::multiply(const ConstantRange &Other) const {
   // be non-wrapping, round the result min and max value to the appropriate
   // multiple of that element. If wrapping is possible, at least adjust the
   // range according to the greatest power-of-two factor of the single element.
+  const APInt* SelfElt = getSingleElement(), * OtherElt = Other.getSingleElement();
+  if(SelfElt && OtherElt)
+    return { *SelfElt * *OtherElt };
 
   if (isEmptySet() || Other.isEmptySet())
     return getEmpty();
@@ -1130,7 +1133,8 @@ ConstantRange::multiply(const ConstantRange &Other) const {
   auto L = {this_min * Other_min, this_min * Other_max,
             this_max * Other_min, this_max * Other_max};
   auto Compare = [](const APInt &A, const APInt &B) { return A.slt(B); };
-  ConstantRange Result_sext(std::min(L, Compare), std::max(L, Compare) + 1);
+  auto Lminmax = std::minmax(L, Compare);
+  ConstantRange Result_sext(Lminmax.first, Lminmax.second + 1);
   ConstantRange SR = Result_sext.truncate(getBitWidth());
 
   return UR.isSizeStrictlySmallerThan(SR) ? UR : SR;
