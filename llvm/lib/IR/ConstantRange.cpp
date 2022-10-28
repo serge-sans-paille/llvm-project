@@ -1122,10 +1122,12 @@ ConstantRange::multiply(const ConstantRange &Other) const {
   //   [-1,4) * [-2,3) = min(-1*-2, -1*2, 3*-2, 3*2) = -6.
   // Similarly for the upper bound, swapping min for max.
 
-  this_min = getSignedMin().sext(getBitWidth() * 2);
-  this_max = getSignedMax().sext(getBitWidth() * 2);
-  Other_min = Other.getSignedMin().sext(getBitWidth() * 2);
-  Other_max = Other.getSignedMax().sext(getBitWidth() * 2);
+  this_min = getSignedMin().sext(getBitWidth() * 2, std::move(this_min));
+  this_max = getSignedMax().sext(getBitWidth() * 2, std::move(this_max));
+  Other_min =
+      Other.getSignedMin().sext(getBitWidth() * 2, std::move(Other_min));
+  Other_max =
+      Other.getSignedMax().sext(getBitWidth() * 2, std::move(Other_max));
 
   auto L = {this_min * Other_min, this_min * Other_max,
             this_max * Other_min, this_max * Other_max};

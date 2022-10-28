@@ -953,6 +953,18 @@ APInt APInt::sext(unsigned Width) const {
     return *this;
 
   APInt Result(getMemory(getNumWords(Width)), Width);
+  return sext(Width, std::move(Result));
+}
+
+APInt APInt::sext(unsigned Width, APInt &&Result) const {
+  assert(Width >= BitWidth && "Invalid APInt SignExtend request");
+  assert(Result.BitWidth == Width && "Invalid Result");
+
+  if (Width <= APINT_BITS_PER_WORD)
+    return APInt(Width, SignExtend64(U.VAL, BitWidth));
+
+  if (Width == BitWidth)
+    return *this;
 
   // Copy words.
   std::memcpy(Result.U.pVal, getRawData(), getNumWords() * APINT_WORD_SIZE);

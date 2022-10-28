@@ -1261,6 +1261,7 @@ public:
   /// It is an error to specify a width that is less than the
   /// current width.
   APInt sext(unsigned width) const;
+  APInt sext(unsigned width, APInt &&out) const;
 
   /// Zero extend to a new width.
   ///
