@@ -3516,10 +3516,10 @@ bool Lexer::Lex(Token &Result) {
 /// token, not a normal token, as such, it is an internal interface.  It assumes
 /// that the Flags of result have been cleared before calling this.
 bool Lexer::LexTokenInternal(Token &Result, bool TokAtPhysicalStartOfLine) {
-LexNextToken:
-  // New token, can't need cleaning yet.
-  Result.clearFlag(Token::NeedsCleaning);
-  Result.setIdentifierInfo(nullptr);
+LexStart:
+  assert(!Result.needsCleaning() && "Result doesn't need cleaning");
+  assert(Result.is(tok::unknown) &&
+         "Kind of result has been cleared before calling this");
 
   // CurPtr - Cache BufferPtr in an automatic variable.
   const char *CurPtr = BufferPtr;
@@ -4141,8 +4141,9 @@ LexNextToken:
       CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
     } else if (Char == '|') {
       // If this is '|||||||' and we're in a conflict marker, ignore it.
-      if (CurPtr[1] == '|' && HandleEndOfConflictMarker(CurPtr-1))
+      if (CurPtr[1] == '|' && HandleEndOfConflictMarker(CurPtr - 1)) {
         goto LexNextToken;
+      }
       Kind = tok::pipepipe;
       CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
     } else {
@@ -4170,8 +4171,9 @@ LexNextToken:
     Char = getCharAndSize(CurPtr, SizeTmp);
     if (Char == '=') {
       // If this is '====' and we're in a conflict marker, ignore it.
-      if (CurPtr[1] == '=' && HandleEndOfConflictMarker(CurPtr-1))
+      if (CurPtr[1] == '=' && HandleEndOfConflictMarker(CurPtr - 1)) {
         goto LexNextToken;
+      }
 
       Kind = tok::equalequal;
       CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
@@ -4301,6 +4303,10 @@ HandleDirective:
 
   // We parsed the directive; lex a token with the new state.
   return false;
+
+LexNextToken:
+  Result.clearFlag(Token::NeedsCleaning);
+  goto LexStart;
 }
 
 const char *Lexer::convertDependencyDirectiveToken(
