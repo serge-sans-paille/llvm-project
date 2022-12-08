@@ -43,7 +43,7 @@ public:
   struct Info {
     /// A null terminated array of prefix strings to apply to name while
     /// matching.
-    const char *const *Prefixes;
+    ArrayRef<StringRef> Prefixes;
     StringRef Name;
     const char *HelpText;
     const char *MetaVar;
@@ -55,6 +55,13 @@ public:
     unsigned short AliasID;
     const char *AliasArgs;
     const char *Values;
+
+    constexpr Info(std::nullptr_t, StringRef Name, const char *HelpText, const char *MetaVar, unsigned ID, unsigned char Kind, unsigned char Param, unsigned int Flags, unsigned short GroupID, unsigned short AliasID, const char *AliasArgs, const char *Values) : Prefixes(), Name(Name), HelpText(HelpText), MetaVar(MetaVar), ID(ID), Kind(Kind), Param(Param), Flags(Flags), GroupID(GroupID), AliasID(AliasID), AliasArgs(AliasArgs), Values(Values) {}
+
+    constexpr Info(StringLiteral const (&Prefixes)[1], StringRef Name, const char *HelpText, const char *MetaVar, unsigned ID, unsigned char Kind, unsigned char Param, unsigned int Flags, unsigned short GroupID, unsigned short AliasID, const char *AliasArgs, const char *Values) : Prefixes(), Name(Name), HelpText(HelpText), MetaVar(MetaVar), ID(ID), Kind(Kind), Param(Param), Flags(Flags), GroupID(GroupID), AliasID(AliasID), AliasArgs(AliasArgs), Values(Values) {}
+
+    template<size_t N>
+    constexpr Info(StringLiteral const (&Prefixes)[N], StringRef Name, const char *HelpText, const char *MetaVar, unsigned ID, unsigned char Kind, unsigned char Param, unsigned int Flags, unsigned short GroupID, unsigned short AliasID, const char *AliasArgs, const char *Values) : Prefixes(&Prefixes[0], N - 1), Name(Name), HelpText(HelpText), MetaVar(MetaVar), ID(ID), Kind(Kind), Param(Param), Flags(Flags), GroupID(GroupID), AliasID(AliasID), AliasArgs(AliasArgs), Values(Values) {}
   };
 
 private:

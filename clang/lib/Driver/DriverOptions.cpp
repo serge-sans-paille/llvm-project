@@ -16,7 +16,7 @@ using namespace clang::driver;
 using namespace clang::driver::options;
 using namespace llvm::opt;
 
-#define PREFIX(NAME, VALUE) static const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) static constexpr llvm::StringLiteral NAME[] = VALUE;
 #include "clang/Driver/Options.inc"
 #undef PREFIX
 

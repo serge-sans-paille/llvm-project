@@ -18,7 +18,7 @@ using namespace jitlink;
 #define DEBUG_TYPE "jitlink"
 
 // Create prefix string literals used in Options.td
-#define PREFIX(NAME, VALUE) const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral NAME [] = VALUE;
 #include "COFFOptions.inc"
 #undef PREFIX
 

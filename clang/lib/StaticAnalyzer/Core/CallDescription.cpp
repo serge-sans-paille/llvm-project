@@ -36,7 +36,7 @@ static MaybeCount readRequiredParams(MaybeCount RequiredArgs,
 }
 
 ento::CallDescription::CallDescription(CallDescriptionFlags Flags,
-                                       ArrayRef<const char *> QualifiedName,
+                                       ArrayRef<StringRef> QualifiedName,
                                        MaybeCount RequiredArgs /*= None*/,
                                        MaybeCount RequiredParams /*= None*/)
     : RequiredArgs(RequiredArgs),
@@ -48,7 +48,7 @@ ento::CallDescription::CallDescription(CallDescriptionFlags Flags,
 }
 
 /// Construct a CallDescription with default flags.
-ento::CallDescription::CallDescription(ArrayRef<const char *> QualifiedName,
+ento::CallDescription::CallDescription(ArrayRef<StringRef> QualifiedName,
                                        MaybeCount RequiredArgs /*= None*/,
                                        MaybeCount RequiredParams /*= None*/)
     : CallDescription(CDF_None, QualifiedName, RequiredArgs, RequiredParams) {}

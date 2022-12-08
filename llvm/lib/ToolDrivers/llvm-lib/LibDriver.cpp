@@ -41,7 +41,7 @@ enum {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral NAME [] = VALUE;
 #include "Options.inc"
 #undef PREFIX
 
