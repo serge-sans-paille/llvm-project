@@ -61,7 +61,7 @@ enum {
 };
 
 // Create prefix string literals used in Options.td
-#define PREFIX(NAME, VALUE) static const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) static constexpr llvm::StringLiteral NAME[] = VALUE;
 #include "Options.inc"
 #undef PREFIX
 

@@ -74,8 +74,8 @@ enum LipoID {
 };
 
 // LipoInfoTable below references LIPO_##PREFIX. OptionGroup has prefix nullptr.
-constexpr const char *const *LIPO_nullptr = nullptr;
-#define PREFIX(NAME, VALUE) const char *const LIPO_##NAME[] = VALUE;
+constexpr std::nullptr_t LIPO_nullptr = nullptr;
+#define PREFIX(NAME, VALUE) constexpr llvm::StringLiteral LIPO_##NAME[] = VALUE;
 #include "LipoOpts.inc"
 #undef PREFIX
 

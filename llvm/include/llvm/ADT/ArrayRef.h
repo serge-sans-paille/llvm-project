@@ -74,12 +74,12 @@ namespace llvm {
       : Data(&OneElt), Length(1) {}
 
     /// Construct an ArrayRef from a pointer and length.
-    /*implicit*/ ArrayRef(const T *data, size_t length)
-      : Data(data), Length(length) {}
+    constexpr /*implicit*/ ArrayRef(const T *data, size_t length)
+        : Data(data), Length(length) {}
 
     /// Construct an ArrayRef from a range.
-    ArrayRef(const T *begin, const T *end)
-      : Data(begin), Length(end - begin) {}
+    constexpr ArrayRef(const T *begin, const T *end)
+        : Data(begin), Length(end - begin) {}
 
     /// Construct an ArrayRef from a SmallVector. This is templated in order to
     /// avoid instantiating SmallVectorTemplateCommon<T> whenever we

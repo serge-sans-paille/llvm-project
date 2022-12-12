@@ -35,7 +35,7 @@ using namespace lld;
 using namespace lld::macho;
 
 // Create prefix string literals used in Options.td
-#define PREFIX(NAME, VALUE) const char *NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral NAME[] = VALUE;
 #include "Options.inc"
 #undef PREFIX
 

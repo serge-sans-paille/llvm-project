@@ -120,7 +120,8 @@ private:
 
 // ObjdumpOptID is in ObjdumpOptID.h
 
-#define PREFIX(NAME, VALUE) const char *const OBJDUMP_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE)                                                    \
+  constexpr llvm::StringLiteral OBJDUMP_##NAME[] = VALUE;
 #include "ObjdumpOpts.inc"
 #undef PREFIX
 
@@ -153,7 +154,8 @@ enum OtoolOptID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const OTOOL_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE)                                                    \
+  constexpr llvm::StringLiteral OTOOL_##NAME[] = VALUE;
 #include "OtoolOpts.inc"
 #undef PREFIX
 

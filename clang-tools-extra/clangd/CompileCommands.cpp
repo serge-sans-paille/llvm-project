@@ -467,7 +467,7 @@ llvm::ArrayRef<ArgStripper::Rule> ArgStripper::rulesFor(llvm::StringRef Arg) {
     };
     // Also grab prefixes for each option, these are not fully exposed.
     const char *const *Prefixes[DriverID::LastOption] = {nullptr};
-#define PREFIX(NAME, VALUE) static const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) static constexpr llvm::StringLiteral NAME[] = VALUE;
 #define OPTION(PREFIX, NAME, ID, KIND, GROUP, ALIAS, ALIASARGS, FLAGS, PARAM,  \
                HELP, METAVAR, VALUES)                                          \
   Prefixes[DriverID::OPT_##ID] = PREFIX;

@@ -36,7 +36,7 @@ enum ObjcopyID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const OBJCOPY_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral OBJCOPY_##NAME[] = VALUE;
 #include "ObjcopyOpts.inc"
 #undef PREFIX
 
@@ -76,7 +76,7 @@ enum InstallNameToolID {
 };
 
 #define PREFIX(NAME, VALUE)                                                    \
-  const char *const INSTALL_NAME_TOOL_##NAME[] = VALUE;
+  constexpr StringLiteral INSTALL_NAME_TOOL_##NAME[] = VALUE;
 #include "InstallNameToolOpts.inc"
 #undef PREFIX
 
@@ -113,7 +113,8 @@ enum BitcodeStripID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const BITCODE_STRIP_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE)                                                    \
+  constexpr StringLiteral BITCODE_STRIP_##NAME[] = VALUE;
 #include "BitcodeStripOpts.inc"
 #undef PREFIX
 
@@ -150,7 +151,7 @@ enum StripID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const STRIP_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral STRIP_##NAME[] = VALUE;
 #include "StripOpts.inc"
 #undef PREFIX
 

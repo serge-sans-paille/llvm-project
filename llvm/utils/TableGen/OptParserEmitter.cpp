@@ -251,8 +251,8 @@ void EmitOptParser(RecordKeeper &Records, raw_ostream &OS) {
     // Prefix values.
     OS << ", {";
     for (const auto &PrefixKey : Prefix.first)
-      OS << "\"" << PrefixKey << "\" COMMA ";
-    OS << "nullptr})\n";
+      OS << "llvm::StringLiteral(\"" << PrefixKey << "\") COMMA ";
+    OS << "llvm::StringLiteral(\"\")})\n";
   }
   OS << "#undef COMMA\n";
   OS << "#endif // PREFIX\n\n";

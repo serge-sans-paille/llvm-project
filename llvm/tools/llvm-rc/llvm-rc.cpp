@@ -55,7 +55,7 @@ enum ID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral NAME[] = VALUE;
 #include "Opts.inc"
 #undef PREFIX
 
@@ -85,7 +85,7 @@ enum Windres_ID {
 #undef OPTION
 };
 
-#define PREFIX(NAME, VALUE) const char *const WINDRES_##NAME[] = VALUE;
+#define PREFIX(NAME, VALUE) constexpr StringLiteral WINDRES_##NAME[] = VALUE;
 #include "WindresOpts.inc"
 #undef PREFIX
 
