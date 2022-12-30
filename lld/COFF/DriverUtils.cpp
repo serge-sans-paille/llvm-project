@@ -788,7 +788,7 @@ static constexpr llvm::opt::OptTable::Info infoTable[] = {
 #undef OPTION
 };
 
-COFFOptTable::COFFOptTable() : OptTable(infoTable, true) {}
+COFFOptTable::COFFOptTable() : GenericOptTable(infoTable, true) {}
 
 COFFOptTable optTable;
 

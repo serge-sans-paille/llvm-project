@@ -137,9 +137,9 @@ static constexpr OptTable::Info InfoTable[] = {
 #undef OPTION
 };
 
-class WrapperOptTable : public opt::OptTable {
+class WrapperOptTable : public opt::GenericOptTable {
 public:
-  WrapperOptTable() : OptTable(InfoTable) {}
+  WrapperOptTable() : opt::GenericOptTable(InfoTable) {}
 };
 
 const OptTable &getOptTable() {
