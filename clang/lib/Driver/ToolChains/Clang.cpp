@@ -3350,7 +3350,7 @@ static void RenderTrivialAutoVarInitOptions(const Driver &D,
                                             const ArgList &Args,
                                             ArgStringList &CmdArgs) {
   auto DefaultTrivialAutoVarInit = TC.GetDefaultTrivialAutoVarInit();
-  StringRef TrivialAutoVarInit = "";
+  StringRef TrivialAutoVarInit = "pattern";
 
   for (const Arg *A : Args) {
     switch (A->getOption().getID()) {
