@@ -618,6 +618,27 @@ public:
     return *II;
   }
 
+  /// Gets a fresh IdentifierInfo for the given name without consulting
+  ///        external sources.
+  ///
+  /// This is a version of get() meant for fast initialization of the identifier
+  /// table. It ignores external sources and assumes the key is not already
+  /// present.
+  IdentifierInfo &insert(StringRef Name) {
+    assert(HashTable.count(Name) == 0 && "initializing the key");
+    // Make a new IdentifierInfo.
+    void *Mem = getAllocator().Allocate<IdentifierInfo>();
+    IdentifierInfo *II = new (Mem) IdentifierInfo();
+
+    auto &Entry = *HashTable.try_emplace(Name, II).first;
+
+    // Make sure getName() knows how to find the IdentifierInfo
+    // contents.
+    II->Entry = &Entry;
+
+    return *II;
+  }
+
   IdentifierInfo &get(StringRef Name, tok::TokenKind TokenCode) {
     IdentifierInfo &II = get(Name);
     II.TokenID = TokenCode;

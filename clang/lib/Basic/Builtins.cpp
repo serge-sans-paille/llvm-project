@@ -105,17 +105,17 @@ void Builtin::Context::initializeBuiltins(IdentifierTable &Table,
   // Step #1: mark all target-independent builtins with their ID's.
   for (unsigned i = Builtin::NotBuiltin+1; i != Builtin::FirstTSBuiltin; ++i)
     if (builtinIsSupported(BuiltinInfo[i], LangOpts)) {
-      Table.get(BuiltinInfo[i].Name).setBuiltinID(i);
+      Table.insert(BuiltinInfo[i].Name).setBuiltinID(i);
     }
 
   // Step #2: Register target-specific builtins.
   for (unsigned i = 0, e = TSRecords.size(); i != e; ++i)
     if (builtinIsSupported(TSRecords[i], LangOpts))
-      Table.get(TSRecords[i].Name).setBuiltinID(i + Builtin::FirstTSBuiltin);
+      Table.insert(TSRecords[i].Name).setBuiltinID(i + Builtin::FirstTSBuiltin);
 
   // Step #3: Register target-specific builtins for AuxTarget.
   for (unsigned i = 0, e = AuxTSRecords.size(); i != e; ++i)
-    Table.get(AuxTSRecords[i].Name)
+    Table.insert(AuxTSRecords[i].Name)
         .setBuiltinID(i + Builtin::FirstTSBuiltin + TSRecords.size());
 
   // Step #4: Unregister any builtins specified by -fno-builtin-foo.
