@@ -98,7 +98,7 @@ TEST(CommandLineTest, ModifyExisitingOption) {
   static const char ArgString[] = "new-test-option";
   static const char ValueString[] = "Integer";
 
-  StringMap<cl::Option *> &Map =
+  DenseMap<StringRef, cl::Option *> &Map =
       cl::getRegisteredOptions(cl::SubCommand::getTopLevel());
 
   ASSERT_EQ(Map.count("test-option"), 1u) << "Could not find option in map.";
@@ -419,7 +419,7 @@ TEST(CommandLineTest, HideUnrelatedOptions) {
   ASSERT_EQ(cl::NotHidden, TestOption2.getOptionHiddenFlag())
       << "Hid extra option that should be visable.";
 
-  StringMap<cl::Option *> &Map =
+  DenseMap<StringRef, cl::Option *> &Map =
       cl::getRegisteredOptions(cl::SubCommand::getTopLevel());
   ASSERT_TRUE(Map.count("help") == (size_t)0 ||
               cl::NotHidden == Map["help"]->getOptionHiddenFlag())
@@ -445,7 +445,7 @@ TEST(CommandLineTest, HideUnrelatedOptionsMulti) {
   ASSERT_EQ(cl::NotHidden, TestOption3.getOptionHiddenFlag())
       << "Hid extra option that should be visable.";
 
-  StringMap<cl::Option *> &Map =
+  DenseMap<StringRef, cl::Option *> &Map =
       cl::getRegisteredOptions(cl::SubCommand::getTopLevel());
   ASSERT_TRUE(Map.count("help") == (size_t)0 ||
               cl::NotHidden == Map["help"]->getOptionHiddenFlag())
@@ -1319,7 +1319,7 @@ public:
   }
 
   enum class OptionValue { Val };
-  const StringRef Opt = "some-option";
+  const StringLiteral Opt = "some-option";
   const StringRef HelpText = "some help";
 
 private:
@@ -1421,7 +1421,7 @@ public:
   enum class OptionValue { Val };
 
   template <typename... Ts>
-  size_t runTest(StringRef ArgName, Ts... OptionAttributes) {
+  size_t runTest(StringLiteral ArgName, Ts... OptionAttributes) {
     StackOption<OptionValue> TestOption(ArgName, cl::desc("some help"),
                                         OptionAttributes...);
     return getOptionWidth(TestOption);
@@ -1435,7 +1435,7 @@ private:
 };
 
 TEST_F(GetOptionWidthTest, GetOptionWidthArgNameLonger) {
-  StringRef ArgName("a-long-argument-name");
+  StringLiteral ArgName("a-long-argument-name");
   size_t ExpectedStrSize = ("  --" + ArgName + "=<value> - ").str().size();
   EXPECT_EQ(
       runTest(ArgName, cl::values(clEnumValN(OptionValue::Val, "v", "help"))),
@@ -1443,7 +1443,7 @@ TEST_F(GetOptionWidthTest, GetOptionWidthArgNameLonger) {
 }
 
 TEST_F(GetOptionWidthTest, GetOptionWidthFirstOptionNameLonger) {
-  StringRef OptName("a-long-option-name");
+  StringLiteral OptName("a-long-option-name");
   size_t ExpectedStrSize = ("    =" + OptName + " - ").str().size();
   EXPECT_EQ(
       runTest("a", cl::values(clEnumValN(OptionValue::Val, OptName, "help"),
@@ -1452,7 +1452,7 @@ TEST_F(GetOptionWidthTest, GetOptionWidthFirstOptionNameLonger) {
 }
 
 TEST_F(GetOptionWidthTest, GetOptionWidthSecondOptionNameLonger) {
-  StringRef OptName("a-long-option-name");
+  StringLiteral OptName("a-long-option-name");
   size_t ExpectedStrSize = ("    =" + OptName + " - ").str().size();
   EXPECT_EQ(
       runTest("a", cl::values(clEnumValN(OptionValue::Val, "b", "help"),
@@ -1472,7 +1472,7 @@ TEST_F(GetOptionWidthTest, GetOptionWidthEmptyOptionNameLonger) {
 
 TEST_F(GetOptionWidthTest,
        GetOptionWidthValueOptionalEmptyOptionWithNoDescription) {
-  StringRef ArgName("a");
+  StringLiteral ArgName("a");
   // The length of a=<value> (including indentation) is actually the same as the
   // =<empty> string, so it is impossible to distinguish via testing the case
   // where the empty string is ignored from where it is not ignored.

@@ -232,7 +232,7 @@ public:
 
   SmallVector<Option *, 4> PositionalOpts;
   SmallVector<Option *, 4> SinkOpts;
-  StringMap<Option *> OptionsMap;
+  DenseMap<StringRef, Option *> OptionsMap;
 
   Option *ConsumeAfterOpt = nullptr; // The ConsumeAfter option if it exists.
 };
@@ -1242,15 +1242,18 @@ void printOptionDiff(
 
 //===----------------------------------------------------------------------===//
 // This class is used because we must use partial specialization to handle
-// literal string arguments specially (const char* does not correctly respond to
-// the apply method). Because the syntax to use this is a pain, we have the
-// 'apply' method below to handle the nastiness...
+// literal string arguments specially (const char[...] does not correctly
+// respond to the apply method). Because the syntax to use this is a pain, we
+// have the 'apply' method below to handle the nastiness...
+//
+// Note that char * and StringRef are not part of the specialization, which
+// helps preventing reference to stack variables (but doesn't totally prevents
+// it, unfortunately).
 //
 template <class Mod> struct applicator {
   template <class Opt> static void opt(const Mod &M, Opt &O) { M.apply(O); }
 };
 
-// Handle const char* as a special case...
 template <unsigned n> struct applicator<char[n]> {
   template <class Opt> static void opt(StringRef Str, Opt &O) {
     O.setArgStr(Str);
@@ -1261,7 +1264,7 @@ template <unsigned n> struct applicator<const char[n]> {
     O.setArgStr(Str);
   }
 };
-template <> struct applicator<StringRef > {
+template <> struct applicator<StringLiteral> {
   template <class Opt> static void opt(StringRef Str, Opt &O) {
     O.setArgStr(Str);
   }
@@ -2017,7 +2020,7 @@ void PrintHelpMessage(bool Hidden = false, bool Categorized = false);
 /// Hopefully this API can be deprecated soon. Any situation where options need
 /// to be modified by tools or libraries should be handled by sane APIs rather
 /// than just handing around a global list.
-StringMap<Option *> &
+DenseMap<StringRef, Option *> &
 getRegisteredOptions(SubCommand &Sub = SubCommand::getTopLevel());
 
 /// Use this to get all registered SubCommands from the provided parser.

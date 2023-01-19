@@ -210,28 +210,28 @@ static cl::opt<bool> EarlyLiveIntervals("early-live-intervals", cl::Hidden,
 /// Option names for limiting the codegen pipeline.
 /// Those are used in error reporting and we didn't want
 /// to duplicate their names all over the place.
-static const char StartAfterOptName[] = "start-after";
-static const char StartBeforeOptName[] = "start-before";
-static const char StopAfterOptName[] = "stop-after";
-static const char StopBeforeOptName[] = "stop-before";
+static const StringLiteral StartAfterOptName = "start-after";
+static const StringLiteral StartBeforeOptName = "start-before";
+static const StringLiteral StopAfterOptName = "stop-after";
+static const StringLiteral StopBeforeOptName = "stop-before";
 
 static cl::opt<std::string>
-    StartAfterOpt(StringRef(StartAfterOptName),
+    StartAfterOpt(StartAfterOptName,
                   cl::desc("Resume compilation after a specific pass"),
                   cl::value_desc("pass-name"), cl::init(""), cl::Hidden);
 
 static cl::opt<std::string>
-    StartBeforeOpt(StringRef(StartBeforeOptName),
+    StartBeforeOpt(StartBeforeOptName,
                    cl::desc("Resume compilation before a specific pass"),
                    cl::value_desc("pass-name"), cl::init(""), cl::Hidden);
 
 static cl::opt<std::string>
-    StopAfterOpt(StringRef(StopAfterOptName),
+    StopAfterOpt(StopAfterOptName,
                  cl::desc("Stop compilation after a specific pass"),
                  cl::value_desc("pass-name"), cl::init(""), cl::Hidden);
 
 static cl::opt<std::string>
-    StopBeforeOpt(StringRef(StopBeforeOptName),
+    StopBeforeOpt(StopBeforeOptName,
                   cl::desc("Stop compilation before a specific pass"),
                   cl::value_desc("pass-name"), cl::init(""), cl::Hidden);
 
@@ -406,8 +406,7 @@ static const PassInfo *getPassInfo(StringRef PassName) {
   const PassRegistry &PR = *PassRegistry::getPassRegistry();
   const PassInfo *PI = PR.getPassInfo(PassName);
   if (!PI)
-    report_fatal_error(Twine('\"') + Twine(PassName) +
-                       Twine("\" pass is not registered."));
+    report_fatal_error("\"" + PassName + "\" pass is not registered.");
   return PI;
 }
 
@@ -450,11 +449,11 @@ void TargetPassConfig::setStartStopPasses() {
   StopBefore = getPassIDFromName(StopBeforeName);
   StopAfter = getPassIDFromName(StopAfterName);
   if (StartBefore && StartAfter)
-    report_fatal_error(Twine(StartBeforeOptName) + Twine(" and ") +
-                       Twine(StartAfterOptName) + Twine(" specified!"));
+    report_fatal_error(StartBeforeOptName + " and " + StartAfterOptName +
+                       " specified!");
   if (StopBefore && StopAfter)
-    report_fatal_error(Twine(StopBeforeOptName) + Twine(" and ") +
-                       Twine(StopAfterOptName) + Twine(" specified!"));
+    report_fatal_error(StopBeforeOptName + " and " + StopAfterOptName +
+                       " specified!");
   Started = (StartAfter == nullptr) && (StartBefore == nullptr);
 }
 
@@ -526,11 +525,11 @@ static void registerPartialPipelineCallback(PassInstrumentationCallbacks &PIC,
   std::tie(StopAfter, std::ignore) =
       LLVMTM.getPassNameFromLegacyName(StopAfter);
   if (!StartBefore.empty() && !StartAfter.empty())
-    report_fatal_error(Twine(StartBeforeOptName) + Twine(" and ") +
-                       Twine(StartAfterOptName) + Twine(" specified!"));
+    report_fatal_error(StartBeforeOptName + " and " + StartAfterOptName +
+                       " specified!");
   if (!StopBefore.empty() && !StopAfter.empty())
-    report_fatal_error(Twine(StopBeforeOptName) + Twine(" and ") +
-                       Twine(StopAfterOptName) + Twine(" specified!"));
+    report_fatal_error(StopBeforeOptName + " and " + StopAfterOptName +
+                       " specified!");
 
   PIC.registerShouldRunOptionalPassCallback(
       [=, EnableCurrent = StartBefore.empty() && StartAfter.empty(),
@@ -673,8 +672,8 @@ TargetPassConfig::getLimitedCodeGenPipelineReason(const char *Separator) {
   std::string Res;
   static cl::opt<std::string> *PassNames[] = {&StartAfterOpt, &StartBeforeOpt,
                                               &StopAfterOpt, &StopBeforeOpt};
-  static const char *OptNames[] = {StartAfterOptName, StartBeforeOptName,
-                                   StopAfterOptName, StopBeforeOptName};
+  static StringLiteral OptNames[] = {StartAfterOptName, StartBeforeOptName,
+                                     StopAfterOptName, StopBeforeOptName};
   bool IsFirst = true;
   for (int Idx = 0; Idx < 4; ++Idx)
     if (!PassNames[Idx]->empty()) {

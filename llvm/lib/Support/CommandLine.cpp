@@ -275,7 +275,7 @@ public:
     auto End = Sub.OptionsMap.end();
     for (auto Name : OptionNames) {
       auto I = Sub.OptionsMap.find(Name);
-      if (I != End && I->getValue() == O)
+      if (I != End && I->second == O)
         Sub.OptionsMap.erase(I);
     }
 
@@ -381,7 +381,7 @@ public:
             O->hasArgStr())
           addOption(O, sub);
         else
-          addLiteralOption(*O, sub, E.first());
+          addLiteralOption(*O, sub, E.first);
       }
     }
   }
@@ -570,9 +570,10 @@ SubCommand *CommandLineParser::LookupSubCommand(StringRef Name) {
 /// the specified option on the command line.  If there is a value specified
 /// (after an equal sign) return that as well.  This assumes that leading dashes
 /// have already been stripped.
-static Option *LookupNearestOption(StringRef Arg,
-                                   const StringMap<Option *> &OptionsMap,
-                                   std::string &NearestString) {
+static Option *
+LookupNearestOption(StringRef Arg,
+                    const DenseMap<StringRef, Option *> &OptionsMap,
+                    std::string &NearestString) {
   // Reject all dashes.
   if (Arg.empty())
     return nullptr;
@@ -585,8 +586,8 @@ static Option *LookupNearestOption(StringRef Arg,
   // Find the closest match.
   Option *Best = nullptr;
   unsigned BestDistance = 0;
-  for (StringMap<Option *>::const_iterator it = OptionsMap.begin(),
-                                           ie = OptionsMap.end();
+  for (DenseMap<StringRef, Option *>::const_iterator it = OptionsMap.begin(),
+                                                     ie = OptionsMap.end();
        it != ie; ++it) {
     Option *O = it->second;
     // Do not suggest really hidden options (not shown in any help).
@@ -720,9 +721,9 @@ bool llvm::cl::ProvidePositionalOption(Option *Handler, StringRef Arg, int i) {
 //
 static Option *getOptionPred(StringRef Name, size_t &Length,
                              bool (*Pred)(const Option *),
-                             const StringMap<Option *> &OptionsMap) {
-  StringMap<Option *>::const_iterator OMI = OptionsMap.find(Name);
-  if (OMI != OptionsMap.end() && !Pred(OMI->getValue()))
+                             const DenseMap<StringRef, Option *> &OptionsMap) {
+  DenseMap<StringRef, Option *>::const_iterator OMI = OptionsMap.find(Name);
+  if (OMI != OptionsMap.end() && !Pred(OMI->second))
     OMI = OptionsMap.end();
 
   // Loop while we haven't found an option and Name still has at least two
@@ -731,7 +732,7 @@ static Option *getOptionPred(StringRef Name, size_t &Length,
   while (OMI == OptionsMap.end() && Name.size() > 1) {
     Name = Name.substr(0, Name.size() - 1); // Chop off the last character.
     OMI = OptionsMap.find(Name);
-    if (OMI != OptionsMap.end() && !Pred(OMI->getValue()))
+    if (OMI != OptionsMap.end() && !Pred(OMI->second))
       OMI = OptionsMap.end();
   }
 
@@ -749,7 +750,7 @@ static Option *getOptionPred(StringRef Name, size_t &Length,
 static Option *
 HandlePrefixedOrGroupedOption(StringRef &Arg, StringRef &Value,
                               bool &ErrorParsing,
-                              const StringMap<Option *> &OptionsMap) {
+                              const DenseMap<StringRef, Option *> &OptionsMap) {
   if (Arg.size() == 1)
     return nullptr;
 
@@ -2271,12 +2272,13 @@ static int SubNameCompare(const std::pair<const char *, SubCommand *> *LHS,
 }
 
 // Copy Options into a vector so we can sort them as we like.
-static void sortOpts(StringMap<Option *> &OptMap,
+static void sortOpts(DenseMap<StringRef, Option *> &OptMap,
                      SmallVectorImpl<std::pair<const char *, Option *>> &Opts,
                      bool ShowHidden) {
   SmallPtrSet<Option *, 32> OptionSet; // Duplicate option detection.
 
-  for (StringMap<Option *>::iterator I = OptMap.begin(), E = OptMap.end();
+  for (DenseMap<StringRef, Option *>::iterator I = OptMap.begin(),
+                                               E = OptMap.end();
        I != E; ++I) {
     // Ignore really-hidden options.
     if (I->second->getOptionHiddenFlag() == ReallyHidden)
@@ -2291,7 +2293,7 @@ static void sortOpts(StringMap<Option *> &OptMap,
       continue;
 
     Opts.push_back(
-        std::pair<const char *, Option *>(I->getKey().data(), I->second));
+        std::pair<const char *, Option *>(I->first.data(), I->second));
   }
 
   // Sort the options list alphabetically.
@@ -2754,7 +2756,7 @@ void cl::AddExtraVersionPrinter(VersionPrinterTy func) {
   CommonOptions->ExtraVersionPrinters.push_back(func);
 }
 
-StringMap<Option *> &cl::getRegisteredOptions(SubCommand &Sub) {
+DenseMap<StringRef, Option *> &cl::getRegisteredOptions(SubCommand &Sub) {
   initCommonOptions();
   auto &Subs = GlobalParser->RegisteredSubCommands;
   (void)Subs;
