@@ -580,8 +580,8 @@ TEST_F(BackgroundIndexTest, UncompilableFiles) {
   CDB.setCompileCommand(testPath("build/../A.cc"), Cmd);
   ASSERT_TRUE(Idx.blockUntilIdleForTest());
 
-  EXPECT_THAT(Storage.keys(), ElementsAre(testPath("A.cc"), testPath("A.h"),
-                                          testPath("B.h"), testPath("C.h")));
+  EXPECT_THAT(Storage.keys(), ElementsAre(testPath("C.h"), testPath("B.h"),
+                                          testPath("A.h"), testPath("A.cc")));
 
   {
     auto Shard = MSS.loadShard(testPath("A.cc"));
@@ -635,7 +635,7 @@ TEST_F(BackgroundIndexTest, CmdLineHash) {
   CDB.setCompileCommand(testPath("build/../A.cc"), Cmd);
   ASSERT_TRUE(Idx.blockUntilIdleForTest());
 
-  EXPECT_THAT(Storage.keys(), ElementsAre(testPath("A.cc"), testPath("A.h")));
+  EXPECT_THAT(Storage.keys(), ElementsAre(testPath("A.h"), testPath("A.cc")));
   // Make sure we only store the Cmd for main file.
   EXPECT_FALSE(MSS.loadShard(testPath("A.h"))->Cmd);
 

@@ -26,18 +26,18 @@ Members:
 # CHECK-NEXT:     OffloadKind:     OFK_OpenMP
 # CHECK-NEXT:     Flags:           0
 # CHECK-NEXT:     String:
-# CHECK-NEXT:       - Key:             triple
-# CHECK-NEXT:         Value:           nvptx64-nvidia-cuda
 # CHECK-NEXT:       - Key:             arch
 # CHECK-NEXT:         Value:           sm_70
+# CHECK-NEXT:       - Key:             triple
+# CHECK-NEXT:         Value:           nvptx64-nvidia-cuda
 # CHECK-NEXT:     Content:         DEADBEEF
 # CHECK-NEXT:   - ImageKind:       IMG_Bitcode
 # CHECK-NEXT:     OffloadKind:     OFK_OpenMP
 # CHECK-NEXT:     Flags:           0
 # CHECK-NEXT:     String:
-# CHECK-NEXT:       - Key:             triple
-# CHECK-NEXT:         Value:           amdgcn-amd-amdhsa
 # CHECK-NEXT:       - Key:             arch
 # CHECK-NEXT:         Value:           gfx908
+# CHECK-NEXT:       - Key:             triple
+# CHECK-NEXT:         Value:           amdgcn-amd-amdhsa
 # CHECK-NEXT:     Content:         CAFEFEED
 # CHECK-NEXT: ...
