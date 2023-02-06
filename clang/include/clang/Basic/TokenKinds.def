@@ -805,6 +805,23 @@ ANNOTATION(primary_expr) // annotation for a primary expression, used when
 ANNOTATION(decltype)     // annotation for a decltype expression,
                          // e.g., "decltype(foo.bar())"
 
+// Annotations for module import translated from #include etc.
+ANNOTATION(module_include)
+ANNOTATION(module_begin)
+ANNOTATION(module_end)
+
+// Annotation for a header_name token that has been looked up and transformed
+// into the name of a header unit.
+ANNOTATION(header_unit)
+
+// The parser produces this annotation token when it parses an [[omp::*]]
+// attribute. The tokens from the attribute argument list are replayed to the
+// token stream with this leading token (and a trailing pragma_openmp_end) so
+// that the parser can reuse the OpenMP parsing logic but still be able to
+// distinguish between a real pragma and a converted pragma. It is not marked
+// as a PRAGMA_ANNOTATION because it doesn't get generated from a #pragma.
+ANNOTATION(attr_openmp)
+
 // Annotation for #pragma unused(...)
 // For each argument inside the parentheses the pragma handler will produce
 // one 'pragma_unused' annotation token followed by the argument token.
@@ -902,13 +919,6 @@ PRAGMA_ANNOTATION(pragma_ms_pragma)
 PRAGMA_ANNOTATION(pragma_opencl_extension)
 
 // Annotations for OpenMP pragma directives - #pragma omp ...
-// The parser produces this annotation token when it parses an [[omp::*]]
-// attribute. The tokens from the attribute argument list are replayed to the
-// token stream with this leading token (and a trailing pragma_openmp_end) so
-// that the parser can reuse the OpenMP parsing logic but still be able to
-// distinguish between a real pragma and a converted pragma. It is not marked
-// as a PRAGMA_ANNOTATION because it doesn't get generated from a #pragma.
-ANNOTATION(attr_openmp)
 // The lexer produces these so that they only take effect when the parser
 // handles #pragma omp ... directives.
 PRAGMA_ANNOTATION(pragma_openmp)
@@ -926,15 +936,6 @@ PRAGMA_ANNOTATION(pragma_attribute)
 
 // Annotation for the riscv pragma directives - #pragma clang riscv intrinsic ...
 PRAGMA_ANNOTATION(pragma_riscv)
-
-// Annotations for module import translated from #include etc.
-ANNOTATION(module_include)
-ANNOTATION(module_begin)
-ANNOTATION(module_end)
-
-// Annotation for a header_name token that has been looked up and transformed
-// into the name of a header unit.
-ANNOTATION(header_unit)
 
 #undef PRAGMA_ANNOTATION
 #undef ANNOTATION
