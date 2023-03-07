@@ -1936,12 +1936,15 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
   FunctionDecl *FD = isa<FunctionDecl>(C) ? cast<FunctionDecl>(C)
                                           : dyn_cast_or_null<FunctionDecl>(D);
 
+  const TargetInfo &TI = Context.getTargetInfo();
+  const llvm::Triple &Triple = TI.getTriple();
+
   auto CheckDeviceType = [&](QualType Ty) {
     if (Ty->isDependentType())
       return;
 
     if (Ty->isBitIntType()) {
-      if (!Context.getTargetInfo().hasBitIntType()) {
+      if (!TI.hasBitIntType()) {
         PartialDiagnostic PD = PDiag(diag::err_target_unsupported_type);
         if (D)
           PD << D;
@@ -1949,7 +1952,7 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
           PD << "expression";
         targetDiag(Loc, PD, FD)
             << false /*show bit size*/ << 0 /*bitsize*/ << false /*return*/
-            << Ty << Context.getTargetInfo().getTriple().str();
+            << Ty << Triple.str();
       }
       return;
     }
@@ -1960,18 +1963,17 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
     if (Ty->isRealFloatingType() && Context.getTypeSize(Ty) == 128) {
       const llvm::fltSemantics &Sem = Context.getFloatTypeSemantics(Ty);
       if ((&Sem != &llvm::APFloat::PPCDoubleDouble() &&
-           !Context.getTargetInfo().hasFloat128Type()) ||
-          (&Sem == &llvm::APFloat::PPCDoubleDouble() &&
-           !Context.getTargetInfo().hasIbm128Type()))
+           !TI.hasFloat128Type()) ||
+          (&Sem == &llvm::APFloat::PPCDoubleDouble() && !TI.hasIbm128Type()))
         LongDoubleMismatched = true;
     }
 
-    if ((Ty->isFloat16Type() && !Context.getTargetInfo().hasFloat16Type()) ||
-        (Ty->isFloat128Type() && !Context.getTargetInfo().hasFloat128Type()) ||
-        (Ty->isIbm128Type() && !Context.getTargetInfo().hasIbm128Type()) ||
+    if ((Ty->isFloat16Type() && !TI.hasFloat16Type()) ||
+        (Ty->isFloat128Type() && !TI.hasFloat128Type()) ||
+        (Ty->isIbm128Type() && !TI.hasIbm128Type()) ||
         (Ty->isIntegerType() && Context.getTypeSize(Ty) == 128 &&
-         !Context.getTargetInfo().hasInt128Type()) ||
-        (Ty->isBFloat16Type() && !Context.getTargetInfo().hasBFloat16Type() &&
+         !TI.hasInt128Type()) ||
+        (Ty->isBFloat16Type() && !TI.hasBFloat16Type() &&
          !LangOpts.CUDAIsDevice) ||
         LongDoubleMismatched) {
       PartialDiagnostic PD = PDiag(diag::err_target_unsupported_type);
@@ -1983,7 +1985,7 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
       if (targetDiag(Loc, PD, FD)
           << true /*show bit size*/
           << static_cast<unsigned>(Context.getTypeSize(Ty)) << Ty
-          << false /*return*/ << Context.getTargetInfo().getTriple().str()) {
+          << false /*return*/ << Triple.str()) {
         if (D)
           D->setInvalidDecl();
       }
@@ -1998,8 +2000,8 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
       CheckDeviceType(Ty);
 
     QualType UnqualTy = Ty.getCanonicalType().getUnqualifiedType();
-    const TargetInfo &TI = Context.getTargetInfo();
-    if (!TI.hasLongDoubleType() && UnqualTy == Context.LongDoubleTy) {
+
+    if (UnqualTy == Context.LongDoubleTy && !TI.hasLongDoubleType()) {
       PartialDiagnostic PD = PDiag(diag::err_target_unsupported_type);
       if (D)
         PD << D;
@@ -2008,7 +2010,7 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
 
       if (Diag(Loc, PD, FD)
           << false /*show bit size*/ << 0 << Ty << false /*return*/
-          << Context.getTargetInfo().getTriple().str()) {
+          << Triple.str()) {
         if (D)
           D->setInvalidDecl();
       }
@@ -2027,7 +2029,7 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
 
       if (Diag(Loc, PD, FD)
           << false /*show bit size*/ << 0 << Ty << true /*return*/
-          << Context.getTargetInfo().getTriple().str()) {
+          << Triple.str()) {
         if (D)
           D->setInvalidDecl();
       }
@@ -2036,22 +2038,27 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
     }
 
     // RISC-V vector builtin types (RISCVVTypes.def)
-    if (Ty->isRVVType(/* Bitwidth */ 64, /* IsFloat */ false) &&
-        !Context.getTargetInfo().hasFeature("zve64x"))
-      Diag(Loc, diag::err_riscv_type_requires_extension, FD) << Ty << "zve64x";
-    if (Ty->isRVVType(/* Bitwidth */ 16, /* IsFloat */ true) &&
-        !Context.getTargetInfo().hasFeature("experimental-zvfh"))
-      Diag(Loc, diag::err_riscv_type_requires_extension, FD)
-          << Ty << "zvfh";
-    if (Ty->isRVVType(/* Bitwidth */ 32, /* IsFloat */ true) &&
-        !Context.getTargetInfo().hasFeature("zve32f"))
-      Diag(Loc, diag::err_riscv_type_requires_extension, FD) << Ty << "zve32f";
-    if (Ty->isRVVType(/* Bitwidth */ 64, /* IsFloat */ true) &&
-        !Context.getTargetInfo().hasFeature("zve64d"))
-      Diag(Loc, diag::err_riscv_type_requires_extension, FD) << Ty << "zve64d";
+    if (Triple.isRISCV()) {
+      if (Ty->isRVVType(/* Bitwidth */ 64, /* IsFloat */ false) &&
+          !TI.hasFeature("zve64x"))
+        Diag(Loc, diag::err_riscv_type_requires_extension, FD)
+            << Ty << "zve64x";
+      if (Ty->isRVVType(/* Bitwidth */ 16, /* IsFloat */ true) &&
+          !TI.hasFeature("experimental-zvfh"))
+        Diag(Loc, diag::err_riscv_type_requires_extension, FD) << Ty << "zvfh";
+      if (Ty->isRVVType(/* Bitwidth */ 32, /* IsFloat */ true) &&
+          !TI.hasFeature("zve32f"))
+        Diag(Loc, diag::err_riscv_type_requires_extension, FD)
+            << Ty << "zve32f";
+      if (Ty->isRVVType(/* Bitwidth */ 64, /* IsFloat */ true) &&
+          !TI.hasFeature("zve64d"))
+        Diag(Loc, diag::err_riscv_type_requires_extension, FD)
+            << Ty << "zve64d";
+    }
 
     // Don't allow SVE types in functions without a SVE target.
-    if (Ty->isSVESizelessBuiltinType() && FD && FD->hasBody()) {
+    if (Triple.isAArch64() && Ty->isSVESizelessBuiltinType() && FD &&
+        FD->hasBody()) {
       llvm::StringMap<bool> CallerFeatureMap;
       Context.getFunctionFeatureMap(CallerFeatureMap, FD);
       if (!Builtin::evaluateRequiredTargetFeatures(
@@ -2061,13 +2068,13 @@ void Sema::checkTypeSupport(QualType Ty, SourceLocation Loc, ValueDecl *D) {
   };
 
   CheckType(Ty);
-  if (const auto *FPTy = dyn_cast<FunctionProtoType>(Ty)) {
-    for (const auto &ParamTy : FPTy->param_types())
-      CheckType(ParamTy);
-    CheckType(FPTy->getReturnType(), /*IsRetTy=*/true);
+  if (const auto *FTy = dyn_cast<FunctionType>(Ty)) {
+    if (const auto *FPTy = dyn_cast<FunctionProtoType>(FTy)) {
+      for (const auto &ParamTy : FPTy->param_types())
+        CheckType(ParamTy);
+    }
+    CheckType(FTy->getReturnType(), /*IsRetTy=*/true);
   }
-  if (const auto *FNPTy = dyn_cast<FunctionNoProtoType>(Ty))
-    CheckType(FNPTy->getReturnType(), /*IsRetTy=*/true);
 }
 
 /// Looks through the macro-expansion chain for the given
