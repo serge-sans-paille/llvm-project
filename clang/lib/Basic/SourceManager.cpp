@@ -792,9 +792,10 @@ FileID SourceManager::getFileIDLocal(SourceLocation::UIntTy SLocOffset) const {
   // LessIndex - This is the lower bound of the range that we're searching.
   // We know that the offset corresponding to the FileID is less than
   // SLocOffset.
-  unsigned LessIndex = 0;
+  int LessIndex = 0;
   // upper bound of the search range.
-  unsigned GreaterIndex = LocalSLocEntryTable.size();
+  const int LocalSLocEntryTableSize =  LocalSLocEntryTable.size();
+  int GreaterIndex = LocalSLocEntryTableSize;
   if (LastFileIDLookup.ID >= 0) {
     // Use the LastFileIDLookup to prune the search space.
     if (LocalSLocEntryTable[LastFileIDLookup.ID].getOffset() < SLocOffset)
@@ -804,28 +805,24 @@ FileID SourceManager::getFileIDLocal(SourceLocation::UIntTy SLocOffset) const {
   }
 
   // Find the FileID that contains this.
-  unsigned NumProbes = 0;
-  while (true) {
+  for(unsigned NumProbes = 1; NumProbes < 9; ++NumProbes) {
     --GreaterIndex;
     assert(GreaterIndex < LocalSLocEntryTable.size());
     if (LocalSLocEntryTable[GreaterIndex].getOffset() <= SLocOffset) {
-      FileID Res = FileID::get(int(GreaterIndex));
+      FileID Res = FileID::get(GreaterIndex);
       // Remember it.  We have good locality across FileID lookups.
       LastFileIDLookup = Res;
-      NumLinearScans += NumProbes+1;
+      NumLinearScans += NumProbes;
       return Res;
     }
-    if (++NumProbes == 8)
-      break;
   }
 
-  NumProbes = 0;
   while (true) {
-    unsigned MiddleIndex = (GreaterIndex-LessIndex)/2+LessIndex;
+    int MiddleIndex = (GreaterIndex+LessIndex)/2;
     SourceLocation::UIntTy MidOffset =
         getLocalSLocEntry(MiddleIndex).getOffset();
 
-    ++NumProbes;
+    ++NumBinaryProbes;
 
     // If the offset of the midpoint is too large, chop the high side of the
     // range to the midpoint.
@@ -835,13 +832,12 @@ FileID SourceManager::getFileIDLocal(SourceLocation::UIntTy SLocOffset) const {
     }
 
     // If the middle index contains the value, succeed and return.
-    if (MiddleIndex + 1 == LocalSLocEntryTable.size() ||
+    if (MiddleIndex + 1 == LocalSLocEntryTableSize ||
         SLocOffset < getLocalSLocEntry(MiddleIndex + 1).getOffset()) {
       FileID Res = FileID::get(MiddleIndex);
 
       // Remember it.  We have good locality across FileID lookups.
       LastFileIDLookup = Res;
-      NumBinaryProbes += NumProbes;
       return Res;
     }
 
