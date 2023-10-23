@@ -1097,7 +1097,7 @@ static void ComputeDATE_TIME(SourceLocation &DATELoc, SourceLocation &TIMELoc,
     TM = std::localtime(&TT);
   }
 
-  static const char * const Months[] = {
+  static constexpr const char Months[][4] = {
     "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
   };
 
@@ -1105,7 +1105,7 @@ static void ComputeDATE_TIME(SourceLocation &DATELoc, SourceLocation &TIMELoc,
     SmallString<32> TmpBuffer;
     llvm::raw_svector_ostream TmpStream(TmpBuffer);
     if (TM)
-      TmpStream << llvm::format("\"%s %2d %4d\"", Months[TM->tm_mon],
+      TmpStream << llvm::format("\"%s %2d %4d\"", (const char*)Months[TM->tm_mon],
                                 TM->tm_mday, TM->tm_year + 1900);
     else
       TmpStream << "??? ?? ????";
