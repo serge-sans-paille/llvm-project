@@ -3681,645 +3681,646 @@ LexStart:
   if (!isVerticalWhitespace(Char))
     NewLinePtr = nullptr;
 
-  switch (Char) {
-  case 0:  // Null.
-    // Found end of file?
-    if (CurPtr-1 == BufferEnd)
-      return LexEndOfFile(Result, CurPtr-1);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu-label-as-value"
 
-    // Check if we are performing code completion.
-    if (isCodeCompletionPoint(CurPtr-1)) {
-      // Return the code-completion token.
-      Result.startToken();
-      FormTokenWithChars(Result, CurPtr, tok::code_completion);
-      return true;
-    }
+  static constexpr const void *JumpTable[128] = {
+      // NUL, SOH, STX, ETX
+      &&NullLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
 
+      // EOT, ENQ, ACK, BEL
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+
+      // BS, TAB, LF, VT
+      &&DefaultLbl,
+      &&SkipHorizontalWhitespace,
+      &&NLLbl,
+      &&SkipHorizontalWhitespace,
+
+      // FF, CR, SO, SI
+      &&DefaultLbl,
+      &&CRLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+
+      // DLE, DC1, DC2, DC3
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+
+      // DC4, NAK, SYN, ETB
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+
+      // CAN, EM, SUB, ESC
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&CtrlZLbl,
+      &&DefaultLbl,
+
+      // FS, GS, RS, US
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+      &&DefaultLbl,
+
+      // Space, !, ", #
+      &&SkipHorizontalWhitespace,
+      &&ExclaimLbl,
+      &&StrLbl,
+      &&HashLbl,
+
+      // $, %, &, '
+      &&DollarLbl,
+      &&PercentLbl,
+      &&AmpLbl,
+      &&CharLbl,
+
+      // (, ), *, +
+      &&LParLbl,
+      &&RParLbl,
+      &&StarLbl,
+      &&PlusLbl,
+
+      // ,, -, ., /
+      &&CommaLbl,
+      &&MinusLbl,
+      &&DotLbl,
+      &&SlashLbl,
+
+      // 0, 1, 2, 3
+      &&IntegerLbl,
+      &&IntegerLbl,
+      &&IntegerLbl,
+      &&IntegerLbl,
+
+      // 4, 5, 6, 7
+      &&IntegerLbl,
+      &&IntegerLbl,
+      &&IntegerLbl,
+      &&IntegerLbl,
+
+      // 8, 9, :, ;
+      &&IntegerLbl,
+      &&IntegerLbl,
+      &&ColonColonLbl,
+      &&SemiLbl,
+
+      // <, =, >, ?
+      &&LTLbl,
+      &&EqualLbl,
+      &&GTLbl,
+      &&QuestionLbl,
+
+      // @, A, B, C
+      &&AtLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // D, E, F, G
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // H, I, J, K
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // L, M, N, O
+      &&CapitalLLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // P, Q, R, S
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&CapitalRLbl,
+      &&IdentifierLbl,
+
+      // T, U, V, W
+      &&IdentifierLbl,
+      &&CapitalULbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // X, Y, Z, [
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&LHookLbl,
+
+      // \, ], ^, _
+      &&BackSlashLbl,
+      &&RHookLbl,
+      &&CaretLbl,
+      &&IdentifierLbl,
+
+      // `, a, b, c
+      &&DefaultLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // d, e, f, g
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // h, i, j, k
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // l, m, n, o
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // p, q, r, s
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // t, u, v, w
+      &&IdentifierLbl,
+      &&LowerULbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+
+      // x, y, z, {
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&IdentifierLbl,
+      &&LBraceLbl,
+
+      // |, }, ~, DEL
+      &&PipeLbl,
+      &&RBraceLbl,
+      &&TildeLbl,
+      &&DefaultLbl,
+  };
+
+  if(LLVM_UNLIKELY(((unsigned)Char > 127)))
+      goto DefaultLbl;
+
+  goto *JumpTable[(unsigned)Char];
+#pragma clang diagnostic pop
+
+NullLbl: // Null.
+  // Found end of file?
+  if (CurPtr - 1 == BufferEnd)
+    return LexEndOfFile(Result, CurPtr - 1);
+
+  // Check if we are performing code completion.
+  if (isCodeCompletionPoint(CurPtr - 1)) {
+    // Return the code-completion token.
+    Result.startToken();
+    FormTokenWithChars(Result, CurPtr, tok::code_completion);
+    return true;
+  }
+
+  if (!isLexingRawMode())
+    Diag(CurPtr - 1, diag::null_in_file);
+  Result.setFlag(Token::LeadingSpace);
+  if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
+    return true; // KeepWhitespaceMode
+
+  // We know the lexer hasn't changed, so just try again with this lexer.
+  // (We manually eliminate the tail call to avoid recursion.)
+  goto LexNextToken;
+
+CtrlZLbl: // DOS & CP/M EOF: "^Z".
+  // If we're in Microsoft extensions mode, treat this as end of file.
+  if (LangOpts.MicrosoftExt) {
     if (!isLexingRawMode())
-      Diag(CurPtr-1, diag::null_in_file);
-    Result.setFlag(Token::LeadingSpace);
-    if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
-      return true; // KeepWhitespaceMode
+      Diag(CurPtr - 1, diag::ext_ctrl_z_eof_microsoft);
+    return LexEndOfFile(Result, CurPtr - 1);
+  }
 
-    // We know the lexer hasn't changed, so just try again with this lexer.
-    // (We manually eliminate the tail call to avoid recursion.)
-    goto LexNextToken;
+  // If Microsoft extensions are disabled, this is just random garbage.
+  Kind = tok::unknown;
+  goto ReadToken;
 
-  case 26:  // DOS & CP/M EOF: "^Z".
-    // If we're in Microsoft extensions mode, treat this as end of file.
-    if (LangOpts.MicrosoftExt) {
-      if (!isLexingRawMode())
-        Diag(CurPtr-1, diag::ext_ctrl_z_eof_microsoft);
-      return LexEndOfFile(Result, CurPtr-1);
-    }
+CRLbl:
+  if (CurPtr[0] == '\n')
+    (void)getAndAdvanceChar(CurPtr, Result);
+  // fallthrough
+NLLbl:
+  // If we are inside a preprocessor directive and we see the end of line,
+  // we know we are done with the directive, so return an EOD token.
+  if (ParsingPreprocessorDirective) {
+    // Done parsing the "line".
+    ParsingPreprocessorDirective = false;
 
-    // If Microsoft extensions are disabled, this is just random garbage.
-    Kind = tok::unknown;
-    break;
+    // Restore comment saving mode, in case it was disabled for directive.
+    if (PP)
+      resetExtendedTokenMode();
 
-  case '\r':
-    if (CurPtr[0] == '\n')
-      (void)getAndAdvanceChar(CurPtr, Result);
-    [[fallthrough]];
-  case '\n':
-    // If we are inside a preprocessor directive and we see the end of line,
-    // we know we are done with the directive, so return an EOD token.
-    if (ParsingPreprocessorDirective) {
-      // Done parsing the "line".
-      ParsingPreprocessorDirective = false;
+    // Since we consumed a newline, we are back at the start of a line.
+    IsAtStartOfLine = true;
+    IsAtPhysicalStartOfLine = true;
+    NewLinePtr = CurPtr - 1;
 
-      // Restore comment saving mode, in case it was disabled for directive.
-      if (PP)
-        resetExtendedTokenMode();
+    Kind = tok::eod;
+    goto ReadToken;
+  }
 
-      // Since we consumed a newline, we are back at the start of a line.
-      IsAtStartOfLine = true;
-      IsAtPhysicalStartOfLine = true;
-      NewLinePtr = CurPtr - 1;
+  // No leading whitespace seen so far.
+  Result.clearFlag(Token::LeadingSpace);
 
-      Kind = tok::eod;
-      break;
-    }
+  if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
+    return true; // KeepWhitespaceMode
 
-    // No leading whitespace seen so far.
-    Result.clearFlag(Token::LeadingSpace);
+  // We only saw whitespace, so just try again with this lexer.
+  // (We manually eliminate the tail call to avoid recursion.)
+  goto LexNextToken;
 
-    if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
-      return true; // KeepWhitespaceMode
+SkipHorizontalWhitespace:
+  Result.setFlag(Token::LeadingSpace);
+  if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
+    return true; // KeepWhitespaceMode
 
-    // We only saw whitespace, so just try again with this lexer.
-    // (We manually eliminate the tail call to avoid recursion.)
-    goto LexNextToken;
-  case ' ':
-  case '\t':
-  case '\f':
-  case '\v':
-  SkipHorizontalWhitespace:
-    Result.setFlag(Token::LeadingSpace);
-    if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
-      return true; // KeepWhitespaceMode
+SkipIgnoredUnits:
+  CurPtr = BufferPtr;
 
-  SkipIgnoredUnits:
-    CurPtr = BufferPtr;
+  // If the next token is obviously a // or /* */ comment, skip it efficiently
+  // too (without going through the big switch stmt).
+  if (CurPtr[0] == '/' && CurPtr[1] == '/' && !inKeepCommentMode() &&
+      LineComment && (LangOpts.CPlusPlus || !LangOpts.TraditionalCPP)) {
+    if (SkipLineComment(Result, CurPtr + 2, TokAtPhysicalStartOfLine))
+      return true; // There is a token to return.
+    goto SkipIgnoredUnits;
+  } else if (CurPtr[0] == '/' && CurPtr[1] == '*' && !inKeepCommentMode()) {
+    if (SkipBlockComment(Result, CurPtr + 2, TokAtPhysicalStartOfLine))
+      return true; // There is a token to return.
+    goto SkipIgnoredUnits;
+  } else if (isHorizontalWhitespace(*CurPtr)) {
+    goto SkipHorizontalWhitespace;
+  }
+  // We only saw whitespace, so just try again with this lexer.
+  // (We manually eliminate the tail call to avoid recursion.)
+  goto LexNextToken;
 
-    // If the next token is obviously a // or /* */ comment, skip it efficiently
-    // too (without going through the big switch stmt).
-    if (CurPtr[0] == '/' && CurPtr[1] == '/' && !inKeepCommentMode() &&
-        LineComment && (LangOpts.CPlusPlus || !LangOpts.TraditionalCPP)) {
-      if (SkipLineComment(Result, CurPtr+2, TokAtPhysicalStartOfLine))
-        return true; // There is a token to return.
-      goto SkipIgnoredUnits;
-    } else if (CurPtr[0] == '/' && CurPtr[1] == '*' && !inKeepCommentMode()) {
-      if (SkipBlockComment(Result, CurPtr+2, TokAtPhysicalStartOfLine))
-        return true; // There is a token to return.
-      goto SkipIgnoredUnits;
-    } else if (isHorizontalWhitespace(*CurPtr)) {
-      goto SkipHorizontalWhitespace;
-    }
-    // We only saw whitespace, so just try again with this lexer.
-    // (We manually eliminate the tail call to avoid recursion.)
-    goto LexNextToken;
+// C99 6.4.4.1: Integer Constants.
+// C99 6.4.4.2: Floating Constants.
+IntegerLbl:
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+  return LexNumericConstant(Result, CurPtr);
 
-  // C99 6.4.4.1: Integer Constants.
-  // C99 6.4.4.2: Floating Constants.
-  case '0': case '1': case '2': case '3': case '4':
-  case '5': case '6': case '7': case '8': case '9':
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
-    return LexNumericConstant(Result, CurPtr);
+// Identifier (e.g., uber), or
+// UTF-8 (C23/C++17) or UTF-16 (C11/C++11) character literal, or
+// UTF-8 or UTF-16 string literal (C11/C++11).
+LowerULbl:
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
 
-  // Identifier (e.g., uber), or
-  // UTF-8 (C23/C++17) or UTF-16 (C11/C++11) character literal, or
-  // UTF-8 or UTF-16 string literal (C11/C++11).
-  case 'u':
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
-
-    if (LangOpts.CPlusPlus11 || LangOpts.C11) {
-      Char = getCharAndSize(CurPtr, SizeTmp);
-
-      // UTF-16 string literal
-      if (Char == '"')
-        return LexStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                                tok::utf16_string_literal);
-
-      // UTF-16 character constant
-      if (Char == '\'')
-        return LexCharConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                               tok::utf16_char_constant);
-
-      // UTF-16 raw string literal
-      if (Char == 'R' && LangOpts.CPlusPlus11 &&
-          getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
-        return LexRawStringLiteral(Result,
-                               ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                           SizeTmp2, Result),
-                               tok::utf16_string_literal);
-
-      if (Char == '8') {
-        char Char2 = getCharAndSize(CurPtr + SizeTmp, SizeTmp2);
-
-        // UTF-8 string literal
-        if (Char2 == '"')
-          return LexStringLiteral(Result,
-                               ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                           SizeTmp2, Result),
-                               tok::utf8_string_literal);
-        if (Char2 == '\'' && (LangOpts.CPlusPlus17 || LangOpts.C23))
-          return LexCharConstant(
-              Result, ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                  SizeTmp2, Result),
-              tok::utf8_char_constant);
-
-        if (Char2 == 'R' && LangOpts.CPlusPlus11) {
-          unsigned SizeTmp3;
-          char Char3 = getCharAndSize(CurPtr + SizeTmp + SizeTmp2, SizeTmp3);
-          // UTF-8 raw string literal
-          if (Char3 == '"') {
-            return LexRawStringLiteral(Result,
-                   ConsumeChar(ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                           SizeTmp2, Result),
-                               SizeTmp3, Result),
-                   tok::utf8_string_literal);
-          }
-        }
-      }
-    }
-
-    // treat u like the start of an identifier.
-    return LexIdentifierContinue(Result, CurPtr);
-
-  case 'U': // Identifier (e.g. Uber) or C11/C++11 UTF-32 string literal
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
-
-    if (LangOpts.CPlusPlus11 || LangOpts.C11) {
-      Char = getCharAndSize(CurPtr, SizeTmp);
-
-      // UTF-32 string literal
-      if (Char == '"')
-        return LexStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                                tok::utf32_string_literal);
-
-      // UTF-32 character constant
-      if (Char == '\'')
-        return LexCharConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                               tok::utf32_char_constant);
-
-      // UTF-32 raw string literal
-      if (Char == 'R' && LangOpts.CPlusPlus11 &&
-          getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
-        return LexRawStringLiteral(Result,
-                               ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                           SizeTmp2, Result),
-                               tok::utf32_string_literal);
-    }
-
-    // treat U like the start of an identifier.
-    return LexIdentifierContinue(Result, CurPtr);
-
-  case 'R': // Identifier or C++0x raw string literal
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
-
-    if (LangOpts.CPlusPlus11) {
-      Char = getCharAndSize(CurPtr, SizeTmp);
-
-      if (Char == '"')
-        return LexRawStringLiteral(Result,
-                                   ConsumeChar(CurPtr, SizeTmp, Result),
-                                   tok::string_literal);
-    }
-
-    // treat R like the start of an identifier.
-    return LexIdentifierContinue(Result, CurPtr);
-
-  case 'L':   // Identifier (Loony) or wide literal (L'x' or L"xyz").
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
+  if (LangOpts.CPlusPlus11 || LangOpts.C11) {
     Char = getCharAndSize(CurPtr, SizeTmp);
 
-    // Wide string literal.
+    // UTF-16 string literal
     if (Char == '"')
       return LexStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                              tok::wide_string_literal);
+                              tok::utf16_string_literal);
 
-    // Wide raw string literal.
-    if (LangOpts.CPlusPlus11 && Char == 'R' &&
-        getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
-      return LexRawStringLiteral(Result,
-                               ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                                           SizeTmp2, Result),
-                               tok::wide_string_literal);
-
-    // Wide character constant.
+    // UTF-16 character constant
     if (Char == '\'')
       return LexCharConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                             tok::wide_char_constant);
-    // FALL THROUGH, treating L like the start of an identifier.
-    [[fallthrough]];
+                             tok::utf16_char_constant);
 
-  // C99 6.4.2: Identifiers.
-  case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
-  case 'H': case 'I': case 'J': case 'K':    /*'L'*/case 'M': case 'N':
-  case 'O': case 'P': case 'Q':    /*'R'*/case 'S': case 'T':    /*'U'*/
-  case 'V': case 'W': case 'X': case 'Y': case 'Z':
-  case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
-  case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
-  case 'o': case 'p': case 'q': case 'r': case 's': case 't':    /*'u'*/
-  case 'v': case 'w': case 'x': case 'y': case 'z':
-  case '_':
+    // UTF-16 raw string literal
+    if (Char == 'R' && LangOpts.CPlusPlus11 &&
+        getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
+      return LexRawStringLiteral(
+          Result,
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result),
+          tok::utf16_string_literal);
+
+    if (Char == '8') {
+      char Char2 = getCharAndSize(CurPtr + SizeTmp, SizeTmp2);
+
+      // UTF-8 string literal
+      if (Char2 == '"')
+        return LexStringLiteral(
+            Result,
+            ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result),
+            tok::utf8_string_literal);
+      if (Char2 == '\'' && (LangOpts.CPlusPlus17 || LangOpts.C23))
+        return LexCharConstant(
+            Result,
+            ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result),
+            tok::utf8_char_constant);
+
+      if (Char2 == 'R' && LangOpts.CPlusPlus11) {
+        unsigned SizeTmp3;
+        char Char3 = getCharAndSize(CurPtr + SizeTmp + SizeTmp2, SizeTmp3);
+        // UTF-8 raw string literal
+        if (Char3 == '"') {
+          return LexRawStringLiteral(
+              Result,
+              ConsumeChar(ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
+                                      SizeTmp2, Result),
+                          SizeTmp3, Result),
+              tok::utf8_string_literal);
+        }
+      }
+    }
+  }
+
+  // treat u like the start of an identifier.
+  return LexIdentifierContinue(Result, CurPtr);
+
+CapitalULbl: // Identifier (e.g. Uber) or C11/C++11 UTF-32 string literal
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+
+  if (LangOpts.CPlusPlus11 || LangOpts.C11) {
+    Char = getCharAndSize(CurPtr, SizeTmp);
+
+    // UTF-32 string literal
+    if (Char == '"')
+      return LexStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                              tok::utf32_string_literal);
+
+    // UTF-32 character constant
+    if (Char == '\'')
+      return LexCharConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                             tok::utf32_char_constant);
+
+    // UTF-32 raw string literal
+    if (Char == 'R' && LangOpts.CPlusPlus11 &&
+        getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
+      return LexRawStringLiteral(
+          Result,
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result),
+          tok::utf32_string_literal);
+  }
+
+  // treat U like the start of an identifier.
+  return LexIdentifierContinue(Result, CurPtr);
+
+CapitalRLbl: // Identifier or C++0x raw string literal
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+
+  if (LangOpts.CPlusPlus11) {
+    Char = getCharAndSize(CurPtr, SizeTmp);
+
+    if (Char == '"')
+      return LexRawStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                                 tok::string_literal);
+  }
+
+  // treat R like the start of an identifier.
+  return LexIdentifierContinue(Result, CurPtr);
+
+CapitalLLbl: // Identifier (Loony) or wide literal (L'x' or L"xyz").
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+  Char = getCharAndSize(CurPtr, SizeTmp);
+
+  // Wide string literal.
+  if (Char == '"')
+    return LexStringLiteral(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                            tok::wide_string_literal);
+
+  // Wide raw string literal.
+  if (LangOpts.CPlusPlus11 && Char == 'R' &&
+      getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '"')
+    return LexRawStringLiteral(
+        Result,
+        ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result),
+        tok::wide_string_literal);
+
+  // Wide character constant.
+  if (Char == '\'')
+    return LexCharConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                           tok::wide_char_constant);
+  // FALL THROUGH, treating L like the start of an identifier.
+  //[[fallthrough]];
+
+// C99 6.4.2: Identifiers.
+IdentifierLbl:
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+  return LexIdentifierContinue(Result, CurPtr);
+
+DollarLbl: // $ in identifiers.
+  if (LangOpts.DollarIdents) {
+    if (!isLexingRawMode())
+      Diag(CurPtr - 1, diag::ext_dollar_in_identifier);
     // Notify MIOpt that we read a non-whitespace/non-comment token.
     MIOpt.ReadToken();
     return LexIdentifierContinue(Result, CurPtr);
+  }
 
-  case '$':   // $ in identifiers.
-    if (LangOpts.DollarIdents) {
-      if (!isLexingRawMode())
-        Diag(CurPtr-1, diag::ext_dollar_in_identifier);
-      // Notify MIOpt that we read a non-whitespace/non-comment token.
-      MIOpt.ReadToken();
-      return LexIdentifierContinue(Result, CurPtr);
-    }
+  Kind = tok::unknown;
+  goto ReadToken;
 
-    Kind = tok::unknown;
-    break;
+// C99 6.4.4: Character Constants.
+CharLbl:
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+  return LexCharConstant(Result, CurPtr, tok::char_constant);
 
-  // C99 6.4.4: Character Constants.
-  case '\'':
+// C99 6.4.5: String Literals.
+StrLbl:
+  // Notify MIOpt that we read a non-whitespace/non-comment token.
+  MIOpt.ReadToken();
+  return LexStringLiteral(
+      Result, CurPtr, ParsingFilename ? tok::header_name : tok::string_literal);
+
+// C99 6.4.6: Punctuators.
+QuestionLbl:
+  Kind = tok::question;
+  goto ReadToken;
+LHookLbl:
+  Kind = tok::l_square;
+  goto ReadToken;
+RHookLbl:
+  Kind = tok::r_square;
+  goto ReadToken;
+LParLbl:
+  Kind = tok::l_paren;
+  goto ReadToken;
+RParLbl:
+  Kind = tok::r_paren;
+  goto ReadToken;
+LBraceLbl:
+  Kind = tok::l_brace;
+  goto ReadToken;
+RBraceLbl:
+  Kind = tok::r_brace;
+  goto ReadToken;
+DotLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char >= '0' && Char <= '9') {
     // Notify MIOpt that we read a non-whitespace/non-comment token.
     MIOpt.ReadToken();
-    return LexCharConstant(Result, CurPtr, tok::char_constant);
 
-  // C99 6.4.5: String Literals.
-  case '"':
-    // Notify MIOpt that we read a non-whitespace/non-comment token.
-    MIOpt.ReadToken();
-    return LexStringLiteral(Result, CurPtr,
-                            ParsingFilename ? tok::header_name
-                                            : tok::string_literal);
+    return LexNumericConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result));
+  } else if (LangOpts.CPlusPlus && Char == '*') {
+    Kind = tok::periodstar;
+    CurPtr += SizeTmp;
+  } else if (Char == '.' && getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '.') {
+    Kind = tok::ellipsis;
+    CurPtr =
+        ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+  } else {
+    Kind = tok::period;
+  }
+  goto ReadToken;
+AmpLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '&') {
+    Kind = tok::ampamp;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (Char == '=') {
+    Kind = tok::ampequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::amp;
+  }
+  goto ReadToken;
+StarLbl:
+  if (getCharAndSize(CurPtr, SizeTmp) == '=') {
+    Kind = tok::starequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::star;
+  }
+  goto ReadToken;
+PlusLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '+') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::plusplus;
+  } else if (Char == '=') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::plusequal;
+  } else {
+    Kind = tok::plus;
+  }
+  goto ReadToken;
+MinusLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '-') { // --
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::minusminus;
+  } else if (Char == '>' && LangOpts.CPlusPlus &&
+             getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == '*') { // C++ ->*
+    CurPtr =
+        ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+    Kind = tok::arrowstar;
+  } else if (Char == '>') { // ->
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::arrow;
+  } else if (Char == '=') { // -=
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::minusequal;
+  } else {
+    Kind = tok::minus;
+  }
+  goto ReadToken;
+TildeLbl:
+  Kind = tok::tilde;
+  goto ReadToken;
+ExclaimLbl:
+  if (getCharAndSize(CurPtr, SizeTmp) == '=') {
+    Kind = tok::exclaimequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::exclaim;
+  }
+  goto ReadToken;
 
-  // C99 6.4.6: Punctuators.
-  case '?':
-    Kind = tok::question;
-    break;
-  case '[':
-    Kind = tok::l_square;
-    break;
-  case ']':
-    Kind = tok::r_square;
-    break;
-  case '(':
-    Kind = tok::l_paren;
-    break;
-  case ')':
-    Kind = tok::r_paren;
-    break;
-  case '{':
-    Kind = tok::l_brace;
-    break;
-  case '}':
-    Kind = tok::r_brace;
-    break;
-  case '.':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char >= '0' && Char <= '9') {
-      // Notify MIOpt that we read a non-whitespace/non-comment token.
-      MIOpt.ReadToken();
+SlashLbl:
+  // 6.4.9: Comments
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '/') { // Line comment.
+    // Even if Line comments are disabled (e.g. in C89 mode), we generally
+    // want to lex this as a comment.  There is one problem with this though,
+    // that in one particular corner case, this can change the behavior of the
+    // resultant program.  For example, In  "foo //**/ bar", C89 would lex
+    // this as "foo / bar" and languages with Line comments would lex it as
+    // "foo".  Check to see if the character after the second slash is a '*'.
+    // If so, we will lex that as a "/" instead of the start of a comment.
+    // However, we never do this if we are just preprocessing.
+    bool TreatAsComment =
+        LineComment && (LangOpts.CPlusPlus || !LangOpts.TraditionalCPP);
+    if (!TreatAsComment)
+      if (!(PP && PP->isPreprocessedOutput()))
+        TreatAsComment = getCharAndSize(CurPtr + SizeTmp, SizeTmp2) != '*';
 
-      return LexNumericConstant(Result, ConsumeChar(CurPtr, SizeTmp, Result));
-    } else if (LangOpts.CPlusPlus && Char == '*') {
-      Kind = tok::periodstar;
-      CurPtr += SizeTmp;
-    } else if (Char == '.' &&
-               getCharAndSize(CurPtr+SizeTmp, SizeTmp2) == '.') {
-      Kind = tok::ellipsis;
-      CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                           SizeTmp2, Result);
-    } else {
-      Kind = tok::period;
-    }
-    break;
-  case '&':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '&') {
-      Kind = tok::ampamp;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (Char == '=') {
-      Kind = tok::ampequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::amp;
-    }
-    break;
-  case '*':
-    if (getCharAndSize(CurPtr, SizeTmp) == '=') {
-      Kind = tok::starequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::star;
-    }
-    break;
-  case '+':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '+') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::plusplus;
-    } else if (Char == '=') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::plusequal;
-    } else {
-      Kind = tok::plus;
-    }
-    break;
-  case '-':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '-') {      // --
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::minusminus;
-    } else if (Char == '>' && LangOpts.CPlusPlus &&
-               getCharAndSize(CurPtr+SizeTmp, SizeTmp2) == '*') {  // C++ ->*
-      CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                           SizeTmp2, Result);
-      Kind = tok::arrowstar;
-    } else if (Char == '>') {   // ->
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::arrow;
-    } else if (Char == '=') {   // -=
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::minusequal;
-    } else {
-      Kind = tok::minus;
-    }
-    break;
-  case '~':
-    Kind = tok::tilde;
-    break;
-  case '!':
-    if (getCharAndSize(CurPtr, SizeTmp) == '=') {
-      Kind = tok::exclaimequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::exclaim;
-    }
-    break;
-  case '/':
-    // 6.4.9: Comments
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '/') {         // Line comment.
-      // Even if Line comments are disabled (e.g. in C89 mode), we generally
-      // want to lex this as a comment.  There is one problem with this though,
-      // that in one particular corner case, this can change the behavior of the
-      // resultant program.  For example, In  "foo //**/ bar", C89 would lex
-      // this as "foo / bar" and languages with Line comments would lex it as
-      // "foo".  Check to see if the character after the second slash is a '*'.
-      // If so, we will lex that as a "/" instead of the start of a comment.
-      // However, we never do this if we are just preprocessing.
-      bool TreatAsComment =
-          LineComment && (LangOpts.CPlusPlus || !LangOpts.TraditionalCPP);
-      if (!TreatAsComment)
-        if (!(PP && PP->isPreprocessedOutput()))
-          TreatAsComment = getCharAndSize(CurPtr+SizeTmp, SizeTmp2) != '*';
-
-      if (TreatAsComment) {
-        if (SkipLineComment(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                            TokAtPhysicalStartOfLine))
-          return true; // There is a token to return.
-
-        // It is common for the tokens immediately after a // comment to be
-        // whitespace (indentation for the next line).  Instead of going through
-        // the big switch, handle it efficiently now.
-        goto SkipIgnoredUnits;
-      }
-    }
-
-    if (Char == '*') {  // /**/ comment.
-      if (SkipBlockComment(Result, ConsumeChar(CurPtr, SizeTmp, Result),
-                           TokAtPhysicalStartOfLine))
+    if (TreatAsComment) {
+      if (SkipLineComment(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                          TokAtPhysicalStartOfLine))
         return true; // There is a token to return.
 
-      // We only saw whitespace, so just try again with this lexer.
-      // (We manually eliminate the tail call to avoid recursion.)
-      goto LexNextToken;
+      // It is common for the tokens immediately after a // comment to be
+      // whitespace (indentation for the next line).  Instead of going through
+      // the big switch, handle it efficiently now.
+      goto SkipIgnoredUnits;
     }
+  }
 
-    if (Char == '=') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::slashequal;
-    } else {
-      Kind = tok::slash;
-    }
-    break;
-  case '%':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '=') {
-      Kind = tok::percentequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (LangOpts.Digraphs && Char == '>') {
-      Kind = tok::r_brace;                             // '%>' -> '}'
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (LangOpts.Digraphs && Char == ':') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Char = getCharAndSize(CurPtr, SizeTmp);
-      if (Char == '%' && getCharAndSize(CurPtr+SizeTmp, SizeTmp2) == ':') {
-        Kind = tok::hashhash;                          // '%:%:' -> '##'
-        CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                             SizeTmp2, Result);
-      } else if (Char == '@' && LangOpts.MicrosoftExt) {// %:@ -> #@ -> Charize
-        CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-        if (!isLexingRawMode())
-          Diag(BufferPtr, diag::ext_charize_microsoft);
-        Kind = tok::hashat;
-      } else {                                         // '%:' -> '#'
-        // We parsed a # character.  If this occurs at the start of the line,
-        // it's actually the start of a preprocessing directive.  Callback to
-        // the preprocessor to handle it.
-        // TODO: -fpreprocessed mode??
-        if (TokAtPhysicalStartOfLine && !LexingRawMode && !Is_PragmaLexer)
-          goto HandleDirective;
+  if (Char == '*') { // /**/ comment.
+    if (SkipBlockComment(Result, ConsumeChar(CurPtr, SizeTmp, Result),
+                         TokAtPhysicalStartOfLine))
+      return true; // There is a token to return.
 
-        Kind = tok::hash;
-      }
-    } else {
-      Kind = tok::percent;
-    }
-    break;
-  case '<':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (ParsingFilename) {
-      return LexAngledStringLiteral(Result, CurPtr);
-    } else if (Char == '<') {
-      char After = getCharAndSize(CurPtr+SizeTmp, SizeTmp2);
-      if (After == '=') {
-        Kind = tok::lesslessequal;
-        CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                             SizeTmp2, Result);
-      } else if (After == '<' && IsStartOfConflictMarker(CurPtr-1)) {
-        // If this is actually a '<<<<<<<' version control conflict marker,
-        // recognize it as such and recover nicely.
-        goto LexNextToken;
-      } else if (After == '<' && HandleEndOfConflictMarker(CurPtr-1)) {
-        // If this is '<<<<' and we're in a Perforce-style conflict marker,
-        // ignore it.
-        goto LexNextToken;
-      } else if (LangOpts.CUDA && After == '<') {
-        Kind = tok::lesslessless;
-        CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                             SizeTmp2, Result);
-      } else {
-        CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-        Kind = tok::lessless;
-      }
-    } else if (Char == '=') {
-      char After = getCharAndSize(CurPtr+SizeTmp, SizeTmp2);
-      if (After == '>') {
-        if (LangOpts.CPlusPlus20) {
-          if (!isLexingRawMode())
-            Diag(BufferPtr, diag::warn_cxx17_compat_spaceship);
-          CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                               SizeTmp2, Result);
-          Kind = tok::spaceship;
-          break;
-        }
-        // Suggest adding a space between the '<=' and the '>' to avoid a
-        // change in semantics if this turns up in C++ <=17 mode.
-        if (LangOpts.CPlusPlus && !isLexingRawMode()) {
-          Diag(BufferPtr, diag::warn_cxx20_compat_spaceship)
-            << FixItHint::CreateInsertion(
-                   getSourceLocation(CurPtr + SizeTmp, SizeTmp2), " ");
-        }
-      }
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::lessequal;
-    } else if (LangOpts.Digraphs && Char == ':') {     // '<:' -> '['
-      if (LangOpts.CPlusPlus11 &&
-          getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == ':') {
-        // C++0x [lex.pptoken]p3:
-        //  Otherwise, if the next three characters are <:: and the subsequent
-        //  character is neither : nor >, the < is treated as a preprocessor
-        //  token by itself and not as the first character of the alternative
-        //  token <:.
-        unsigned SizeTmp3;
-        char After = getCharAndSize(CurPtr + SizeTmp + SizeTmp2, SizeTmp3);
-        if (After != ':' && After != '>') {
-          Kind = tok::less;
-          if (!isLexingRawMode())
-            Diag(BufferPtr, diag::warn_cxx98_compat_less_colon_colon);
-          break;
-        }
-      }
+    // We only saw whitespace, so just try again with this lexer.
+    // (We manually eliminate the tail call to avoid recursion.)
+    goto LexNextToken;
+  }
 
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::l_square;
-    } else if (LangOpts.Digraphs && Char == '%') {     // '<%' -> '{'
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::l_brace;
-    } else if (Char == '#' && /*Not a trigraph*/ SizeTmp == 1 &&
-               lexEditorPlaceholder(Result, CurPtr)) {
-      return true;
-    } else {
-      Kind = tok::less;
-    }
-    break;
-  case '>':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '=') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::greaterequal;
-    } else if (Char == '>') {
-      char After = getCharAndSize(CurPtr+SizeTmp, SizeTmp2);
-      if (After == '=') {
-        CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                             SizeTmp2, Result);
-        Kind = tok::greatergreaterequal;
-      } else if (After == '>' && IsStartOfConflictMarker(CurPtr-1)) {
-        // If this is actually a '>>>>' conflict marker, recognize it as such
-        // and recover nicely.
-        goto LexNextToken;
-      } else if (After == '>' && HandleEndOfConflictMarker(CurPtr-1)) {
-        // If this is '>>>>>>>' and we're in a conflict marker, ignore it.
-        goto LexNextToken;
-      } else if (LangOpts.CUDA && After == '>') {
-        Kind = tok::greatergreatergreater;
-        CurPtr = ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result),
-                             SizeTmp2, Result);
-      } else {
-        CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-        Kind = tok::greatergreater;
-      }
-    } else {
-      Kind = tok::greater;
-    }
-    break;
-  case '^':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '=') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::caretequal;
-    } else if (LangOpts.OpenCL && Char == '^') {
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-      Kind = tok::caretcaret;
-    } else {
-      Kind = tok::caret;
-    }
-    break;
-  case '|':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '=') {
-      Kind = tok::pipeequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (Char == '|') {
-      // If this is '|||||||' and we're in a conflict marker, ignore it.
-      if (CurPtr[1] == '|' && HandleEndOfConflictMarker(CurPtr-1))
-        goto LexNextToken;
-      Kind = tok::pipepipe;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::pipe;
-    }
-    break;
-  case ':':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (LangOpts.Digraphs && Char == '>') {
-      Kind = tok::r_square; // ':>' -> ']'
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (Char == ':') {
-      Kind = tok::coloncolon;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::colon;
-    }
-    break;
-  case ';':
-    Kind = tok::semi;
-    break;
-  case '=':
-    Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '=') {
-      // If this is '====' and we're in a conflict marker, ignore it.
-      if (CurPtr[1] == '=' && HandleEndOfConflictMarker(CurPtr-1))
-        goto LexNextToken;
+  if (Char == '=') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::slashequal;
+  } else {
+    Kind = tok::slash;
+  }
+  goto ReadToken;
 
-      Kind = tok::equalequal;
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
-      Kind = tok::equal;
-    }
-    break;
-  case ',':
-    Kind = tok::comma;
-    break;
-  case '#':
+PercentLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '=') {
+    Kind = tok::percentequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (LangOpts.Digraphs && Char == '>') {
+    Kind = tok::r_brace; // '%>' -> '}'
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (LangOpts.Digraphs && Char == ':') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
     Char = getCharAndSize(CurPtr, SizeTmp);
-    if (Char == '#') {
-      Kind = tok::hashhash;
+    if (Char == '%' && getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == ':') {
+      Kind = tok::hashhash; // '%:%:' -> '##'
+      CurPtr =
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+    } else if (Char == '@' && LangOpts.MicrosoftExt) { // %:@ -> #@ -> Charize
       CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else if (Char == '@' && LangOpts.MicrosoftExt) {  // #@ -> Charize
-      Kind = tok::hashat;
       if (!isLexingRawMode())
         Diag(BufferPtr, diag::ext_charize_microsoft);
-      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
-    } else {
+      Kind = tok::hashat;
+    } else { // '%:' -> '#'
       // We parsed a # character.  If this occurs at the start of the line,
       // it's actually the start of a preprocessing directive.  Callback to
       // the preprocessor to handle it.
@@ -4329,53 +4330,218 @@ LexStart:
 
       Kind = tok::hash;
     }
-    break;
+  } else {
+    Kind = tok::percent;
+  }
+  goto ReadToken;
 
-  case '@':
-    // Objective C support.
-    if (CurPtr[-1] == '@' && LangOpts.ObjC)
-      Kind = tok::at;
-    else
-      Kind = tok::unknown;
-    break;
-
-  // UCNs (C99 6.4.3, C++11 [lex.charset]p2)
-  case '\\':
-    if (!LangOpts.AsmPreprocessor) {
-      if (uint32_t CodePoint = tryReadUCN(CurPtr, BufferPtr, &Result)) {
-        if (CheckUnicodeWhitespace(Result, CodePoint, CurPtr)) {
-          if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
-            return true; // KeepWhitespaceMode
-
-          // We only saw whitespace, so just try again with this lexer.
-          // (We manually eliminate the tail call to avoid recursion.)
-          goto LexNextToken;
-        }
-
-        return LexUnicodeIdentifierStart(Result, CodePoint, CurPtr);
+LTLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (ParsingFilename) {
+    return LexAngledStringLiteral(Result, CurPtr);
+  } else if (Char == '<') {
+    char After = getCharAndSize(CurPtr + SizeTmp, SizeTmp2);
+    if (After == '=') {
+      Kind = tok::lesslessequal;
+      CurPtr =
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+    } else if (After == '<' && IsStartOfConflictMarker(CurPtr - 1)) {
+      // If this is actually a '<<<<<<<' version control conflict marker,
+      // recognize it as such and recover nicely.
+      goto LexNextToken;
+    } else if (After == '<' && HandleEndOfConflictMarker(CurPtr - 1)) {
+      // If this is '<<<<' and we're in a Perforce-style conflict marker,
+      // ignore it.
+      goto LexNextToken;
+    } else if (LangOpts.CUDA && After == '<') {
+      Kind = tok::lesslessless;
+      CurPtr =
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+    } else {
+      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+      Kind = tok::lessless;
+    }
+  } else if (Char == '=') {
+    char After = getCharAndSize(CurPtr + SizeTmp, SizeTmp2);
+    if (After == '>') {
+      if (LangOpts.CPlusPlus20) {
+        if (!isLexingRawMode())
+          Diag(BufferPtr, diag::warn_cxx17_compat_spaceship);
+        CurPtr =
+            ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+        Kind = tok::spaceship;
+        goto ReadToken;
+      }
+      // Suggest adding a space between the '<=' and the '>' to avoid a
+      // change in semantics if this turns up in C++ <=17 mode.
+      if (LangOpts.CPlusPlus && !isLexingRawMode()) {
+        Diag(BufferPtr, diag::warn_cxx20_compat_spaceship)
+            << FixItHint::CreateInsertion(
+                   getSourceLocation(CurPtr + SizeTmp, SizeTmp2), " ");
+      }
+    }
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::lessequal;
+  } else if (LangOpts.Digraphs && Char == ':') { // '<:' -> '['
+    if (LangOpts.CPlusPlus11 &&
+        getCharAndSize(CurPtr + SizeTmp, SizeTmp2) == ':') {
+      // C++0x [lex.pptoken]p3:
+      //  Otherwise, if the next three characters are <:: and the subsequent
+      //  character is neither : nor >, the < is treated as a preprocessor
+      //  token by itself and not as the first character of the alternative
+      //  token <:.
+      unsigned SizeTmp3;
+      char After = getCharAndSize(CurPtr + SizeTmp + SizeTmp2, SizeTmp3);
+      if (After != ':' && After != '>') {
+        Kind = tok::less;
+        if (!isLexingRawMode())
+          Diag(BufferPtr, diag::warn_cxx98_compat_less_colon_colon);
+        goto ReadToken;
       }
     }
 
-    Kind = tok::unknown;
-    break;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::l_square;
+  } else if (LangOpts.Digraphs && Char == '%') { // '<%' -> '{'
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::l_brace;
+  } else if (Char == '#' && /*Not a trigraph*/ SizeTmp == 1 &&
+             lexEditorPlaceholder(Result, CurPtr)) {
+    return true;
+  } else {
+    Kind = tok::less;
+  }
+  goto ReadToken;
 
-  default: {
-    if (isASCII(Char)) {
-      Kind = tok::unknown;
-      break;
+GTLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '=') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::greaterequal;
+  } else if (Char == '>') {
+    char After = getCharAndSize(CurPtr + SizeTmp, SizeTmp2);
+    if (After == '=') {
+      CurPtr =
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+      Kind = tok::greatergreaterequal;
+    } else if (After == '>' && IsStartOfConflictMarker(CurPtr - 1)) {
+      // If this is actually a '>>>>' conflict marker, recognize it as such
+      // and recover nicely.
+      goto LexNextToken;
+    } else if (After == '>' && HandleEndOfConflictMarker(CurPtr - 1)) {
+      // If this is '>>>>>>>' and we're in a conflict marker, ignore it.
+      goto LexNextToken;
+    } else if (LangOpts.CUDA && After == '>') {
+      Kind = tok::greatergreatergreater;
+      CurPtr =
+          ConsumeChar(ConsumeChar(CurPtr, SizeTmp, Result), SizeTmp2, Result);
+    } else {
+      CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+      Kind = tok::greatergreater;
     }
+  } else {
+    Kind = tok::greater;
+  }
+  goto ReadToken;
 
-    llvm::UTF32 CodePoint;
+CaretLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '=') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::caretequal;
+  } else if (LangOpts.OpenCL && Char == '^') {
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+    Kind = tok::caretcaret;
+  } else {
+    Kind = tok::caret;
+  }
+  goto ReadToken;
 
-    // We can't just reset CurPtr to BufferPtr because BufferPtr may point to
-    // an escaped newline.
-    --CurPtr;
-    llvm::ConversionResult Status =
-        llvm::convertUTF8Sequence((const llvm::UTF8 **)&CurPtr,
-                                  (const llvm::UTF8 *)BufferEnd,
-                                  &CodePoint,
-                                  llvm::strictConversion);
-    if (Status == llvm::conversionOK) {
+PipeLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '=') {
+    Kind = tok::pipeequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (Char == '|') {
+    // If this is '|||||||' and we're in a conflict marker, ignore it.
+    if (CurPtr[1] == '|' && HandleEndOfConflictMarker(CurPtr - 1))
+      goto LexNextToken;
+    Kind = tok::pipepipe;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::pipe;
+  }
+  goto ReadToken;
+
+ColonColonLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (LangOpts.Digraphs && Char == '>') {
+    Kind = tok::r_square; // ':>' -> ']'
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (Char == ':') {
+    Kind = tok::coloncolon;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::colon;
+  }
+  goto ReadToken;
+
+SemiLbl:
+  Kind = tok::semi;
+  goto ReadToken;
+
+EqualLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '=') {
+    // If this is '====' and we're in a conflict marker, ignore it.
+    if (CurPtr[1] == '=' && HandleEndOfConflictMarker(CurPtr - 1))
+      goto LexNextToken;
+
+    Kind = tok::equalequal;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    Kind = tok::equal;
+  }
+  goto ReadToken;
+
+CommaLbl:
+  Kind = tok::comma;
+  goto ReadToken;
+
+HashLbl:
+  Char = getCharAndSize(CurPtr, SizeTmp);
+  if (Char == '#') {
+    Kind = tok::hashhash;
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else if (Char == '@' && LangOpts.MicrosoftExt) { // #@ -> Charize
+    Kind = tok::hashat;
+    if (!isLexingRawMode())
+      Diag(BufferPtr, diag::ext_charize_microsoft);
+    CurPtr = ConsumeChar(CurPtr, SizeTmp, Result);
+  } else {
+    // We parsed a # character.  If this occurs at the start of the line,
+    // it's actually the start of a preprocessing directive.  Callback to
+    // the preprocessor to handle it.
+    // TODO: -fpreprocessed mode??
+    if (TokAtPhysicalStartOfLine && !LexingRawMode && !Is_PragmaLexer)
+      goto HandleDirective;
+
+    Kind = tok::hash;
+  }
+  goto ReadToken;
+
+AtLbl:
+  // Objective C support.
+  if (CurPtr[-1] == '@' && LangOpts.ObjC)
+    Kind = tok::at;
+  else
+    Kind = tok::unknown;
+  goto ReadToken;
+
+// UCNs (C99 6.4.3, C++11 [lex.charset]p2)
+BackSlashLbl:
+  if (!LangOpts.AsmPreprocessor) {
+    if (uint32_t CodePoint = tryReadUCN(CurPtr, BufferPtr, &Result)) {
       if (CheckUnicodeWhitespace(Result, CodePoint, CurPtr)) {
         if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
           return true; // KeepWhitespaceMode
@@ -4384,28 +4550,60 @@ LexStart:
         // (We manually eliminate the tail call to avoid recursion.)
         goto LexNextToken;
       }
+
       return LexUnicodeIdentifierStart(Result, CodePoint, CurPtr);
     }
+  }
 
-    if (isLexingRawMode() || ParsingPreprocessorDirective ||
-        PP->isPreprocessedOutput()) {
-      ++CurPtr;
-      Kind = tok::unknown;
-      break;
+  Kind = tok::unknown;
+  goto ReadToken;
+
+DefaultLbl: {
+  if (isASCII(Char)) {
+    Kind = tok::unknown;
+    goto ReadToken;
+  }
+
+  llvm::UTF32 CodePoint;
+
+  // We can't just reset CurPtr to BufferPtr because BufferPtr may point to
+  // an escaped newline.
+  --CurPtr;
+  llvm::ConversionResult Status = llvm::convertUTF8Sequence(
+      (const llvm::UTF8 **)&CurPtr, (const llvm::UTF8 *)BufferEnd, &CodePoint,
+      llvm::strictConversion);
+  if (Status == llvm::conversionOK) {
+    if (CheckUnicodeWhitespace(Result, CodePoint, CurPtr)) {
+      if (SkipWhitespace(Result, CurPtr, TokAtPhysicalStartOfLine))
+        return true; // KeepWhitespaceMode
+
+      // We only saw whitespace, so just try again with this lexer.
+      // (We manually eliminate the tail call to avoid recursion.)
+      goto LexNextToken;
     }
-
-    // Non-ASCII characters tend to creep into source code unintentionally.
-    // Instead of letting the parser complain about the unknown token,
-    // just diagnose the invalid UTF-8, then drop the character.
-    Diag(CurPtr, diag::err_invalid_utf8);
-
-    BufferPtr = CurPtr+1;
-    // We're pretending the character didn't exist, so just try again with
-    // this lexer.
-    // (We manually eliminate the tail call to avoid recursion.)
-    goto LexNextToken;
+    return LexUnicodeIdentifierStart(Result, CodePoint, CurPtr);
   }
+
+  if (isLexingRawMode() || ParsingPreprocessorDirective ||
+      PP->isPreprocessedOutput()) {
+    ++CurPtr;
+    Kind = tok::unknown;
+    goto ReadToken;
   }
+
+  // Non-ASCII characters tend to creep into source code unintentionally.
+  // Instead of letting the parser complain about the unknown token,
+  // just diagnose the invalid UTF-8, then drop the character.
+  Diag(CurPtr, diag::err_invalid_utf8);
+
+  BufferPtr = CurPtr + 1;
+  // We're pretending the character didn't exist, so just try again with
+  // this lexer.
+  // (We manually eliminate the tail call to avoid recursion.)
+  goto LexNextToken;
+}
+
+ReadToken:
 
   // Notify MIOpt that we read a non-whitespace/non-comment token.
   MIOpt.ReadToken();
