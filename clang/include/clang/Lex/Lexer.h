@@ -13,6 +13,7 @@
 #ifndef LLVM_CLANG_LEX_LEXER_H
 #define LLVM_CLANG_LEX_LEXER_H
 
+#include "clang/Basic/CharInfo.h"
 #include "clang/Basic/LangOptions.h"
 #include "clang/Basic/SourceLocation.h"
 #include "clang/Basic/TokenKinds.h"
@@ -648,13 +649,6 @@ private:
   // trigraphs), knowing that they only are emitted if the character is
   // consumed.
 
-  /// isObviouslySimpleCharacter - Return true if the specified character is
-  /// obviously the same in translation phase 1 and translation phase 3.  This
-  /// can return false for characters that end up being the same, but it will
-  /// never return true for something that needs to be mapped.
-  static bool isObviouslySimpleCharacter(char C) {
-    return C != '?' && C != '\\';
-  }
 
   /// getAndAdvanceChar - Read a single 'character' from the specified buffer,
   /// advance over it, and return it.  This is tricky in several cases.  Here we

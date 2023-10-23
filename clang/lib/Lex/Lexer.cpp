@@ -469,7 +469,7 @@ bool Lexer::getRawToken(SourceLocation Loc, Token &Result,
   // TODO: this could be special cased for common tokens like identifiers, ')',
   // etc to make this faster, if it mattered.  Just look at StrData[0] to handle
   // all obviously single-char tokens.  This could use
-  // Lexer::isObviouslySimpleCharacter for example to handle identifiers or
+  // isObviouslySimpleCharacter for example to handle identifiers or
   // something.
 
   // If this comes from a macro expansion, we really do want the macro name, not
@@ -753,7 +753,7 @@ unsigned Lexer::getTokenPrefixLength(SourceLocation TokStart, unsigned CharNo,
   const char *TokPtr = SM.getCharacterData(TokStart, &Invalid);
 
   // If they request the first char of the token, we're trivially done.
-  if (Invalid || (CharNo == 0 && Lexer::isObviouslySimpleCharacter(*TokPtr)))
+  if (Invalid || (CharNo == 0 && isObviouslySimpleCharacter(*TokPtr)))
     return 0;
 
   unsigned PhysOffset = 0;
@@ -761,7 +761,7 @@ unsigned Lexer::getTokenPrefixLength(SourceLocation TokStart, unsigned CharNo,
   // The usual case is that tokens don't contain anything interesting.  Skip
   // over the uninteresting characters.  If a token only consists of simple
   // chars, this method is extremely fast.
-  while (Lexer::isObviouslySimpleCharacter(*TokPtr)) {
+  while (isObviouslySimpleCharacter(*TokPtr)) {
     if (CharNo == 0)
       return PhysOffset;
     ++TokPtr;
@@ -782,7 +782,7 @@ unsigned Lexer::getTokenPrefixLength(SourceLocation TokStart, unsigned CharNo,
   // location of the actual byte of the token.  For example foo\<newline>bar
   // advanced by 3 should return the location of b, not of \\.  One compounding
   // detail of this is that the escape may be made by a trigraph.
-  if (!Lexer::isObviouslySimpleCharacter(*TokPtr))
+  if (!isObviouslySimpleCharacter(*TokPtr))
     PhysOffset += Lexer::SkipEscapedNewLines(TokPtr)-TokPtr;
 
   return PhysOffset;

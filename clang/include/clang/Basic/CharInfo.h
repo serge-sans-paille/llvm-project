@@ -19,17 +19,18 @@ namespace charinfo {
   extern const uint16_t InfoTable[256];
 
   enum {
-    CHAR_HORZ_WS  = 0x0001,  // '\t', '\f', '\v'.  Note, no '\0'
-    CHAR_VERT_WS  = 0x0002,  // '\r', '\n'
-    CHAR_SPACE    = 0x0004,  // ' '
-    CHAR_DIGIT    = 0x0008,  // 0-9
-    CHAR_XLETTER  = 0x0010,  // a-f,A-F
-    CHAR_UPPER    = 0x0020,  // A-Z
-    CHAR_LOWER    = 0x0040,  // a-z
-    CHAR_UNDER    = 0x0080,  // _
-    CHAR_PERIOD   = 0x0100,  // .
-    CHAR_RAWDEL   = 0x0200,  // {}[]#<>%:;?*+-/^&|~!=,"'
-    CHAR_PUNCT    = 0x0400   // `$@()
+    CHAR_HORZ_WS = 0x0001,              // '\t', '\f', '\v'.  Note, no '\0'
+    CHAR_VERT_WS = 0x0002,              // '\r', '\n'
+    CHAR_SPACE = 0x0004,                // ' '
+    CHAR_DIGIT = 0x0008,                // 0-9
+    CHAR_XLETTER = 0x0010,              // a-f,A-F
+    CHAR_UPPER = 0x0020,                // A-Z
+    CHAR_LOWER = 0x0040,                // a-z
+    CHAR_UNDER = 0x0080,                // _
+    CHAR_PERIOD = 0x0100,               // .
+    CHAR_RAWDEL = 0x0200,               // {}[]#<>%:;?*+-/^&|~!=,"'
+    CHAR_PUNCT = 0x0400,                // `$@()
+    CHAR_NOT_OBVIOUSLY_SIMPLE = 0x0800, // \ ?
   };
 
   enum {
@@ -93,6 +94,15 @@ LLVM_READONLY inline bool isVerticalWhitespace(unsigned char c) {
 LLVM_READONLY inline bool isWhitespace(unsigned char c) {
   using namespace charinfo;
   return (InfoTable[c] & (CHAR_HORZ_WS|CHAR_VERT_WS|CHAR_SPACE)) != 0;
+}
+
+/// isObviouslySimpleCharacter - Return true if the specified character is
+/// obviously the same in translation phase 1 and translation phase 3.  This
+/// can return false for characters that end up being the same, but it will
+/// never return true for something that needs to be mapped.
+LLVM_READONLY inline bool isObviouslySimpleCharacter(char C) {
+  using namespace charinfo;
+  return (InfoTable[(int)C] & CHAR_NOT_OBVIOUSLY_SIMPLE) == 0;
 }
 
 /// Return true if this character is an ASCII digit: [0-9]
