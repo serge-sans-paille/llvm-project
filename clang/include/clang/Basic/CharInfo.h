@@ -19,17 +19,17 @@ namespace charinfo {
   extern const uint16_t InfoTable[256];
 
   enum {
-    CHAR_HORZ_WS  = 0x0001,  // '\t', '\f', '\v'.  Note, no '\0'
-    CHAR_VERT_WS  = 0x0002,  // '\r', '\n'
-    CHAR_SPACE    = 0x0004,  // ' '
-    CHAR_DIGIT    = 0x0008,  // 0-9
-    CHAR_XLETTER  = 0x0010,  // a-f,A-F
-    CHAR_UPPER    = 0x0020,  // A-Z
-    CHAR_LOWER    = 0x0040,  // a-z
-    CHAR_UNDER    = 0x0080,  // _
-    CHAR_PERIOD   = 0x0100,  // .
-    CHAR_RAWDEL   = 0x0200,  // {}[]#<>%:;?*+-/^&|~!=,"'
-    CHAR_PUNCT    = 0x0400   // `$@()
+    CHAR_VERT_WS = 0x0001, // '\r', '\n'
+    CHAR_HORZ_WS = 0x0002, // '\t', '\f', '\v'.  Note, no '\0'
+    CHAR_SPACE = 0x0004,   // ' '
+    CHAR_XLETTER = 0x0008, // a-f,A-F
+    CHAR_PERIOD = 0x0010,  // .
+    CHAR_RAWDEL = 0x0020,  // {}[]#<>%:;?*+-/^&|~!=,"'
+    CHAR_PUNCT = 0x0040,   // `$@()
+    CHAR_DIGIT = 0x0080,   // 0-9
+    CHAR_UPPER = 0x0100,   // A-Z
+    CHAR_LOWER = 0x0200,   // a-z
+    CHAR_UNDER = 0x0400,   // _
   };
 
   enum {
@@ -54,7 +54,7 @@ LLVM_READNONE inline bool isASCII(int64_t c) { return 0 <= c && c <= 127; }
 LLVM_READONLY inline bool isAsciiIdentifierStart(unsigned char c,
                                                  bool AllowDollar = false) {
   using namespace charinfo;
-  if (InfoTable[c] & (CHAR_UPPER|CHAR_LOWER|CHAR_UNDER))
+  if (InfoTable[c] >= CHAR_UPPER)
     return true;
   return AllowDollar && c == '$';
 }
@@ -64,7 +64,7 @@ LLVM_READONLY inline bool isAsciiIdentifierStart(unsigned char c,
 LLVM_READONLY inline bool isAsciiIdentifierContinue(unsigned char c,
                                                     bool AllowDollar = false) {
   using namespace charinfo;
-  if (InfoTable[c] & (CHAR_UPPER|CHAR_LOWER|CHAR_DIGIT|CHAR_UNDER))
+  if (InfoTable[c] >= CHAR_DIGIT)
     return true;
   return AllowDollar && c == '$';
 }
@@ -92,7 +92,8 @@ LLVM_READONLY inline bool isVerticalWhitespace(unsigned char c) {
 /// Note that this returns false for '\\0'.
 LLVM_READONLY inline bool isWhitespace(unsigned char c) {
   using namespace charinfo;
-  return (InfoTable[c] & (CHAR_HORZ_WS|CHAR_VERT_WS|CHAR_SPACE)) != 0;
+  // return (InfoTable[c] & (CHAR_HORZ_WS|CHAR_VERT_WS|CHAR_SPACE)) != 0;
+  return InfoTable[c] <= CHAR_SPACE;
 }
 
 /// Return true if this character is an ASCII digit: [0-9]
@@ -122,7 +123,7 @@ LLVM_READONLY inline bool isLetter(unsigned char c) {
 /// Return true if this character is an ASCII letter or digit: [a-zA-Z0-9]
 LLVM_READONLY inline bool isAlphanumeric(unsigned char c) {
   using namespace charinfo;
-  return (InfoTable[c] & (CHAR_DIGIT|CHAR_UPPER|CHAR_LOWER)) != 0;
+  return CHAR_DIGIT <= InfoTable[c] && InfoTable[c] <= CHAR_LOWER;
 }
 
 /// Return true if this character is an ASCII hex digit: [0-9a-fA-F]
