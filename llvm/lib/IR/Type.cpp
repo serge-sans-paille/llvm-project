@@ -245,12 +245,24 @@ Type *Type::getPPC_FP128Ty(LLVMContext &C) { return &C.pImpl->PPC_FP128Ty; }
 Type *Type::getX86_MMXTy(LLVMContext &C) { return &C.pImpl->X86_MMXTy; }
 Type *Type::getX86_AMXTy(LLVMContext &C) { return &C.pImpl->X86_AMXTy; }
 
-IntegerType *Type::getInt1Ty(LLVMContext &C) { return &C.pImpl->Int1Ty; }
-IntegerType *Type::getInt8Ty(LLVMContext &C) { return &C.pImpl->Int8Ty; }
-IntegerType *Type::getInt16Ty(LLVMContext &C) { return &C.pImpl->Int16Ty; }
-IntegerType *Type::getInt32Ty(LLVMContext &C) { return &C.pImpl->Int32Ty; }
-IntegerType *Type::getInt64Ty(LLVMContext &C) { return &C.pImpl->Int64Ty; }
-IntegerType *Type::getInt128Ty(LLVMContext &C) { return &C.pImpl->Int128Ty; }
+IntegerType *Type::getInt1Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[0];
+}
+IntegerType *Type::getInt8Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[1];
+}
+IntegerType *Type::getInt16Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[2];
+}
+IntegerType *Type::getInt32Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[3];
+}
+IntegerType *Type::getInt64Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[4];
+}
+IntegerType *Type::getInt128Ty(LLVMContext &C) {
+  return &C.pImpl->CommonIntTys[5];
+}
 
 IntegerType *Type::getIntNTy(LLVMContext &C, unsigned N) {
   return IntegerType::get(C, N);
@@ -282,12 +294,18 @@ IntegerType *IntegerType::get(LLVMContext &C, unsigned NumBits) {
 
   // Check for the built-in integer types
   switch (NumBits) {
-  case   1: return cast<IntegerType>(Type::getInt1Ty(C));
-  case   8: return cast<IntegerType>(Type::getInt8Ty(C));
-  case  16: return cast<IntegerType>(Type::getInt16Ty(C));
-  case  32: return cast<IntegerType>(Type::getInt32Ty(C));
-  case  64: return cast<IntegerType>(Type::getInt64Ty(C));
-  case 128: return cast<IntegerType>(Type::getInt128Ty(C));
+  case 1:
+    return &C.pImpl->CommonIntTys[0];
+  case 8:
+    return &C.pImpl->CommonIntTys[1];
+  case 16:
+    return &C.pImpl->CommonIntTys[2];
+  case 32:
+    return &C.pImpl->CommonIntTys[3];
+  case 64:
+    return &C.pImpl->CommonIntTys[4];
+  case 128:
+    return &C.pImpl->CommonIntTys[5];
   default:
     break;
   }
