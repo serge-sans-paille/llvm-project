@@ -104,7 +104,7 @@ void MCDwarfLineEntry::make(MCStreamer *MCOS, MCSection *Section) {
   const MCDwarfLoc &DwarfLoc = MCOS->getContext().getCurrentDwarfLoc();
 
   // Create a (local) line entry with the symbol and the current .loc info.
-  MCDwarfLineEntry LineEntry(LineSym, DwarfLoc);
+  MCDwarfLineEntry LineEntry(LineSym, &DwarfLoc);
 
   // clear DwarfLocSeen saying the current .loc info is now used.
   MCOS->getContext().clearDwarfLocSeen();

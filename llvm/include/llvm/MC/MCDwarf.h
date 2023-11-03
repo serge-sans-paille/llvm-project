@@ -185,7 +185,8 @@ public:
 /// instruction is assembled and uses an address from a temporary label
 /// created at the current address in the current section and the info from
 /// the last .loc directive seen as stored in the context.
-class MCDwarfLineEntry : public MCDwarfLoc {
+class MCDwarfLineEntry {
+  const MCDwarfLoc *Loc;
   MCSymbol *Label;
 
 private:
@@ -194,8 +195,8 @@ private:
 
 public:
   // Constructor to create an MCDwarfLineEntry given a symbol and the dwarf loc.
-  MCDwarfLineEntry(MCSymbol *label, const MCDwarfLoc loc)
-      : MCDwarfLoc(loc), Label(label) {}
+  MCDwarfLineEntry(MCSymbol *label, const MCDwarfLoc *loc)
+      : Loc(loc), Label(label) {}
 
   MCSymbol *getLabel() const { return Label; }
 
@@ -207,6 +208,13 @@ public:
     Label = EndLabel;
     IsEndEntry = true;
   }
+
+  auto getFileNum() const { return Loc->getFileNum(); }
+  auto getLine() const { return Loc->getLine(); }
+  auto getColumn() const { return Loc->getColumn(); }
+  auto getDiscriminator() const { return Loc->getDiscriminator(); }
+  auto getIsa() const { return Loc->getIsa(); }
+  auto getFlags() const { return Loc->getFlags(); }
 
   // This is called when an instruction is assembled into the specified
   // section and if there is information from the last .loc directive that
