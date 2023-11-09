@@ -15,6 +15,10 @@
 #include "llvm/Support/Error.h"
 #include <bitset>
 
+#ifdef __SSE2__
+#include <emmintrin.h>
+#endif
+
 using namespace llvm;
 
 // MSVC emits references to this into the translation units which reference it.
@@ -268,17 +272,44 @@ StringRef::size_type StringRef::find_first_not_of(StringRef Chars,
   return npos;
 }
 
+#ifdef __SSE2__
+
+StringRef::size_type vectorized_find_last_of_specialized(const char *Data,
+                                                         size_t Sz, char C0,
+                                                         char C1) {
+  __m128i Needle0 = _mm_set1_epi8(C0);
+  __m128i Needle1 = _mm_set1_epi8(C1);
+  do {
+    Sz = Sz < 16 ? 0 : Sz - 16;
+    __m128i Buffer = _mm_loadu_si128((const __m128i *)(Data + Sz));
+    unsigned Mask = _mm_movemask_epi8(_mm_or_si128(
+        _mm_cmpeq_epi8(Buffer, Needle0), _mm_cmpeq_epi8(Buffer, Needle1)));
+    if (Mask != 0) {
+      return Sz + sizeof(Mask) * CHAR_BIT - llvm::countl_zero(Mask);
+    }
+  } while (Sz);
+  return npos;
+}
+#endif
+
 /// find_last_of - Find the last character in the string that is in \arg C,
 /// or npos if not found.
 ///
 /// Note: O(size() + Chars.size())
 StringRef::size_type StringRef::find_last_of(StringRef Chars,
                                              size_t From) const {
+  size_type Sz = std::min(From, Length);
+
+#ifdef __SSE2__
+  if (Chars.size() == 2)
+    return vectorized_find_last_of_specialized(Data, Sz, Chars[0], Chars[1]);
+#endif
+
   std::bitset<1 << CHAR_BIT> CharBits;
   for (char C : Chars)
     CharBits.set((unsigned char)C);
 
-  for (size_type i = std::min(From, Length) - 1, e = -1; i != e; --i)
+  for (size_type i = Sz - 1, e = -1; i != e; --i)
     if (CharBits.test((unsigned char)Data[i]))
       return i;
   return npos;
@@ -309,9 +340,8 @@ StringRef::size_type StringRef::find_last_not_of(StringRef Chars,
   return npos;
 }
 
-void StringRef::split(SmallVectorImpl<StringRef> &A,
-                      StringRef Separator, int MaxSplit,
-                      bool KeepEmpty) const {
+void StringRef::split(SmallVectorImpl<StringRef> &A, StringRef Separator,
+                      int MaxSplit, bool KeepEmpty) const {
   StringRef S = *this;
 
   // Count down from MaxSplit. When MaxSplit is -1, this will just split
@@ -372,7 +402,8 @@ size_t StringRef::count(StringRef Str) const {
   size_t Count = 0;
   size_t Pos = 0;
   size_t N = Str.size();
-  // TODO: For an empty `Str` we return 0 for legacy reasons. Consider changing
+  // TODO: For an empty `Str` we return 0 for legacy reasons. Consider
+  // changing
   //       this to `Length + 1` which is more in-line with the function
   //       description.
   if (!N)
@@ -418,7 +449,8 @@ bool llvm::consumeUnsignedInteger(StringRef &Str, unsigned Radix,
     Radix = GetAutoSenseRadix(Str);
 
   // Empty strings (after the radix autosense) are invalid.
-  if (Str.empty()) return true;
+  if (Str.empty())
+    return true;
 
   // Parse all the bytes of the string given this radix.  Watch for overflow.
   StringRef Str2 = Str;
@@ -504,8 +536,8 @@ bool llvm::getAsSignedInteger(StringRef Str, unsigned Radix,
   if (consumeSignedInteger(Str, Radix, Result))
     return true;
 
-  // For getAsSignedInteger, we require the whole string to be consumed or else
-  // we consider it a failure.
+  // For getAsSignedInteger, we require the whole string to be consumed or
+  // else we consider it a failure.
   return !Str.empty();
 }
 
@@ -519,7 +551,8 @@ bool StringRef::consumeInteger(unsigned Radix, APInt &Result) {
   assert(Radix > 1 && Radix <= 36);
 
   // Empty strings (after the radix autosense) are invalid.
-  if (Str.empty()) return true;
+  if (Str.empty())
+    return true;
 
   // Skip leading zeroes.  This can be a significant improvement if
   // it means we don't need > 64 bits.
@@ -535,7 +568,8 @@ bool StringRef::consumeInteger(unsigned Radix, APInt &Result) {
 
   // (Over-)estimate the required number of bits.
   unsigned Log2Radix = 0;
-  while ((1U << Log2Radix) < Radix) Log2Radix++;
+  while ((1U << Log2Radix) < Radix)
+    Log2Radix++;
   bool IsPowerOf2Radix = ((1U << Log2Radix) == Radix);
 
   unsigned BitWidth = Log2Radix * Str.size();
@@ -556,11 +590,11 @@ bool StringRef::consumeInteger(unsigned Radix, APInt &Result) {
   while (!Str.empty()) {
     unsigned CharVal;
     if (Str[0] >= '0' && Str[0] <= '9')
-      CharVal = Str[0]-'0';
+      CharVal = Str[0] - '0';
     else if (Str[0] >= 'a' && Str[0] <= 'z')
-      CharVal = Str[0]-'a'+10;
+      CharVal = Str[0] - 'a' + 10;
     else if (Str[0] >= 'A' && Str[0] <= 'Z')
-      CharVal = Str[0]-'A'+10;
+      CharVal = Str[0] - 'A' + 10;
     else
       break;
 
@@ -623,8 +657,7 @@ hash_code llvm::hash_value(StringRef S) {
 }
 
 unsigned DenseMapInfo<StringRef, void>::getHashValue(StringRef Val) {
-  assert(Val.data() != getEmptyKey().data() &&
-         "Cannot hash the empty key!");
+  assert(Val.data() != getEmptyKey().data() && "Cannot hash the empty key!");
   assert(Val.data() != getTombstoneKey().data() &&
          "Cannot hash the tombstone key!");
   return (unsigned)(hash_value(Val));
