@@ -272,25 +272,28 @@ StringRef::size_type StringRef::find_first_not_of(StringRef Chars,
   return npos;
 }
 
-#ifdef __SSE2__
+static inline uint64_t haszero(uint64_t v) {
+  return ((v)-0x0101010101010101UL) & ~(v) & 0x8080808080808080UL;
+}
+static inline uint64_t hasvalue(uint64_t x, char n) {
+  return haszero((x) ^ (~0UL / 255 * (n)));
+}
 
 StringRef::size_type vectorized_find_last_of_specialized(const char *Data,
                                                          size_t Sz, char C0,
                                                          char C1) {
-  __m128i Needle0 = _mm_set1_epi8(C0);
-  __m128i Needle1 = _mm_set1_epi8(C1);
   do {
-    Sz = Sz < 16 ? 0 : Sz - 16;
-    __m128i Buffer = _mm_loadu_si128((const __m128i *)(Data + Sz));
-    unsigned Mask = _mm_movemask_epi8(_mm_or_si128(
-        _mm_cmpeq_epi8(Buffer, Needle0), _mm_cmpeq_epi8(Buffer, Needle1)));
-    if (Mask != 0) {
-      return Sz + sizeof(Mask) * CHAR_BIT - llvm::countl_zero(Mask);
-    }
+    Sz = Sz < 8 ? 0 : Sz - 8;
+    uint64_t Buffer = 0;
+    std::memcpy((void *)&Buffer, (void *)(Data + Sz), sizeof(Buffer));
+    uint64_t Check0 = hasvalue(Buffer, C0);
+    uint64_t Check1 = hasvalue(Buffer, C1);
+    uint64_t Check = Check0 | Check1;
+    if (Check)
+      return Sz + 7 - __builtin_clzl(Check) / 8;
   } while (Sz);
-  return npos;
+  return -1;
 }
-#endif
 
 /// find_last_of - Find the last character in the string that is in \arg C,
 /// or npos if not found.
@@ -300,10 +303,8 @@ StringRef::size_type StringRef::find_last_of(StringRef Chars,
                                              size_t From) const {
   size_type Sz = std::min(From, Length);
 
-#ifdef __SSE2__
   if (Chars.size() == 2)
     return vectorized_find_last_of_specialized(Data, Sz, Chars[0], Chars[1]);
-#endif
 
   std::bitset<1 << CHAR_BIT> CharBits;
   for (char C : Chars)
