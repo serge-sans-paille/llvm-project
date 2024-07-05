@@ -256,9 +256,9 @@ RT_API_ATTRS void Finalize(const Descriptor &descriptor,
       SubscriptValue extent[maxRank];
       const typeInfo::Value *bounds{comp.bounds()};
       for (int dim{0}; dim < comp.rank(); ++dim) {
-        SubscriptValue lb{bounds[2 * dim].GetValue(&descriptor).value_or(0)};
-        SubscriptValue ub{
-            bounds[2 * dim + 1].GetValue(&descriptor).value_or(0)};
+        SubscriptValue lb = bounds[2 * dim].GetValue(&descriptor).value_or(0);
+        SubscriptValue ub =
+            bounds[2 * dim + 1].GetValue(&descriptor).value_or(0);
         extent[dim] = ub >= lb ? ub - lb + 1 : 0;
       }
       StaticDescriptor<maxRank, true, 0> staticDescriptor;

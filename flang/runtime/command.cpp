@@ -45,9 +45,9 @@ static std::int64_t StringLength(const char *string) {
   if constexpr (sizeof(std::size_t) < sizeof(std::int64_t)) {
     return static_cast<std::int64_t>(length);
   } else {
-    std::size_t max{std::numeric_limits<std::int64_t>::max()};
-    return length > max ? 0 // Just fail.
-                        : static_cast<std::int64_t>(length);
+    return length > std::numeric_limits<std::int64_t>::max()
+        ? 0 // Just fail.
+        : static_cast<std::int64_t>(length);
   }
 }
 

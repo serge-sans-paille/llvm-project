@@ -14,6 +14,15 @@
 #include <algorithm>
 #include <cfenv>
 
+#ifdef __EMSCRIPTEN__
+#define FE_UNDERFLOW 0
+#define FE_OVERFLOW 0
+#define FE_INEXACT 0
+#define FE_INVALID 0
+#define FE_DIVBYZERO 0
+#define FE_ALL_EXCEPT 0
+#endif
+
 namespace Fortran::runtime::io {
 
 // Checks that a list-directed input value has been entirely consumed and

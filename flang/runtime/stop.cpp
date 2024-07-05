@@ -16,6 +16,15 @@
 #include <cstdio>
 #include <cstdlib>
 
+#ifdef __EMSCRIPTEN__
+#define FE_UNDERFLOW 0
+#define FE_OVERFLOW 0
+#define FE_INEXACT 0
+#define FE_INVALID 0
+#define FE_DIVBYZERO 0
+#define FE_ALL_EXCEPT 0
+#endif
+
 extern "C" {
 
 static void DescribeIEEESignaledExceptions() {
