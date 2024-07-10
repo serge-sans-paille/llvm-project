@@ -23,6 +23,22 @@ namespace llvm {
 class DataLayout;
 }
 
+constexpr size_t FLANG_TARGET_SIZEOF_UINT = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_INT = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_SHORT = 2;
+constexpr size_t FLANG_TARGET_SIZEOF_CHAR = 1;
+constexpr size_t FLANG_TARGET_SIZEOF_SCHAR = 1;
+constexpr size_t FLANG_TARGET_SIZEOF_UCHAR = 1;
+constexpr size_t FLANG_TARGET_SIZEOF_CHAR16 = 2;
+constexpr size_t FLANG_TARGET_SIZEOF_CHAR32 = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_LONG = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_LONGLONG = 8;
+constexpr size_t FLANG_TARGET_SIZEOF_ULONG = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_ULONGLONG = 8;
+constexpr size_t FLANG_TARGET_SIZEOF_SIZE_T = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_FLOAT = 4;
+constexpr size_t FLANG_TARGET_SIZEOF_DOUBLE = 8;
+
 namespace fir::support {
 /// Create an mlir::DataLayoutSpecInterface attribute from an llvm::DataLayout
 /// and set it on the provided mlir::ModuleOp.
