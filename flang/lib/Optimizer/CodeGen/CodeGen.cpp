@@ -992,7 +992,7 @@ getMallocInModule(ModuleOp mod, fir::AllocMemOp op,
     return mlir::SymbolRefAttr::get(userMalloc);
 
   mlir::OpBuilder moduleBuilder(mod.getBodyRegion());
-  auto indexType = mlir::IntegerType::get(op.getContext(), 64);
+  auto indexType = mlir::IntegerType::get(op.getContext(), 8 * FLANG_TARGET_SIZEOF_SIZE_T);
   auto mallocDecl = moduleBuilder.create<mlir::LLVM::LLVMFuncOp>(
       op.getLoc(), mallocName,
       mlir::LLVM::LLVMFunctionType::get(getLlvmPtrType(op.getContext()),
@@ -1068,8 +1068,11 @@ struct AllocMemOpConversion : public fir::FIROpConversion<fir::AllocMemOp> {
       size = rewriter.create<mlir::LLVM::MulOp>(
           loc, ity, size, integerCast(loc, rewriter, ity, opnd));
     heap->setAttr("callee", getMalloc(heap, rewriter));
+    auto szt_ty = mlir::IntegerType::get(rewriter.getContext(),
+                                         8 * FLANG_TARGET_SIZEOF_SIZE_T);
+    auto size_szt = integerCast(loc, rewriter, szt_ty, size);
     rewriter.replaceOpWithNewOp<mlir::LLVM::CallOp>(
-        heap, ::getLlvmPtrType(heap.getContext()), size,
+        heap, ::getLlvmPtrType(heap.getContext()), size_szt,
         addLLVMOpBundleAttrs(rewriter, heap->getAttrs(), 1));
     return mlir::success();
   }
