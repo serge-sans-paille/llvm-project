@@ -22,6 +22,7 @@
 #include "flang/Optimizer/Builder/FIRBuilder.h"
 #include "flang/Optimizer/Dialect/FIRDialect.h"
 #include "flang/Optimizer/Dialect/FIRType.h"
+#include "flang/Optimizer/Support/DataLayout.h"
 #include "mlir/IR/BuiltinTypes.h"
 #include "mlir/IR/MLIRContext.h"
 #include "llvm/ADT/SmallVector.h"
@@ -72,20 +73,20 @@ static constexpr TypeBuilderFunc getModel();
 template <>
 constexpr TypeBuilderFunc getModel<unsigned int>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(unsigned int));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_UINT);
   };
 }
 
 template <>
 constexpr TypeBuilderFunc getModel<short int>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(short int));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_SHORT);
   };
 }
 template <>
 constexpr TypeBuilderFunc getModel<int>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(int));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_INT);
   };
 }
 template <>
@@ -120,13 +121,13 @@ constexpr TypeBuilderFunc getModel<const char32_t *>() {
 template <>
 constexpr TypeBuilderFunc getModel<char>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(char));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_CHAR);
   };
 }
 template <>
 constexpr TypeBuilderFunc getModel<signed char>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(signed char));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_SCHAR);
   };
 }
 template <>
@@ -146,7 +147,7 @@ constexpr TypeBuilderFunc getModel<void **>() {
 template <>
 constexpr TypeBuilderFunc getModel<long>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(long));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_LONG);
   };
 }
 template <>
@@ -163,7 +164,7 @@ constexpr TypeBuilderFunc getModel<long *>() {
 template <>
 constexpr TypeBuilderFunc getModel<long long>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(long long));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_LONGLONG);
   };
 }
 template <>
@@ -187,13 +188,13 @@ constexpr TypeBuilderFunc getModel<long long *>() {
 template <>
 constexpr TypeBuilderFunc getModel<unsigned long>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(unsigned long));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_ULONG);
   };
 }
 template <>
 constexpr TypeBuilderFunc getModel<unsigned long long>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return mlir::IntegerType::get(context, 8 * sizeof(unsigned long long));
+    return mlir::IntegerType::get(context, 8 * FLANG_TARGET_SIZEOF_ULONGLONG);
   };
 }
 template <>
@@ -260,13 +261,13 @@ constexpr TypeBuilderFunc getModel<std::complex<double> &>() {
 template <>
 constexpr TypeBuilderFunc getModel<c_float_complex_t>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return fir::ComplexType::get(context, sizeof(float));
+    return fir::ComplexType::get(context, FLANG_TARGET_SIZEOF_FLOAT);
   };
 }
 template <>
 constexpr TypeBuilderFunc getModel<c_double_complex_t>() {
   return [](mlir::MLIRContext *context) -> mlir::Type {
-    return fir::ComplexType::get(context, sizeof(double));
+    return fir::ComplexType::get(context, FLANG_TARGET_SIZEOF_DOUBLE);
   };
 }
 template <>
