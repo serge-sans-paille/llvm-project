@@ -103,7 +103,8 @@ append(${NO_LTO_FLAGS} CMAKE_CXX_FLAGS)
 add_definitions(-U_GLIBCXX_ASSERTIONS)
 add_definitions(-U_LIBCPP_ENABLE_ASSERTIONS)
 
-add_subdirectory(Float128Math)
+# add_subdirectory(Float128Math)
+add_custom_target(FortranFloat128Math)
 
 set(sources
   ISO_Fortran_binding.cpp
