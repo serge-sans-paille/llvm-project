@@ -147,7 +147,8 @@ append(${NO_RTTI_FLAGS} CMAKE_CXX_FLAGS)
 add_definitions(-U_GLIBCXX_ASSERTIONS)
 add_definitions(-U_LIBCPP_ENABLE_ASSERTIONS)
 
-add_subdirectory(Float128Math)
+# add_subdirectory(Float128Math)
+add_custom_target(FortranFloat128Math)
 
 set(sources
   ${FLANG_SOURCE_DIR}/lib/Decimal/binary-to-decimal.cpp
