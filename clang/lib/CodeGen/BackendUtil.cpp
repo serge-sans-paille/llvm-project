@@ -35,6 +35,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/IRPrinter/IRPrintingPasses.h"
 #include "llvm/LTO/LTOBackend.h"
+#include "llvm/Linker/Linker.h"
 #include "llvm/MC/TargetRegistry.h"
 #include "llvm/Object/OffloadBinary.h"
 #include "llvm/Passes/PassBuilder.h"
@@ -43,6 +44,7 @@
 #include "llvm/ProfileData/InstrProfCorrelator.h"
 #include "llvm/Support/BuryPointer.h"
 #include "llvm/Support/CommandLine.h"
+#include "llvm/Support/FormatVariadic.h"
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/Program.h"
@@ -83,6 +85,7 @@
 #include "llvm/Transforms/Scalar/JumpThreading.h"
 #include "llvm/Transforms/Utils/Debugify.h"
 #include "llvm/Transforms/Utils/ModuleUtils.h"
+#include "llvm/Transforms/Utils/SplitModule.h"
 #include <memory>
 #include <optional>
 using namespace clang;
@@ -179,6 +182,13 @@ class EmitAssemblyHelper {
   void RunOptimizationPipeline(
       BackendAction Action, std::unique_ptr<raw_pwrite_stream> &OS,
       std::unique_ptr<llvm::ToolOutputFile> &ThinLinkOS, BackendConsumer *BC);
+
+  void
+  RunOptimizationPipelineImpl(llvm::Module *M, BackendAction Action,
+                              std::unique_ptr<raw_pwrite_stream> &OS,
+                              std::unique_ptr<llvm::ToolOutputFile> &ThinLinkOS,
+                              BackendConsumer *BC);
+
   void RunCodegenPipeline(BackendAction Action,
                           std::unique_ptr<raw_pwrite_stream> &OS,
                           std::unique_ptr<llvm::ToolOutputFile> &DwoOS);
@@ -799,8 +809,9 @@ static void addSanitizers(const Triple &TargetTriple,
   }
 }
 
-void EmitAssemblyHelper::RunOptimizationPipeline(
-    BackendAction Action, std::unique_ptr<raw_pwrite_stream> &OS,
+void EmitAssemblyHelper::RunOptimizationPipelineImpl(
+    llvm::Module *TheModule, BackendAction Action,
+    std::unique_ptr<raw_pwrite_stream> &OS,
     std::unique_ptr<llvm::ToolOutputFile> &ThinLinkOS, BackendConsumer *BC) {
   std::optional<PGOOptions> PGOOpt;
 
@@ -1152,6 +1163,76 @@ void EmitAssemblyHelper::RunOptimizationPipeline(
     llvm::TimeTraceScope TimeScope("Optimizer");
     MPM.run(*TheModule, MAM);
   }
+}
+
+void EmitAssemblyHelper::RunOptimizationPipeline(
+    BackendAction Action, std::unique_ptr<raw_pwrite_stream> &OS,
+    std::unique_ptr<llvm::ToolOutputFile> &ThinLinkOS, BackendConsumer *BC) {
+
+  int ParallelOptParallelismLevel = CodeGenOpts.NumThreads;
+  if (ParallelOptParallelismLevel == 1) {
+    return RunOptimizationPipelineImpl(TheModule, Action, OS, ThinLinkOS, BC);
+  }
+
+  DefaultThreadPool OptThreadPool(
+      heavyweight_hardware_concurrency(ParallelOptParallelismLevel));
+  unsigned ThreadCount = 0;
+
+  std::vector<std::unique_ptr<llvm::Module>> Modules;
+
+  const auto HandleModulePartition = [&](std::unique_ptr<llvm::Module> MPart) {
+    SmallString<0> BitCode;
+    raw_svector_ostream BCOS(BitCode);
+    WriteBitcodeToFile(*MPart, BCOS);
+
+    // Enqueue the task
+    OptThreadPool.async(
+        [&](const SmallString<0> &BitCode, unsigned ThreadId) {
+          // 1. Decode module part using a local context.
+          LLVMContext Ctx;
+          Expected<std::unique_ptr<llvm::Module>> MOrErr = parseBitcodeFile(
+              MemoryBufferRef(BitCode.str(),
+                              formatv("split-{}.bc", ThreadId).str()),
+              Ctx);
+          if (!MOrErr)
+            report_fatal_error("Failed to read bitcode");
+
+          std::unique_ptr<llvm::Module> MPartInCtx = std::move(MOrErr.get());
+
+          // 2. Optimize it.
+          RunOptimizationPipelineImpl(MPartInCtx.get(), Action, OS, ThinLinkOS,
+                                      BC);
+
+          // 3. Convert it back to the original context.
+          SmallString<0> OutBC;
+          raw_svector_ostream OutBCOS(OutBC);
+          WriteBitcodeToFile(*MPartInCtx, OutBCOS);
+          Expected<std::unique_ptr<llvm::Module>> OutMOrErr = parseBitcodeFile(
+              MemoryBufferRef(OutBC.str(),
+                              formatv("merge-{}.bc", ThreadId).str()),
+              TheModule->getContext());
+          if (!OutMOrErr)
+            report_fatal_error("Failed to read bitcode");
+
+          Modules.emplace_back(std::move(OutMOrErr.get()));
+        },
+        // Pass BC using std::move to ensure that it get moved rather than
+        // copied into the thread's context.
+        std::move(BitCode), ThreadCount++);
+  };
+
+  SplitModule(*TheModule, ParallelOptParallelismLevel, HandleModulePartition,
+              false);
+
+  OptThreadPool.wait();
+
+  TheModule = Modules.back().release();
+  Modules.pop_back();
+  Linker L(*TheModule);
+  unsigned Flags = Linker::Flags::None;
+
+  for (auto &Mod : Modules)
+    L.linkInModule(std::move(Mod), Flags);
 }
 
 void EmitAssemblyHelper::RunCodegenPipeline(

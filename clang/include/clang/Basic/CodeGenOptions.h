@@ -248,6 +248,9 @@ public:
   /// file, for example with -save-temps.
   std::string MainFileName;
 
+  /// Maximum number of threads to use during codegen.
+  unsigned NumThreads;
+
   /// The name for the split debug info file used for the DW_AT_[GNU_]dwo_name
   /// attribute in the skeleton CU.
   std::string SplitDwarfFile;

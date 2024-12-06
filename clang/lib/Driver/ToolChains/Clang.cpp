@@ -6465,6 +6465,10 @@ void Clang::ConstructJob(Compilation &C, const JobAction &JA,
   Args.addOptInFlag(CmdArgs, options::OPT_ffixed_point,
                     options::OPT_fno_fixed_point);
 
+  if (const Arg *A = Args.getLastArg(options::OPT_num_threads_EQ)) {
+    A->render(Args, CmdArgs);
+  }
+
   if (Arg *A = Args.getLastArg(options::OPT_fcxx_abi_EQ))
     A->render(Args, CmdArgs);
 

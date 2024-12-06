@@ -7885,6 +7885,14 @@ def rewrite_macros : Flag<["-"], "rewrite-macros">,
   HelpText<"Expand macros without full preprocessing">;
 def migrate : Flag<["-"], "migrate">,
   HelpText<"Migrate source code">;
+
+def num_threads_EQ : Joined<["--"], "num-threads=">,
+  Visibility<[ClangOption, CC1Option]>,
+  MetaVarName<"<N>">,
+  HelpText<"Use N threads during the optimisation pipeline">,
+  MarshallingInfoInt<CodeGenOpts<"NumThreads">>,
+  Group<CompileOnly_Group>;
+
 def compiler_options_dump : Flag<["-"], "compiler-options-dump">,
   HelpText<"Dump the compiler configuration options">;
 def print_dependency_directives_minimized_source : Flag<["-"],
