@@ -59,6 +59,12 @@ static cl::opt<bool>
                         "modules instead of the default name-hash-based one"),
                cl::cat(SplitCategory));
 
+static cl::opt<bool>
+    Conservative("conservative", cl::Prefix, cl::init(false),
+               cl::desc("Use a conservative distribution of functions "
+                        "that doesn't interfere with module optimization"),
+               cl::cat(SplitCategory));
+
 static cl::opt<std::string>
     MTriple("mtriple",
             cl::desc("Target triple. When present, a TargetMachine is created "
@@ -131,6 +137,9 @@ int main(int argc, char **argv) {
     if (RoundRobin)
       errs() << "warning: -round-robin has no effect when using "
                 "TargetMachine::splitModule\n";
+    if (Conservative)
+      errs() << "warning: -conservative has no effect when using "
+                "TargetMachine::splitModule\n";
 
     if (TM->splitModule(*M, NumOutputs, HandleModulePart))
       return 0;
@@ -140,6 +149,6 @@ int main(int argc, char **argv) {
               "splitModule implementation\n";
   }
 
-  SplitModule(*M, NumOutputs, HandleModulePart, PreserveLocals, RoundRobin);
+  SplitModule(*M, NumOutputs, HandleModulePart, PreserveLocals, RoundRobin, Conservative);
   return 0;
 }

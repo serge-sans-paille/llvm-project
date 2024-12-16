@@ -251,10 +251,75 @@ static bool isInPartition(const GlobalValue *GV, unsigned I, unsigned N) {
   return (R[0] | (R[1] << 8)) % N == I;
 }
 
+std::vector<const GlobalValue*> GlobalValueDependencies(const Value& GV) {
+  std::vector<const GlobalValue*> Dependencies;
+  for(const User* U: GV.users()) {
+    if(const auto* IU = dyn_cast<Instruction>(U))
+      Dependencies.push_back(IU->getFunction());
+    else if(const auto* GVU = dyn_cast<GlobalVariable>(U))
+      Dependencies.push_back(GVU);
+    else if(const auto* CU = dyn_cast<Constant>(U)) {
+      auto CUDeps = GlobalValueDependencies(*CU);
+      Dependencies.insert(Dependencies.end(), CUDeps.begin(), CUDeps.end());
+    }
+    else {
+      llvm::errs() << "#### " << *U << "\n";
+    }
+  }
+  return Dependencies;
+}
+
+void ConservativeSplitModule(Module& M, function_ref<void(std::unique_ptr<Module> MPart)> ModuleCallback)
+{
+  DenseMap<const GlobalValue*, unsigned> Mapping;
+
+  for(const GlobalValue& GV: M.global_values()) {
+    Mapping.insert({&GV, Mapping.size()});
+  }
+
+  for(const GlobalValue& GV: M.global_values()) {
+    auto Deps = GlobalValueDependencies(GV);
+    Deps.push_back(&GV);
+
+    DenseSet<unsigned> ColorSet;
+    for(const auto* Dep : Deps)
+      ColorSet.insert(Mapping[Dep]);
+
+    unsigned CommonColor = *std::min_element(ColorSet.begin(), ColorSet.end());
+    for(auto& KV : Mapping)
+      if(ColorSet.contains(KV.second))
+        KV.second = CommonColor;
+  }
+
+  DenseSet<unsigned> ColorGroups;
+  DenseMap<unsigned, unsigned> ColorGroupCount;
+  for(const GlobalValue& GV: M.global_values()) {
+    ColorGroups.insert(Mapping[&GV]);
+    ColorGroupCount[Mapping[&GV]] += 1;
+  }
+  llvm::errs() << "Found " << ColorGroupCount.size() << "groups:\n";
+  for(auto KV : ColorGroupCount) {
+    llvm::errs() << KV.first << ": " << KV.second << " elements\n";
+  }
+
+  for (unsigned I : ColorGroups) {
+    ValueToValueMapTy VMap;
+    std::unique_ptr<Module> MPart(
+        CloneModule(M, VMap, [&](const GlobalValue *GV) {
+          return Mapping[GV] == I;
+        }));
+    if (I != *ColorGroups.begin())
+      MPart->setModuleInlineAsm("");
+    llvm::errs() << "split\n";
+    ModuleCallback(std::move(MPart));
+  }
+}
+
 void llvm::SplitModule(
     Module &M, unsigned N,
     function_ref<void(std::unique_ptr<Module> MPart)> ModuleCallback,
-    bool PreserveLocals, bool RoundRobin) {
+    bool PreserveLocals, bool RoundRobin, bool Conservative) {
+
   if (!PreserveLocals) {
     for (Function &F : M)
       externalize(&F);
@@ -265,6 +330,9 @@ void llvm::SplitModule(
     for (GlobalIFunc &GIF : M.ifuncs())
       externalize(&GIF);
   }
+
+  if(Conservative)
+    return ConservativeSplitModule(M, ModuleCallback);
 
   // This performs splitting without a need for externalization, which might not
   // always be possible.
